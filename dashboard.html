@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- Fundo escuro exibido atrás da sidebar quando aberta no mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar__brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow
+      </a>
+
+      <div class="sidebar__section-label">Controle</div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__link is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+          Painel
+        </a>
+        <a href="#" class="sidebar__link" data-feature-toast>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          Fila de Impressão
+        </a>
+        <a href="#" class="sidebar__link" data-feature-toast>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+          Impressoras
+        </a>
+        <a href="#" class="sidebar__link" data-feature-toast>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Usuários
+        </a>
+        <a href="#" class="sidebar__link" data-feature-toast>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Configurações
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="sidebar__status">
+          <span class="status-dot"></span>
+          Sistema online
+        </div>
+        <div class="sidebar__version">v0.1.0 · PrintFlow</div>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         ÁREA PRINCIPAL (TOPBAR + CONTEÚDO)
+    ====================================================== -->
+    <div class="dashboard-content">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <div class="topbar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
+          </div>
+        </div>
+
+        <div class="topbar__actions">
+          <div class="dropdown">
+            <!--<button class="btn-icon topbar__icon-btn" id="notifButton" aria-label="Notificações">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span class="notif-dot"></span>
+            </button> -->
+            <div class="dropdown__menu" id="notifMenu">
+              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+            <div class="dropdown__menu" id="avatarMenu">
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                Perfil
+              </button>
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Configurações
+              </button>
+              <div class="dropdown__divider"></div>
+              <button class="dropdown__item" type="button" id="logoutButton">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTEÚDO PRINCIPAL -->
+      <main class="dashboard-main">
+        <div class="dashboard-head">
+          <div>
+            <span class="eyebrow">// VISÃO GERAL</span>
+            <h1>Dashboard</h1>
+          </div>
+          <div class="dashboard-head__actions">
+            <span class="dashboard-head__meta">ATUALIZADO · <span id="updatedTime">--:--</span></span>
+            <!-- Botão de teste da integração com EmailJS: dispara simularAlerta() (ver js/script.js) -->
+            <button type="button" class="btn btn-outline btn-sm" onclick="simularAlerta()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              Simular Alerta
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards de estatística -->
+        <div class="stats-grid">
+          <div class="card card-stat">
+            <div class="card-stat__head">
+              <span class="card-stat__label">Impressoras</span>
+              <span class="card-stat__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+              </span>
+            </div>
+            <div class="card-stat__body">
+              <span class="card-stat__value">0</span>
+              <span class="card-stat__hint">nenhuma impressora cadastrada</span>
+            </div>
+          </div>
+
+          <div class="card card-stat">
+            <div class="card-stat__head">
+              <span class="card-stat__label">Filas</span>
+              <span class="card-stat__icon card-stat__icon--info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+              </span>
+            </div>
+            <div class="card-stat__body">
+              <span class="card-stat__value">0</span>
+              <span class="card-stat__hint">nenhum trabalho na fila</span>
+            </div>
+          </div>
+
+          <div class="card card-stat">
+            <div class="card-stat__head">
+              <span class="card-stat__label">Alertas</span>
+              <span class="card-stat__icon card-stat__icon--warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+            </div>
+            <div class="card-stat__body">
+              <span class="card-stat__value">0</span>
+              <span class="card-stat__hint">tudo certo por aqui</span>
+            </div>
+          </div>
+
+          <div class="card card-stat">
+            <div class="card-stat__head">
+              <span class="card-stat__label">Usuários</span>
+              <span class="card-stat__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              </span>
+            </div>
+            <div class="card-stat__body">
+              <span class="card-stat__value">0</span>
+              <span class="card-stat__hint">nenhum usuário cadastrado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Áreas de gráfico (vazias, apenas estrutura visual) -->
+        <div class="charts-grid">
+          <div class="card">
+            <div class="chart-card__head">
+              <div>
+                <div class="chart-card__title">Atividade de impressão</div>
+                <div class="chart-card__subtitle">Últimos 7 dias</div>
+              </div>
+              <span class="badge badge-neutral">Sem dados</span>
+            </div>
+            <div class="chart-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <span>Nenhum dado disponível ainda. O gráfico será exibido aqui assim que houver impressões registradas.</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="chart-card__head">
+              <div>
+                <div class="chart-card__title">Status das impressoras</div>
+                <div class="chart-card__subtitle">Por equipamento</div>
+              </div>
+              <span class="badge badge-neutral">Sem dados</span>
+            </div>
+            <div class="chart-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+              <span>Cadastre sua primeira impressora para ver o status aqui.</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <!-- EmailJS: biblioteca usada pelo botão "Simular Alerta" (ver configuração no início de js/script.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

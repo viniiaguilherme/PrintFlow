@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <main class="auth-page">
+
+    <a href="index.html" class="auth-brand">
+      <span class="brand__mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+        </svg>
+      </span>
+      PrintFlow
+    </a>
+
+    <div class="auth-card">
+      <a href="index.html" class="auth-back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        Voltar ao início
+      </a>
+
+      <h1 class="auth-card__title">Entrar</h1>
+      <p class="auth-card__subtitle">Acesse seu painel PrintFlow.</p>
+
+      <!-- Formulário de login: sem validação real, apenas navegação -->
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">E-mail</label>
+          <input class="form-input" type="email" id="loginEmail" name="email" placeholder="voce@oficina.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="loginSenha">Senha</label>
+          <input class="form-input" type="password" id="loginSenha" name="senha" placeholder="••••••••">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+      </form>
+
+      <div class="auth-example-box">
+        Exemplo:<br>
+        <strong>exemplo@printflow.com</strong><br>
+        printflow123
+      </div>
+
+      <p class="auth-footer-text">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+    </div>
+
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

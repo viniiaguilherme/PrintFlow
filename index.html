@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrintFlow — Gerenciamento de Impressoras 3D</title>
+  <meta name="description" content="PrintFlow é o sistema de gerenciamento de impressoras 3D: monitore, organize filas e controle sua oficina em um só painel.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- =====================================================
+       NAVBAR
+  ====================================================== -->
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+            <path d="M4 12l8-4 8 4"/>
+            <path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow
+      </a>
+
+      <!-- <nav class="navbar__links">
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#como-funciona">Como funciona</a>
+      </nav> -->
+
+      <div class="navbar__actions">
+        <a href="login.html" class="btn btn-ghost">Entrar</a>
+        <a href="cadastro.html" class="btn btn-primary">Cadastrar</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <span class="eyebrow">// GESTÃO DE IMPRESSÃO 3D</span>
+          <h1 class="hero__title">
+            O jeito mais simples de gerenciar suas
+            <span class="gradient-text">impressoras 3D.</span>
+          </h1>
+          <p class="hero__subtitle">
+            Monitore impressoras em tempo real, organize filas de trabalho e mantenha
+            toda a sua oficina sob controle em um único painel, do cadastro ao alerta de falha.
+          </p>
+          <div class="hero__actions">
+            <a href="cadastro.html" class="btn btn-primary">
+              Criar conta grátis
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="login.html" class="btn btn-outline">Já tenho conta</a>
+          </div>
+        </div>
+
+        <!-- Ilustração assinatura: impressora 3D animada em SVG -->
+        <div class="hero__visual">
+          <div class="printer-illustration">
+            <div class="printer-illustration__grid"></div>
+
+            <div class="printer-illustration__badge">
+              <span class="status-dot"></span>
+              IMPRIMINDO
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         BARRA DE ESTATÍSTICAS
+    ====================================================== -->
+    <section class="stats-bar">
+      <div class="container stats-bar__grid">
+        <div>
+          <div class="stats-bar__value">25</div>
+          <div class="stats-bar__label">Oficinas ativas</div>
+        </div>
+        <div>
+          <div class="stats-bar__value">80</div>
+          <div class="stats-bar__label">Impressoras cadastradas</div>
+        </div>
+        <div>
+          <div class="stats-bar__value">220</div>
+          <div class="stats-bar__label">Usuários ativos</div>
+        </div>
+        <div>
+          <div class="stats-bar__value">67 mil</div>
+          <div class="stats-bar__label">Impressões realizadas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         FUNCIONALIDADES
+    ====================================================== -->
+    <section class="section" id="funcionalidades">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">// FUNCIONALIDADES</span>
+          <h2>Tudo que sua produção 3D precisa,<br><span class="gradient-text">em um só painel.</span></h2>
+          <p>Do cadastro da primeira impressora ao alerta de uma falha durante a noite: cada etapa do fluxo de trabalho pensada para quem cuida da oficina.</p>
+        </div>
+
+        <div class="features__grid" id="como-funciona">
+          <article class="card card-hover card-feature">
+            <div class="card-feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <h3>Monitoramento em tempo real</h3>
+            <p>Acompanhe o progresso, a temperatura e o status de cada impressora do espaço em tempo real.</p>
+          </article>
+
+          <article class="card card-hover card-feature">
+            <div class="card-feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+            </div>
+            <h3>Gerenciamento de impressoras</h3>
+            <p>Cadastre suas impressoras, organize por espaço e mantenha um histórico completo de cada equipamento.</p>
+          </article>
+
+          <article class="card card-hover card-feature">
+            <div class="card-feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+            </div>
+            <h3>Filas de impressão</h3>
+            <p>Organize os trabalhos por prioridade e acompanhe o que está pendente, em andamento ou concluído.</p>
+          </article>
+
+          <article class="card card-hover card-feature">
+            <div class="card-feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            </div>
+            <h3>Alertas por e-mail</h3>
+            <p>Receba um aviso automático assim que uma falha de impressão for detectada, mesmo longe da oficina.</p>
+          </article>
+
+          <article class="card card-hover card-feature">
+            <div class="card-feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+            </div>
+            <h3>Dashboard completo</h3>
+            <p>Visualize métricas de produção, materiais e desempenho da oficina em um painel só.</p>
+          </article>
+
+          <article class="card card-hover card-feature">
+            <div class="card-feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <h3>Controle de usuários</h3>
+            <p>Defina permissões e organize quem pode operar, visualizar ou administrar cada espaço.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         CTA FINAL
+    ====================================================== -->
+    <section class="cta">
+      <div class="container">
+        <h2 class="cta__title">Gerencie suas impressoras<br><span class="gradient-text">da melhor maneira.</span></h2>
+        <p class="cta__subtitle">Crie sua conta em minutos, cadastre sua primeira impressora e comece a organizar sua produção hoje mesmo.</p>
+        <a href="cadastro.html" class="btn btn-primary">
+          Criar conta grátis
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- =====================================================
+       RODAPÉ
+  ====================================================== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="brand__mark" style="width:28px;height:28px;border-radius:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow — © 2026. Todos os direitos reservados.
+      </div>
+      <div class="footer__links">
+        <a href="login.html">Entrar</a>
+        <a href="cadastro.html">Cadastrar</a>
+        <a href="#funcionalidades">Funcionalidades</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

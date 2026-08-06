@@ -123,6 +123,40 @@ document.addEventListener('DOMContentLoaded', function () {
   if (cadastroForm) {
     cadastroForm.addEventListener('submit', function (event) {
       event.preventDefault();
+
+      const nome = document.getElementById('cadastroNome').value;
+      const email = document.getElementById('cadastroEmail').value;
+      const cargo = document.getElementById('cadastroCargo').value;
+      const senha = document.getElementById('cadastroSenha').value;
+      const confirmarSenha = document.getElementById('cadastroConfirmarSenha').value;
+
+      if(!nome || !email || !cargo || !senha){
+        showToast('Atenção', 'Preencha todos os campos obrigatórios.', 'error');
+        return;
+      }
+
+      if(senha !== confirmarSenha){
+        showToast('As senhas não coincidem!');
+        return;
+      }
+
+      const dados = { nome, email, cargo, senha };
+
+      fetch('usuario_cadastro.php', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body:JSON.stringify (dados)
+      })
+      .then(resposta =>{
+        if(!resposta.ok){
+          alert("Não foi possível a conexão");
+        }
+        return resposta.text();
+
+      })
+
       window.location.href = 'login.html';
     });
   }

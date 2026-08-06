@@ -20,7 +20,7 @@ export default function Index() {
     setCarregando(true);
 
     try {
-      const URL_API = 'http://192.168.2.110/usuario_login.php'; 
+      const URL_API = 'http://10.90.36.49/usuario_login.php'; 
 
       const resposta = await fetch(URL_API, {
         method: 'POST',
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   }, 
   subtitle:{ 
     fontSize: 16, 
-    color: "#8f8f8f", // Adicionado uma cor para o subtítulo aparecer no fundo escuro
+    color: "#c7c1c1", // Adicionado uma cor para o subtítulo aparecer no fundo escuro
   }, 
   form:{ 
     marginTop: 24, 

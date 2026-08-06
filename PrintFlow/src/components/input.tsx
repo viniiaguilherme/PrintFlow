@@ -9,9 +9,10 @@ const   styles=StyleSheet.create({
         width: "100%",
         height:48,
         borderWidth: 1,
-        borderColor: "rgba(38, 17, 224, 0.53)",
+        borderColor: "rgb(255, 255, 255)",
         borderRadius:8,
         fontSize:16,
         paddingLeft: 12,
+        color: "#838181",
     },
 })

@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Header } from "../src/components/header";
 import { UserInfo } from "../src/components/usersInfo";
 import { MenuButton } from "../src/components/button2";
+import { useRouter, router } from 'expo-router';
 
 export default function Dashboard() {
   return (
@@ -16,16 +17,19 @@ export default function Dashboard() {
       <MenuButton
         title="Fila de impressão"
         image={require("../src/assets/3D.png")}
+        onPress={()=> router.push("/telaFilaImpressao")}
       />
 
       <MenuButton
         title="Histórico de impressões"
         image={require("../src/assets/Historico.png")}
+        onPress={()=> router.push("/telaHistorico")}
       />
 
       <MenuButton
         title="Alertas"
         image={require("../src/assets/Alerta.png")}
+        onPress={()=> router.push("/telaAlertas")}
       />
 
     </View>

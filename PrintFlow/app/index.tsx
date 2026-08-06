@@ -1,4 +1,8 @@
 import {Image, StyleSheet, View, Text} from 'react-native';
+
+import { Button } from '@/components/button';
+import { useRouter, router } from 'expo-router';
+
 export default function Index() {
     return(
         <View style={styles.container}>
@@ -10,6 +14,8 @@ export default function Index() {
             <Text style={styles.title}>Seja Bem-vindo!</Text>
             <Text style={styles.title}>O melhor sistema de gerenciamento de </Text>
             <Text style={styles.impressora}>impressoras 3D.</Text>
+
+            <Button label ="Entrar" onPress={()=> router.push("/telaLogin")}/>
         </View>
     ) 
 }

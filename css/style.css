@@ -249,7 +249,7 @@ p{ color: var(--color-text-secondary); }
 }
 .btn-ghost:hover{ color: var(--color-text-primary); }
 
-.btn-block{ width: 100%; }
+.btn-block{ width: 20%; }
 .btn-sm{ padding: .55rem 1.1rem; font-size: .8125rem; }
 
 .btn-icon{

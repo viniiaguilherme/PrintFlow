@@ -43,11 +43,11 @@ function showToast(title, message, type) {
   toast.innerHTML =
     '<span class="toast__icon' + (isError ? ' toast__icon--danger' : '') + '">' + iconMarkup + '</span>' +
     '<div>' +
-      '<div class="toast__title">' + title + '</div>' +
-      '<div class="toast__msg">' + message + '</div>' +
+    '<div class="toast__title">' + title + '</div>' +
+    '<div class="toast__msg">' + message + '</div>' +
     '</div>' +
     '<button class="toast__close" type="button" aria-label="Fechar">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>' +
     '</button>';
 
   toastStack.appendChild(toast);
@@ -74,23 +74,23 @@ function showToast(title, message, type) {
    enviaria de verdade caso uma impressora falhasse durante uma impressão.
    ========================================================================= */
 function simularAlerta() {
-    emailjs.send(
-        serviceID,
-        templateID,
-        {
-            user: "Usuário Teste",
-            email: emailUsuario,
-            impressao: "Peça de Teste",
-            impressora: "Ender 3",
-            horario: new Date().toLocaleString()
-        }
-    )
+  emailjs.send(
+    serviceID,
+    templateID,
+    {
+      user: "Usuário Teste",
+      email: emailUsuario,
+      impressao: "Peça de Teste",
+      impressora: "Ender 3",
+      horario: new Date().toLocaleString()
+    }
+  )
     .then(function () {
-        showToast('Alerta enviado', 'O e-mail de teste foi enviado com sucesso para ' + emailUsuario + '.');
+      showToast('Alerta enviado', 'O e-mail de teste foi enviado com sucesso para ' + emailUsuario + '.');
     })
     .catch(function (erro) {
-        console.error(erro);
-        showToast('Falha no envio', 'Não foi possível enviar o e-mail de alerta agora. Tente novamente em instantes.', 'error');
+      console.error(erro);
+      showToast('Falha no envio', 'Não foi possível enviar o e-mail de alerta agora. Tente novamente em instantes.', 'error');
     });
 }
 
@@ -130,12 +130,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const senha = document.getElementById('cadastroSenha').value;
       const confirmarSenha = document.getElementById('cadastroConfirmarSenha').value;
 
-      if(!nome || !email || !cargo || !senha){
+      if (!nome || !email || !cargo || !senha) {
         showToast('Atenção', 'Preencha todos os campos obrigatórios.', 'error');
         return;
       }
 
-      if(senha !== confirmarSenha){
+      if (senha !== confirmarSenha) {
         showToast('As senhas não coincidem!');
         return;
       }
@@ -143,19 +143,19 @@ document.addEventListener('DOMContentLoaded', function () {
       const dados = { nome, email, cargo, senha };
 
       fetch('usuario_cadastro.php', {
-        method: 'POST', 
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         },
-        body:JSON.stringify (dados)
+        body: JSON.stringify(dados)
       })
-      .then(resposta =>{
-        if(!resposta.ok){
-          alert("Não foi possível a conexão");
-        }
-        return resposta.text();
+        .then(resposta => {
+          if (!resposta.ok) {
+            alert("Não foi possível a conexão");
+          }
+          return resposta.text();
 
-      })
+        })
 
       window.location.href = 'login.html';
     });

@@ -22,7 +22,7 @@ export default function Index() {
 
     try {
 
-      const URL_API = 'http://192.168.2.111/usuario_login.php'; 
+      const URL_API = 'http://10.0.2.2:8000/login.php'; 
 
       const resposta = await fetch(URL_API, {
         method: 'POST',
@@ -40,10 +40,11 @@ export default function Index() {
 
       if (dados.sucesso) {
         Alert.alert('Sucesso', 'Login efetuado com sucesso!');
-        router.push('/telainicial'); // Redireciona para a tela de dashboard
+        router.navigate('/telainicial'); // Redireciona para a tela de dashboard
       } else {
         Alert.alert('Erro', dados.mensagem || 'E-mail ou senha incorretos.');
       }
+      
 
     } catch (erro: any) {
       Alert.alert('Erro', erro.message || 'Falha ao conectar.');

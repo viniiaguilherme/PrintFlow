@@ -243,13 +243,24 @@ p{ color: var(--color-text-secondary); }
   color: var(--color-accent-bright);
 }
 
+/* Variante com borda e texto verdes já no estado normal (não só no hover).
+   Usada em ações secundárias de destaque, como "Adicionar filamento". */
+.btn-outline-accent{
+  background: transparent;
+  border: 1px solid var(--color-accent-border);
+  color: var(--color-accent-bright);
+}
+.btn-outline-accent:hover{
+  background: var(--color-accent-dim);
+}
+
 .btn-ghost{
   background: transparent;
   color: var(--color-text-secondary);
 }
 .btn-ghost:hover{ color: var(--color-text-primary); }
 
-.btn-block{ width: 20%; }
+.btn-block{ width: 100%; }
 .btn-sm{ padding: .55rem 1.1rem; font-size: .8125rem; }
 
 .btn-icon{
@@ -957,6 +968,7 @@ p{ color: var(--color-text-secondary); }
   gap: var(--space-3);
 }
 .dashboard-head h1{ font-size: 2rem; margin-top: var(--space-2); }
+.dashboard-head p{ margin-top: var(--space-2); font-size: .9375rem; color: var(--color-text-secondary); }
 .dashboard-head__meta{ font-size: .8125rem; color: var(--color-text-tertiary); font-family: var(--font-mono); }
 .dashboard-head__actions{ display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
 
@@ -1005,6 +1017,8 @@ p{ color: var(--color-text-secondary); }
 
 @media (max-width: 900px){
   .features__grid{ grid-template-columns: repeat(2, 1fr); }
+  .spaces-grid{ grid-template-columns: repeat(2, 1fr); }
+  .printers-grid{ grid-template-columns: repeat(2, 1fr); }
   .stats-bar__grid{ grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
 
   .dashboard-layout{ grid-template-columns: 1fr; }
@@ -1030,6 +1044,8 @@ p{ color: var(--color-text-secondary); }
   .container{ padding-inline: var(--space-4); }
   .section{ padding-block: var(--space-7); }
   .features__grid{ grid-template-columns: 1fr; }
+  .spaces-grid{ grid-template-columns: 1fr; }
+  .printers-grid{ grid-template-columns: 1fr; }
   .stats-bar__grid{ grid-template-columns: repeat(2, 1fr); }
   .stats-grid{ grid-template-columns: 1fr 1fr; }
   .auth-card{ padding: var(--space-6) var(--space-5); }
@@ -1054,3 +1070,120 @@ p{ color: var(--color-text-secondary); }
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================================
+   28. PÁGINA DE ESPAÇOS (espacos.html)
+   -------------------------------------------------------------------------
+   Tela exibida entre o login e o dashboard, onde o usuário escolhe (ou cria)
+   o espaço/laboratório que deseja gerenciar. Reaproveita vários componentes
+   já existentes (.container, .dashboard-head, .card, .card-feature__icon,
+   .btn) e acrescenta apenas o necessário para os cards de espaço.
+   ========================================================================= */
+.spaces-main{ padding-block: var(--space-6); }
+
+.spaces-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+}
+
+.card-space{ display: flex; flex-direction: column; }
+
+.card-space__title{
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.card-space__title svg{ width: 16px; height: 16px; color: var(--color-warning); flex-shrink: 0; }
+
+.card-space__desc{ font-size: .9375rem; margin: var(--space-2) 0 var(--space-4); }
+
+.card-space__meta{
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  font-size: .8125rem;
+  flex-wrap: wrap;
+}
+.card-space__meta span{ display: inline-flex; align-items: center; gap: 6px; }
+.card-space__meta svg{ width: 14px; height: 14px; }
+.card-space__role{ color: var(--color-warning); font-weight: 600; }
+.card-space__code{ color: var(--color-text-tertiary); font-family: var(--font-mono); }
+.card-space__cta{ margin-top: auto; }
+
+/* =========================================================================
+   29. PÁGINA DE IMPRESSORAS (impressoras.html)
+   -------------------------------------------------------------------------
+   Grid com a "frota" de impressoras. Cada card mostra a impressora, os
+   filamentos carregados no momento e um atalho para adicionar mais um
+   filamento. Ainda sem dados reais — tudo é conteúdo de exemplo.
+   ========================================================================= */
+.printers-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+}
+
+.card-printer{ display: flex; flex-direction: column; gap: var(--space-5); }
+
+.card-printer__head{ display: flex; align-items: center; gap: var(--space-3); }
+.card-printer__icon{
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-accent-bright), var(--color-accent));
+  color: #052015;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-printer__icon svg{ width: 22px; height: 22px; }
+.card-printer__name{ font-size: 1.0625rem; }
+.card-printer__count{
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+}
+
+/* Lista de filamentos carregados na impressora */
+.card-printer__filaments{ display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
+.card-printer__filaments-label{
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-1);
+}
+.filament-row{
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: .65rem .85rem;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.filament-tag{
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+  padding: .2rem .5rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, .06);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+.filament-name{ font-size: .875rem; color: var(--color-text-primary); }
+
+.card-printer__add{ margin-top: auto; }

@@ -115,12 +115,11 @@
           <div>
             <span class="eyebrow">// IMPRESSORAS</span>
             <h1>Sua frota</h1>
-            <p>3 impressora(s) · gerencie filamentos disponíveis.</p>
+            <p><span id="printerCount">3 impressora(s)</span> · gerencie filamentos disponíveis.</p>
           </div>
           <div class="dashboard-head__actions">
-            <!-- Funcionalidade ainda não implementada: por enquanto apenas
-                 exibe um aviso (mesmo padrão usado nos links da sidebar). -->
-            <button type="button" class="btn btn-primary" data-feature-toast>
+            <!-- Abre o modal "Nova impressora" (ver js/script.js) -->
+            <button type="button" class="btn btn-primary" id="addPrinterButton">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Adicionar impressora
             </button>
@@ -128,12 +127,16 @@
         </div>
 
         <!-- Grid da frota: cada card representa uma impressora e os
-             filamentos carregados nela no momento. Dados de exemplo apenas
-             para ilustrar o layout — a listagem real virá do backend em
-             uma próxima entrega. -->
-        <div class="printers-grid">
+             filamentos carregados nela no momento. O nome "Bambu-X1" etc.
+             e os filamentos são apenas exemplos estáticos — os cards
+             criados pelo botão "Adicionar impressora" seguem exatamente a
+             mesma estrutura (ver criarCardImpressora() em js/script.js).
 
-          <article class="card card-printer">
+             data-printer-id: no futuro deve ser o ID vindo do banco de
+             dados. Nos cards de exemplo abaixo é só um valor fixo. -->
+        <div class="printers-grid" id="printersGrid">
+
+          <article class="card card-printer" data-printer-id="1">
             <div class="card-printer__head">
               <div class="card-printer__icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
@@ -156,7 +159,8 @@
               </div>
             </div>
 
-            <button type="button" class="btn btn-outline-accent btn-block card-printer__add" data-feature-toast>
+            <!-- Abre o modal "Novo filamento" para ESTE card (ver js/script.js) -->
+            <button type="button" class="btn btn-outline-accent btn-block card-printer__add" data-action="add-filament">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Adicionar filamento
             </button>
@@ -169,6 +173,78 @@
 
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>
+
+  <!-- =====================================================
+       MODAL: NOVA IMPRESSORA
+       Aberto pelo botão "Adicionar impressora" (id="addPrinterButton").
+       Ao enviar, um novo card é criado na tela (ver js/script.js,
+       função criarCardImpressora()). O ponto exato onde entra a
+       chamada real ao banco de dados está comentado no script.
+  ====================================================== -->
+  <div class="modal-overlay" id="modalNovaImpressora">
+    <div class="modal">
+      <form id="formNovaImpressora" novalidate>
+        <div class="modal__head">
+          <h3 class="modal__title">Nova impressora</h3>
+          <button type="button" class="modal__close" data-modal-close aria-label="Fechar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal__body">
+          <p>Dê um nome único para identificar a impressora.</p>
+          <div class="form-group">
+            <label class="form-label" for="novaImpressoraNome">Nome</label>
+            <input class="form-input" type="text" id="novaImpressoraNome" name="nome" placeholder="Ex.: Bambu-X1-C" autocomplete="off">
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-outline" data-modal-close>Cancelar</button>
+          <button type="submit" class="btn btn-primary">Adicionar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL: NOVO FILAMENTO
+       Aberto por qualquer botão "Adicionar filamento" (identificados
+       por [data-action="add-filament"]). O card que abriu o modal fica
+       guardado em "filamentoCardAlvo" (js/script.js) até o envio.
+  ====================================================== -->
+  <div class="modal-overlay" id="modalNovoFilamento">
+    <div class="modal">
+      <form id="formNovoFilamento" novalidate>
+        <div class="modal__head">
+          <h3 class="modal__title">Novo filamento</h3>
+          <button type="button" class="modal__close" data-modal-close aria-label="Fechar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal__body">
+          <p>Informe o material e a cor do filamento carregado.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="novoFilamentoTipo">Material</label>
+              <select class="form-select" id="novoFilamentoTipo" name="tipo">
+                <option value="" disabled selected>Selecione</option>
+                <option value="PLA">PLA</option>
+                <option value="PETG">PETG</option>
+                <option value="ABS">ABS</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="novoFilamentoNome">Cor / nome</label>
+              <input class="form-input" type="text" id="novoFilamentoNome" name="nome" placeholder="Ex.: Carbon" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-outline" data-modal-close>Cancelar</button>
+          <button type="submit" class="btn btn-primary">Adicionar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="js/script.js"></script>
 </body>

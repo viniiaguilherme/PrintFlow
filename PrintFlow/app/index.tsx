@@ -9,6 +9,7 @@ export default function Index() {
             <Image
             source={require("@/assets/Logo.png")}
             style={styles.ilustration}
+            resizeMode="contain"
             />
 
             <Text style={styles.title}>Seja Bem-vindo!</Text>
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
     ilustration:{
         width: "100%",
         height: 330,
-        resizeMode: "contain",
         marginTop: 62,
     },
 

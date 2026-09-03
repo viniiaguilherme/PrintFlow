@@ -1,10 +1,6 @@
-import {StyleSheet, Text, TouchableOpacity, TouchableOpacityProps} from "react-native"
+import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-type ButtonProps = TouchableOpacityProps & {
-    label: string;
-}
-
-export function Button({label, ...rest}: ButtonProps) {
+export function Button({ label, ...rest }: TouchableOpacityProps) {
     return (
         <TouchableOpacity style={styles.button} {...rest}>
             <Text style={styles.buttonText}>{label}</Text>
@@ -12,7 +8,7 @@ export function Button({label, ...rest}: ButtonProps) {
     )
 }
 
-const   styles=StyleSheet.create({
+const styles = StyleSheet.create({
     button: {
         marginTop: 40,
         backgroundColor: "#2FE37A",

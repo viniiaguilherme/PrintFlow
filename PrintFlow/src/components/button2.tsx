@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 
 type Props = {
   title: string;
@@ -16,7 +16,7 @@ export function MenuButton({
       style={styles.container}
       onPress={onPress}
     >
-      <Image source={image} style={styles.icon} />
+      <Image source={image} style={styles.icon} resizeMode="contain" />
 
       <Text style={styles.title}>{title}</Text>
 
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 35,
     height: 35,
-    resizeMode: "contain",
   },
 
   title: {

@@ -1,6 +1,6 @@
-import { TextInput, StyleSheet, TextInputProps } from "react-native"
+import { TextInput, StyleSheet } from "react-native";
 
-export function Input(props: TextInputProps) {
+export function Input(props) {
     return (
         <TextInput style={styles.input}  placeholderTextColor="#838181"{...props} />
     )

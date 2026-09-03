@@ -6,6 +6,7 @@ export function Header() {
       <Image
         source={require("../assets/Logo.png")}
         style={styles.logo}
+        resizeMode="contain"
       />
     </View>
   );
@@ -20,6 +21,5 @@ const styles = StyleSheet.create({
   logo: {
     width: 120,
     height: 45,
-    resizeMode: "contain",
   },
 });

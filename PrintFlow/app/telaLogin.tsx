@@ -7,12 +7,12 @@ import { Button } from "@/components/button";
 
 export default function Index() {
   // 1. Criando os estados para armazenar o que o usuário digita
-  const [email, setEmail] = useState<string>('');
-  const [senha, setSenha] = useState<string>('');
-  const [carregando, setCarregando] = useState<boolean>(false);
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [carregando, setCarregando] = useState(false);
 
   // 2. Função que envia os dados para o servidor PHP
-  const handleLogin = async (): Promise<void> => {
+  const handleLogin = async () => {
     if (!email || !senha) {
       Alert.alert('Atenção', 'Preencha todos os campos.');
       return;
@@ -22,7 +22,7 @@ export default function Index() {
 
     try {
 
-      const URL_API = 'http://10.0.2.2:8000/login.php'; 
+      const URL_API = 'http://10.90.36.131:8000/login.php'; 
 
       const resposta = await fetch(URL_API, {
         method: 'POST',
@@ -32,17 +32,13 @@ export default function Index() {
         body: JSON.stringify({ email, senha }),
       });
 
-      if (!resposta.ok) {
-        throw new Error('Não foi possível conectar ao servidor.');
-      }
+      const dados = await resposta.json();
 
-      const dados: { sucesso: boolean; mensagem?: string } = await resposta.json();
-
-      if (dados.sucesso) {
-        Alert.alert('Sucesso', 'Login efetuado com sucesso!');
+      if (resposta.ok && dados.sucesso) {
+        Alert.alert('Sucesso', dados.mensagem || 'Login efetuado com sucesso!');
         router.navigate('/telainicial'); // Redireciona para a tela de dashboard
       } else {
-        Alert.alert('Erro', dados.mensagem || 'E-mail ou senha incorretos.');
+        Alert.alert('Erro', dados.mensagem || dados.error || 'E-mail ou senha incorretos.');
       }
       
 
@@ -55,7 +51,7 @@ export default function Index() {
 
   return (
     <View style={styles.container}> 
-      <Image source={require("@/assets/Logo.png")} style={styles.ilustration} /> 
+      <Image source={require("@/assets/Logo.png")} style={styles.ilustration} resizeMode="contain" /> 
       
       <Text style={styles.title}>Entrar</Text> 
       <Text style={styles.subtitle}>Acesse seu console PrintFlow</Text> 
@@ -100,7 +96,6 @@ const styles = StyleSheet.create({
   ilustration:{ 
     width: "100%", 
     height: 330, 
-    resizeMode: "contain", 
     marginTop: 62, 
   }, 
   title:{ 

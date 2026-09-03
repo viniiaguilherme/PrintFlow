@@ -38,40 +38,39 @@
       <p class="auth-card__subtitle">Comece a gerenciar suas impressoras 3D.</p>
 
       <!-- Formulário de cadastro -->
-      <form action="usuario_cadastro.php" method="POST">
+      <form id="cadastroForm" action="usuario_cadastro.php" method="POST">
         <div class="form-group">
           <label class="form-label" for="cadastroNome">Nome</label>
-          <input class="form-input" type="text" id="cadastroNome" name="nome" placeholder="Seu nome completo">
+          <input class="form-input" type="text" id="cadastroNome" name="nome" placeholder="Seu nome completo" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="cadastroEmail">E-mail</label>
-          <input class="form-input" type="email" id="cadastroEmail" name="email" placeholder="voce@oficina.com">
+          <input class="form-input" type="email" id="cadastroEmail" name="email" placeholder="voce@oficina.com" required>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="cadastroSenha">Senha</label>
-            <input class="form-input" type="password" id="cadastroSenha" name="senha" placeholder="••••••••">
+            <input class="form-input" type="password" id="cadastroSenha" name="senha" placeholder="••••••••" required>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="cadastroCargo">Cargo</label>
-            <input class="form-input" type="text" id="cadastroCargo" name="cargo" placeholder="Ex: operador, maker..,">
+            <input class="form-input" type="text" id="cadastroCargo" name="cargo" placeholder="Ex: operador, maker..." required>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="cadastroConfirmarSenha">Confirmar senha</label>
           <input class="form-input" type="password" id="cadastroConfirmarSenha" name="confirmarSenha"
-            placeholder="••••••••">
+            placeholder="••••••••" required>
         </div>
-    </div>
 
-    <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
-    </form>
+        <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+      </form>
 
-    <p class="auth-footer-text">Já tem uma conta? <a href="login.html">Entrar</a></p>
+      <p class="auth-footer-text">Já tem uma conta? <a href="login.html">Entrar</a></p>
     </div>
 
   </main>

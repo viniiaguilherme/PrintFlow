@@ -1,23 +1,26 @@
 <?php
 session_start();
-require 'conexao.php';
+require 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $usuario = trim($_POST['usuario']);
+      $email = trim($_POST['email']);
       $senha = trim($_POST['senha']);
 
-    if (!empty($usuario) && !empty($senha)) {
+    if (!empty($email) && !empty($senha)) {
         // Prepara a query para evitar SQL Injection
-        $stmt = $PDO->prepare("SELECT id, usuario, senha FROM usuarios WHERE usuario = :usuario");
-        $stmt->execute(['usuario' => $usuario]);
+        $stmt = $pdo->prepare("SELECT * FROM public.usuarios WHERE email = :email");
+        $stmt->execute(['email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Verifica se o usuário existe e se a senha bate com o hash
         if ($user && password_verify($senha, $user['senha'])) {
             // Login bem-sucedido: inicia a sessão
             $_SESSION['usuario_id'] = $user['id'];
-            $_SESSION['usuario_nome'] = $user['usuario'];
+            $_SESSION['usuario_nome'] = $user['nome'];
+            $_SESSION['usuario_email'] = $user['email'];
+            $_SESSION['usuario_cargo'] = $user['cargo'];
             
+            $_SESSION['usuario_logado'] = true;
             header("Location: fila.php");
             exit;
         } else {

@@ -313,4 +313,40 @@ fetch(`buscar_estatisticas_espaco.php?espaco_id=${espacoId}`)
         console.error("Erro ao buscar estatísticas:", erro);
     });
 
+/* =======================================================================
+    12. BUSCA DE ESTATÍSTICAS (usuários)
+    -------------------------------------------------------------------------
+    Mesmo padrão dos blocos 10 e 11 acima: busca os dados reais no
+    backend (buscar_estatisticas_usuarios.php) e substitui os valores
+    de exemplo dos cards em usuarios.html. O "if" evita rodar essa busca
+    em páginas que não têm esses elementos (ex: dashboard, login).
+    ======================================================================= */
+  if (document.getElementById("estatisticaMembros")) {
+    fetch("buscar_estatisticas_usuarios.php")
+      .then(response => response.json())
+      .then(dados => {
+
+          if (dados.error) {
+              console.error(dados.error);
+              return;
+          }
+
+          document.getElementById("estatisticaMembros").textContent =
+              dados.total_membros;
+
+          document.getElementById("estatisticaAtivos").textContent =
+              dados.ativos_agora;
+
+          document.getElementById("estatisticaImpressoesUsuarios").textContent =
+              dados.total_impressoes;
+
+          document.getElementById("estatisticaFilamentoUsuarios").textContent =
+              dados.filamento_usado_kg + " kg";
+
+      })
+      .catch(erro => {
+          console.error("Erro ao buscar estatísticas de usuários:", erro);
+      });
+  }
+
 });

@@ -123,25 +123,25 @@
           </div>
         </div>
 
-        <!-- Cards de resumo: dados de exemplo apenas para ilustrar o
-             layout — os totais reais virão do backend em uma próxima
-             entrega. -->
+        <!-- Cards de resumo: os valores começam em 0 e são preenchidos
+             via JS a partir de API(PHP)/buscar_estatisticas_usuarios.php
+             (mesmo padrão usado na home e no dashboard). -->
         <div class="stat-simple-grid">
           <div class="stat-simple">
             <div class="stat-simple__label">Total de membros</div>
-            <div class="stat-simple__value">4</div>
+            <div class="stat-simple__value" id="estatisticaMembros">0</div>
           </div>
           <div class="stat-simple">
             <div class="stat-simple__label">Ativos agora</div>
-            <div class="stat-simple__value">1</div>
+            <div class="stat-simple__value" id="estatisticaAtivos">0</div>
           </div>
           <div class="stat-simple">
             <div class="stat-simple__label">Total de impressões</div>
-            <div class="stat-simple__value">111</div>
+            <div class="stat-simple__value" id="estatisticaImpressoesUsuarios">0</div>
           </div>
           <div class="stat-simple">
             <div class="stat-simple__label">Filamento usado</div>
-            <div class="stat-simple__value">6.4 kg</div>
+            <div class="stat-simple__value" id="estatisticaFilamentoUsuarios">0 kg</div>
           </div>
         </div>
 
@@ -261,7 +261,7 @@
         </div>
 
         <p class="text-muted" style="margin-top: var(--space-4); font-size: .8125rem;">
-          Esta tela é apenas ilustrativa. Os totais e a listagem real serão conectados à tabela de usuários do banco de dados em uma próxima entrega.
+
         </p>
       </main>
     </div>

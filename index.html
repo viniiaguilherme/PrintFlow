@@ -65,13 +65,6 @@
         <!-- Ilustração assinatura: impressora 3D animada em SVG -->
         <div class="hero__visual">
           <div class="printer-illustration">
-            <div class="printer-illustration__grid"></div>
-
-            <div class="printer-illustration__badge">
-              <span class="status-dot"></span>
-              IMPRIMINDO
-            </div>
-
           </div>
         </div>
       </div>
@@ -81,25 +74,30 @@
          BARRA DE ESTATÍSTICAS
     ====================================================== -->
     <section class="stats-bar">
-      <div class="container stats-bar__grid">
-        <div>
-          <div class="stats-bar__value">25</div>
-          <div class="stats-bar__label">Oficinas ativas</div>
-        </div>
-        <div>
-          <div class="stats-bar__value">80</div>
-          <div class="stats-bar__label">Impressoras cadastradas</div>
-        </div>
-        <div>
-          <div class="stats-bar__value">220</div>
-          <div class="stats-bar__label">Usuários ativos</div>
-        </div>
-        <div>
-          <div class="stats-bar__value">67 mil</div>
-          <div class="stats-bar__label">Impressões realizadas</div>
-        </div>
-      </div>
-    </section>
+  <div class="container stats-bar__grid">
+
+    <div>
+      <div class="stats-bar__value" id="espacos">0</div>
+      <div class="stats-bar__label">Espaços ativos</div>
+    </div>
+
+    <div>
+      <div class="stats-bar__value" id="impressoras">0</div>
+      <div class="stats-bar__label">Impressoras cadastradas</div>
+    </div>
+
+    <div>
+      <div class="stats-bar__value" id="usuarios">0</div>
+      <div class="stats-bar__label">Usuários</div>
+    </div>
+
+    <div>
+      <div class="stats-bar__value" id="impressoes">0</div>
+      <div class="stats-bar__label">Impressões realizadas</div>
+    </div>
+
+  </div>
+</section>
 
     <!-- =====================================================
          FUNCIONALIDADES

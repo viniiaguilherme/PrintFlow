@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — PrintFlow</title>
+  <title>Configurações — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
 
       <div class="sidebar__section-label">Controle</div>
       <nav class="sidebar__nav">
-        <a href="dashboard.html" class="sidebar__link is-active">
+        <a href="dashboard.html" class="sidebar__link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
           Painel
         </a>
@@ -44,7 +44,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
           Usuários
         </a>
-        <a href="configuracoes.html" class="sidebar__link">
+        <a href="configuracoes.html" class="sidebar__link is-active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           Configurações
         </a>
@@ -79,10 +79,6 @@
 
         <div class="topbar__actions">
           <div class="dropdown">
-            <!--<button class="btn-icon topbar__icon-btn" id="notifButton" aria-label="Notificações">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-              <span class="notif-dot"></span>
-            </button> -->
             <div class="dropdown__menu" id="notifMenu">
               <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
             </div>
@@ -113,134 +109,104 @@
       <main class="dashboard-main">
         <div class="dashboard-head">
           <div>
-            <span class="eyebrow">// VISÃO GERAL</span>
-            <h1>Dashboard</h1>
-          </div>
-          <div class="dashboard-head__actions">
-            <span class="dashboard-head__meta">ATUALIZADO · <span id="updatedTime">--:--</span></span>
-            <!-- Botão de teste da integração com EmailJS: dispara simularAlerta() (ver js/script.js) -->
-            <button type="button" class="btn btn-outline btn-sm" onclick="simularAlerta()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-              Simular Alerta
-            </button>
+            <span class="eyebrow">// PREFERÊNCIAS</span>
+            <h1>Configurações</h1>
+            <p>Gerencie seu perfil, notificações e o espaço atual.</p>
           </div>
         </div>
 
-        <!-- Cards de estatística -->
-        <!-- Cards de estatística -->
-<div class="stats-grid">
+        <!-- Formulários apenas ilustrativos: nenhum dado é salvo por
+             enquanto (mesmo padrão de "Em desenvolvimento" usado nos
+             demais links/botões ainda não implementados). -->
+        <div style="display:flex; flex-direction:column; gap: var(--space-5); max-width: 620px;">
 
-  <div class="card card-stat">
-    <div class="card-stat__head">
-      <span class="card-stat__label">Impressoras</span>
-      <span class="card-stat__icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="4" y="9" width="16" height="7" rx="1.5"/>
-          <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/>
-          <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
-        </svg>
-      </span>
-    </div>
-
-    <div class="card-stat__body">
-      <span class="card-stat__value" id="estatisticaImpressoras">0</span>
-      <span class="card-stat__hint">impressoras cadastradas</span>
-    </div>
-  </div>
-
-
-  <div class="card card-stat">
-    <div class="card-stat__head">
-      <span class="card-stat__label">Filas</span>
-      <span class="card-stat__icon card-stat__icon--info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" y1="6" x2="20" y2="6"/>
-          <line x1="4" y1="12" x2="20" y2="12"/>
-          <line x1="4" y1="18" x2="14" y2="18"/>
-        </svg>
-      </span>
-    </div>
-
-    <div class="card-stat__body">
-      <span class="card-stat__value" id="estatisticaFilas">0</span>
-      <span class="card-stat__hint">trabalhos na fila</span>
-    </div>
-  </div>
-
-
-  <div class="card card-stat">
-    <div class="card-stat__head">
-      <span class="card-stat__label">Alertas</span>
-      <span class="card-stat__icon card-stat__icon--warning">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/>
-          <line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-      </span>
-    </div>
-
-    <div class="card-stat__body">
-      <span class="card-stat__value" id="estatisticaAlertas">0</span>
-      <span class="card-stat__hint">alertas ativos</span>
-    </div>
-  </div>
-
-
-  <div class="card card-stat">
-    <div class="card-stat__head">
-      <span class="card-stat__label">Usuários</span>
-      <span class="card-stat__icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-          <path d="M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-      </span>
-    </div>
-
-    <div class="card-stat__body">
-      <span class="card-stat__value" id="estatisticaUsuarios">0</span>
-      <span class="card-stat__hint">usuários cadastrados</span>
-    </div>
-  </div>
-
-</div>
-
-        <!-- Áreas de gráfico (vazias, apenas estrutura visual) -->
-        <div class="charts-grid">
+          <!-- Perfil -->
           <div class="card">
-            <div class="chart-card__head">
-              <div>
-                <div class="chart-card__title">Atividade de impressão</div>
-                <div class="chart-card__subtitle">Últimos 7 dias</div>
+            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Perfil</h3>
+            <form>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="configNome">Nome</label>
+                  <input class="form-input" type="text" id="configNome" value="Vinícius Aguilherme">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="configCargo">Cargo</label>
+                  <input class="form-input" type="text" id="configCargo" value="Dono">
+                </div>
               </div>
-              <span class="badge badge-neutral">Sem dados</span>
-            </div>
-            <div class="chart-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-              <span>Nenhum dado disponível ainda. O gráfico será exibido aqui assim que houver impressões registradas.</span>
-            </div>
+              <div class="form-group">
+                <label class="form-label" for="configEmail">E-mail</label>
+                <input class="form-input" type="email" id="configEmail" value="vinii.aguilherme@gmail.com">
+              </div>
+              <button type="button" class="btn btn-primary" data-feature-toast>Salvar alterações</button>
+            </form>
           </div>
 
+          <!-- Segurança -->
           <div class="card">
-            <div class="chart-card__head">
-              <div>
-                <div class="chart-card__title">Status das impressoras</div>
-                <div class="chart-card__subtitle">Por equipamento</div>
+            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Segurança</h3>
+            <form>
+              <div class="form-group">
+                <label class="form-label" for="configSenhaAtual">Senha atual</label>
+                <input class="form-input" type="password" id="configSenhaAtual" placeholder="••••••••">
               </div>
-              <span class="badge badge-neutral">Sem dados</span>
-            </div>
-            <div class="chart-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
-              <span>Cadastre sua primeira impressora para ver o status aqui.</span>
-            </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="configSenhaNova">Nova senha</label>
+                  <input class="form-input" type="password" id="configSenhaNova" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="configSenhaConfirmar">Confirmar nova senha</label>
+                  <input class="form-input" type="password" id="configSenhaConfirmar" placeholder="••••••••">
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline" data-feature-toast>Atualizar senha</button>
+            </form>
           </div>
+
+          <!-- Notificações -->
+          <div class="card">
+            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Notificações</h3>
+            <div style="display:flex; flex-direction:column; gap: var(--space-3);">
+              <label class="checkbox-row">
+                <input type="checkbox" checked disabled>
+                Alertar por e-mail quando uma impressão falhar
+              </label>
+              <label class="checkbox-row">
+                <input type="checkbox" checked disabled>
+                Avisar quando uma impressão for concluída
+              </label>
+              <label class="checkbox-row">
+                <input type="checkbox" disabled>
+                Resumo semanal de produtividade
+              </label>
+            </div>
+            <p class="form-hint" style="margin-top: var(--space-4);">As preferências de notificação ainda não podem ser alteradas nesta versão.</p>
+          </div>
+
+          <!-- Espaço atual -->
+          <div class="card">
+            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Espaço atual</h3>
+            <div class="form-group">
+              <label class="form-label" for="configEspacoNome">Nome do espaço</label>
+              <input class="form-input" type="text" id="configEspacoNome" value="Espaço 1 (Exemplo)">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="configEspacoResponsavel">Responsável</label>
+              <input class="form-input" type="text" id="configEspacoResponsavel" value="Vinícius Aguilherme">
+            </div>
+            <button type="button" class="btn btn-outline" data-feature-toast>Salvar espaço</button>
+          </div>
+
+          <!-- Zona de risco -->
+          <div class="card" style="border-color: rgba(255, 93, 108, .3);">
+            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-2); color: var(--color-danger);">Zona de risco</h3>
+            <p style="margin-bottom: var(--space-4); font-size: .9375rem;">Sair do espaço remove seu acesso às impressoras e filas associadas a ele.</p>
+            <button type="button" class="btn btn-outline" data-feature-toast style="border-color: rgba(255, 93, 108, .4); color: var(--color-danger);">
+              Sair deste espaço
+            </button>
+          </div>
+
         </div>
       </main>
     </div>
@@ -249,8 +215,6 @@
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>
 
-  <!-- EmailJS: biblioteca usada pelo botão "Simular Alerta" (ver configuração no início de js/script.js) -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>

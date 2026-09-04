@@ -258,4 +258,59 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 600);
   }
 
+/* =======================================================================
+     10. BUSCA DE ESTATÍSTICAS (pag. inicial)
+     ======================================================================= */
+  fetch("buscar_estatisticas.php")
+    .then(response => response.json())
+    .then(dados => {
+
+        document.getElementById("espacos").textContent =
+            dados.espacos;
+
+        document.getElementById("impressoras").textContent =
+            dados.impressoras_cadastradas;
+
+        document.getElementById("usuarios").textContent =
+            dados.usuarios_cadastrados;
+
+        document.getElementById("impressoes").textContent =
+            dados.impressoes_totais;
+
+    })
+    .catch(erro => {
+        console.error("Erro ao buscar estatísticas:", erro);
+    });
+
+/* =======================================================================
+    11. BUSCA DE ESTATÍSTICAS (dashboard) 
+    ======================================================================= */
+  const espacoId = 1;
+
+fetch(`buscar_estatisticas_espaco.php?espaco_id=${espacoId}`)
+    .then(response => response.json())
+    .then(dados => {
+
+        if (dados.erro) {
+            console.error(dados.erro);
+            return;
+        }
+
+        document.getElementById("estatisticaImpressoras").textContent =
+            dados.impressoras;
+
+        document.getElementById("estatisticaFilas").textContent =
+            dados.filas;
+
+        document.getElementById("estatisticaAlertas").textContent =
+            dados.alertas;
+
+        document.getElementById("estatisticaUsuarios").textContent =
+            dados.usuarios;
+
+    })
+    .catch(erro => {
+        console.error("Erro ao buscar estatísticas:", erro);
+    });
+
 });

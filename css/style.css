@@ -1588,3 +1588,452 @@ p {
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================================
+   28. NOVOS COMPONENTES — FILA DE IMPRESSÃO / USUÁRIOS / CONFIGURAÇÕES
+   Seção adicionada para as telas "A Playlist" (fila), "Equipe do espaço"
+   (usuários) e "Configurações do espaço". Não altera nada das seções
+   anteriores — apenas soma novas classes reaproveitando os tokens já
+   existentes (cores, fontes, espaçamentos).
+   ========================================================================= */
+ 
+/* --- Campo de busca com ícone (usado na fila e em usuários) --- */
+.search-field {
+  position: relative;
+}
+ 
+.search-field svg {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+ 
+.search-field input {
+  padding-left: 2.5rem;
+  min-width: 240px;
+}
+ 
+.input-group {
+  display: flex;
+  gap: var(--space-2);
+}
+ 
+.input-group .form-input {
+  flex: 1;
+}
+ 
+/* --- Abas de filtro (pill tabs) --- */
+.filter-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  flex-wrap: wrap;
+}
+ 
+.filter-tabs__btn {
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .5rem .9rem;
+  border-radius: var(--radius-full);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+ 
+.filter-tabs__btn:hover {
+  color: var(--color-text-primary);
+}
+ 
+.filter-tabs__btn.is-active {
+  background: var(--color-accent-dim);
+  color: var(--color-accent-bright);
+}
+ 
+.queue-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+ 
+.queue-toolbar__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+ 
+/* --- Indicadores de status (dot colorido + texto) --- */
+.status-dot--idle {
+  background: var(--color-text-tertiary);
+  box-shadow: none;
+}
+ 
+.status-dot--warning {
+  background: var(--color-warning);
+  box-shadow: 0 0 6px var(--color-warning);
+}
+ 
+.status-dot--danger {
+  background: var(--color-danger);
+  box-shadow: 0 0 6px var(--color-danger);
+}
+ 
+.status-dot--info {
+  background: var(--color-info);
+  box-shadow: 0 0 6px var(--color-info);
+}
+ 
+.status-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: .8125rem;
+  color: var(--color-text-secondary);
+}
+ 
+/* --- Grupo de impressora (fila de impressão) --- */
+.printer-group {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-5);
+}
+ 
+.printer-group__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+}
+ 
+.printer-group__name {
+  font-weight: 600;
+  font-size: .9375rem;
+  color: var(--color-text-primary);
+}
+ 
+.printer-group__meta {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+ 
+.printer-group__empty {
+  padding: var(--space-6);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+ 
+/* --- Linha de trabalho dentro do grupo --- */
+.job-row {
+  display: grid;
+  grid-template-columns: 18px 24px 40px minmax(160px, 1fr) 72px 110px 64px auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+}
+ 
+.job-row + .job-row {
+  border-top: 1px solid var(--color-border);
+}
+ 
+.job-row:hover {
+  background: var(--color-surface-hover);
+}
+ 
+.job-row__handle {
+  color: var(--color-text-tertiary);
+  cursor: grab;
+  display: flex;
+}
+ 
+.job-row__handle svg {
+  width: 16px;
+  height: 16px;
+}
+ 
+.job-row__index {
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  color: var(--color-text-tertiary);
+}
+ 
+.job-material-chip {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-info-dim);
+  color: var(--color-info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+ 
+.job-row__info {
+  min-width: 0;
+}
+ 
+.job-row__title {
+  font-weight: 500;
+  font-size: .9375rem;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.job-row__subtitle {
+  font-size: .8125rem;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.job-row__color {
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+ 
+.job-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+ 
+.job-progress__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+ 
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+ 
+.progress-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-bright));
+  border-radius: var(--radius-full);
+}
+ 
+.job-progress__pct {
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+ 
+.job-row__time {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--color-text-tertiary);
+  text-align: right;
+}
+ 
+.job-row__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+ 
+.btn-icon--sm {
+  width: 34px;
+  height: 34px;
+}
+ 
+.btn-icon--danger:hover {
+  color: var(--color-danger);
+  border-color: rgba(255, 93, 108, .4);
+}
+ 
+/* --- Badge de cargo com coroa (dono do espaço) --- */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: .3rem .65rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: var(--color-warning-dim);
+  color: var(--color-warning);
+}
+ 
+.role-badge svg {
+  width: 12px;
+  height: 12px;
+}
+ 
+.title-crown {
+  color: var(--color-warning);
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: var(--space-2);
+}
+ 
+/* --- Cards de estatística simples (usuários) --- */
+.stat-simple-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+ 
+.stat-simple {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+ 
+.stat-simple__label {
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-2);
+}
+ 
+.stat-simple__value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+ 
+.table-toolbar {
+  margin-bottom: var(--space-4);
+}
+ 
+/* --- Subcard usado em Configurações ("Acesso ao espaço") --- */
+.settings-subcard {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  margin-top: var(--space-5);
+}
+ 
+.settings-subcard__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+ 
+.settings-subcard__head svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-accent-bright);
+}
+ 
+.settings-subcard__head h4 {
+  font-size: .9375rem;
+}
+ 
+.settings-subcard__desc {
+  font-size: .8125rem;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+}
+ 
+.form-textarea-counter {
+  font-size: .75rem;
+  color: var(--color-text-tertiary);
+  text-align: right;
+  margin-top: -6px;
+}
+ 
+.settings-card__foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-5);
+}
+ 
+/* --- Responsividade dos novos componentes --- */
+@media (max-width: 1080px) {
+  .stat-simple-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+ 
+@media (max-width: 900px) {
+  .job-row {
+    grid-template-columns: 18px 24px 40px minmax(140px, 1fr) 90px auto;
+  }
+ 
+  .job-row__color,
+  .job-row__time {
+    display: none;
+  }
+}
+ 
+@media (max-width: 640px) {
+  .queue-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+ 
+  .search-field input {
+    min-width: 0;
+    width: 100%;
+  }
+ 
+  .stat-simple-grid {
+    grid-template-columns: 1fr;
+  }
+ 
+  .job-row {
+    grid-template-columns: 24px 40px minmax(120px, 1fr) auto;
+  }
+ 
+  .job-row__handle,
+  .job-row__index {
+    display: none;
+  }
+}
+ 

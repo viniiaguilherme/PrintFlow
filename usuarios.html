@@ -109,106 +109,149 @@
       <main class="dashboard-main">
         <div class="dashboard-head">
           <div>
-            <span class="eyebrow">// EQUIPE</span>
-            <h1>Usuários</h1>
-            <p>4 usuário(s) neste espaço · dados de exemplo</p>
+            <span class="eyebrow">// USUÁRIOS</span>
+            <h1>Equipe do espaço</h1>
+            <p>Gerencie cargos e acessos.</p>
           </div>
           <div class="dashboard-head__actions">
             <!-- Funcionalidade ainda não implementada: por enquanto apenas
                  exibe um aviso (mesmo padrão usado nos links da sidebar). -->
             <button type="button" class="btn btn-primary" data-feature-toast>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
               Convidar usuário
             </button>
+          </div>
+        </div>
+
+        <!-- Cards de resumo: dados de exemplo apenas para ilustrar o
+             layout — os totais reais virão do backend em uma próxima
+             entrega. -->
+        <div class="stat-simple-grid">
+          <div class="stat-simple">
+            <div class="stat-simple__label">Total de membros</div>
+            <div class="stat-simple__value">4</div>
+          </div>
+          <div class="stat-simple">
+            <div class="stat-simple__label">Ativos agora</div>
+            <div class="stat-simple__value">1</div>
+          </div>
+          <div class="stat-simple">
+            <div class="stat-simple__label">Total de impressões</div>
+            <div class="stat-simple__value">111</div>
+          </div>
+          <div class="stat-simple">
+            <div class="stat-simple__label">Filamento usado</div>
+            <div class="stat-simple__value">6.4 kg</div>
+          </div>
+        </div>
+
+        <!-- Busca -->
+        <div class="table-toolbar">
+          <div class="search-field" style="max-width: 360px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" id="userSearch" placeholder="Buscar membros...">
           </div>
         </div>
 
         <!-- Tabela de usuários: dados de exemplo apenas para ilustrar o layout —
              a listagem real virá do backend em uma próxima entrega. -->
         <div class="table-wrap">
-          <table class="table">
+          <table class="table" id="userTable">
             <thead>
               <tr>
-                <th>Usuário</th>
+                <th>Membro</th>
                 <th>Cargo</th>
+                <th>Impressões</th>
+                <th>Filamento</th>
                 <th>Status</th>
-                <th>Impressões realizadas</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr data-name="vinícius guilherme @vinii">
                 <td>
                   <div style="display:flex; align-items:center; gap: var(--space-3);">
                     <span class="avatar avatar-sm">VA</span>
                     <div>
-                      <div style="color: var(--color-text-primary); font-weight: 500;">Vinícius Aguilherme</div>
-                      <div style="font-size: .8125rem;">vinii.aguilherme@gmail.com</div>
+                      <div style="color: var(--color-text-primary); font-weight: 500; display:flex; align-items:center; gap:6px;">
+                        Vinícius Guilherme
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:13px;height:13px;color:var(--color-warning);"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+                      </div>
+                      <div style="font-size: .8125rem;">@vinii</div>
                     </div>
                   </div>
                 </td>
-                <td>Dono</td>
-                <td><span class="badge badge-success">Ativo</span></td>
+                <td>
+                  <span class="role-badge">
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+                    Dono
+                  </span>
+                </td>
                 <td>58</td>
+                <td>3.1 kg</td>
+                <td><span class="status-inline"><span class="status-dot"></span>Ativo</span></td>
                 <td>
-                  <button type="button" class="btn-icon" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                   </button>
                 </td>
               </tr>
-              <tr>
+              <tr data-name="emmily carvalho @emy.cr">
                 <td>
                   <div style="display:flex; align-items:center; gap: var(--space-3);">
-                    <span class="avatar avatar-sm">CR</span>
+                    <span class="avatar avatar-sm">EC</span>
                     <div>
-                      <div style="color: var(--color-text-primary); font-weight: 500;">Camila Ribeiro</div>
-                      <div style="font-size: .8125rem;">camila.ribeiro@oficina.com</div>
+                      <div style="color: var(--color-text-primary); font-weight: 500;">Emmily Carvalho</div>
+                      <div style="font-size: .8125rem;">@emy.cr</div>
                     </div>
                   </div>
                 </td>
-                <td>Operadora</td>
-                <td><span class="badge badge-success">Ativo</span></td>
+                <td><span class="badge badge-info">Operador</span></td>
                 <td>34</td>
+                <td>2.0 kg</td>
+                <td><span class="status-inline"><span class="status-dot"></span>Ativo</span></td>
                 <td>
-                  <button type="button" class="btn-icon" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                   </button>
                 </td>
               </tr>
-              <tr>
+              <tr data-name="ederson júnior @ederson.j">
                 <td>
                   <div style="display:flex; align-items:center; gap: var(--space-3);">
-                    <span class="avatar avatar-sm">RM</span>
+                    <span class="avatar avatar-sm">EJ</span>
                     <div>
-                      <div style="color: var(--color-text-primary); font-weight: 500;">Rafael Moreira</div>
-                      <div style="font-size: .8125rem;">rafael.moreira@oficina.com</div>
+                      <div style="color: var(--color-text-primary); font-weight: 500;">Ederson Júnior</div>
+                      <div style="font-size: .8125rem;">@ederson.j</div>
                     </div>
                   </div>
                 </td>
-                <td>Maker</td>
-                <td><span class="badge badge-success">Ativo</span></td>
+                <td><span class="badge badge-neutral">Maker</span></td>
                 <td>19</td>
+                <td>1.3 kg</td>
+                <td><span class="status-inline"><span class="status-dot status-dot--idle"></span>Ocioso</span></td>
                 <td>
-                  <button type="button" class="btn-icon" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                   </button>
                 </td>
               </tr>
-              <tr>
+              <tr data-name="kdu paulino @kdu.paulino">
                 <td>
                   <div style="display:flex; align-items:center; gap: var(--space-3);">
-                    <span class="avatar avatar-sm">JS</span>
+                    <span class="avatar avatar-sm">KP</span>
                     <div>
-                      <div style="color: var(--color-text-primary); font-weight: 500;">Juliana Santos</div>
-                      <div style="font-size: .8125rem;">juliana.santos@oficina.com</div>
+                      <div style="color: var(--color-text-primary); font-weight: 500;">Kdú Paulino</div>
+                      <div style="font-size: .8125rem;">@kdu.paulino</div>
                     </div>
                   </div>
                 </td>
-                <td>Operadora</td>
-                <td><span class="badge badge-neutral">Convite pendente</span></td>
+                <td><span class="badge badge-neutral">Operadora</span></td>
                 <td>0</td>
+                <td>0.0 kg</td>
+                <td><span class="status-inline"><span class="status-dot status-dot--warning"></span>Convite pendente</span></td>
                 <td>
-                  <button type="button" class="btn-icon" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                   </button>
                 </td>
@@ -218,7 +261,7 @@
         </div>
 
         <p class="text-muted" style="margin-top: var(--space-4); font-size: .8125rem;">
-          Esta tela é apenas ilustrativa. A listagem real será conectada à tabela de usuários do banco de dados em uma próxima entrega.
+          Esta tela é apenas ilustrativa. Os totais e a listagem real serão conectados à tabela de usuários do banco de dados em uma próxima entrega.
         </p>
       </main>
     </div>
@@ -228,5 +271,22 @@
   <div class="toast-stack" id="toastStack"></div>
 
   <script src="js/script.js"></script>
+  <script>
+    // Busca por nome/@usuário — apenas front-end, isolado nesta página.
+    document.addEventListener('DOMContentLoaded', function () {
+      var searchInput = document.getElementById('userSearch');
+      var rows = document.querySelectorAll('#userTable tbody tr');
+
+      if (!searchInput) return;
+
+      searchInput.addEventListener('input', function () {
+        var term = searchInput.value.trim().toLowerCase();
+        rows.forEach(function (row) {
+          var visible = !term || row.dataset.name.indexOf(term) !== -1;
+          row.style.display = visible ? '' : 'none';
+        });
+      });
+    });
+  </script>
 </body>
 </html>

@@ -107,107 +107,73 @@
 
       <!-- CONTEÚDO PRINCIPAL -->
       <main class="dashboard-main">
-        <div class="dashboard-head">
-          <div>
-            <span class="eyebrow">// PREFERÊNCIAS</span>
-            <h1>Configurações</h1>
-            <p>Gerencie seu perfil, notificações e o espaço atual.</p>
-          </div>
+        <div class="dashboard-head" style="max-width: 620px; margin-inline: auto; display:block;">
+          <span class="eyebrow">// CONFIGURAÇÕES</span>
+          <h1>
+            Configurações do espaço
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="title-crown"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+          </h1>
+          <p>Como dono, você pode editar o nome, a descrição e a senha de acesso.</p>
         </div>
 
-        <!-- Formulários apenas ilustrativos: nenhum dado é salvo por
+        <!-- Formulário apenas ilustrativo: nenhum dado é salvo por
              enquanto (mesmo padrão de "Em desenvolvimento" usado nos
              demais links/botões ainda não implementados). -->
-        <div style="display:flex; flex-direction:column; gap: var(--space-5); max-width: 620px;">
-
-          <!-- Perfil -->
+        <div style="max-width: 620px; margin-inline: auto;">
           <div class="card">
-            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Perfil</h3>
-            <form>
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label" for="configNome">Nome</label>
-                  <input class="form-input" type="text" id="configNome" value="Vinícius Aguilherme">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="configCargo">Cargo</label>
-                  <input class="form-input" type="text" id="configCargo" value="Dono">
-                </div>
-              </div>
+            <form id="spaceForm">
               <div class="form-group">
-                <label class="form-label" for="configEmail">E-mail</label>
-                <input class="form-input" type="email" id="configEmail" value="vinii.aguilherme@gmail.com">
+                <label class="form-label" for="spaceNome">Nome</label>
+                <input class="form-input" type="text" id="spaceNome" value="Laboratório FabLab">
               </div>
-              <button type="button" class="btn btn-primary" data-feature-toast>Salvar alterações</button>
+
+              <div class="form-group" style="margin-bottom: var(--space-2);">
+                <label class="form-label" for="spaceDescricao">Descrição</label>
+                <textarea class="form-textarea" id="spaceDescricao" rows="3" maxlength="200">Espaço de demonstração com várias impressoras.</textarea>
+              </div>
+              <div class="form-textarea-counter" id="spaceDescricaoCounter" style="margin-bottom: var(--space-2);">46/200</div>
+
+              <!-- Acesso ao espaço -->
+              <div class="settings-subcard">
+                <div class="settings-subcard__head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                  <h4>Acesso ao espaço</h4>
+                </div>
+                <p class="settings-subcard__desc">O código é gerado automaticamente e não pode ser alterado. Compartilhe a senha apenas com pessoas de confiança.</p>
+
+                <div class="form-group">
+                  <label class="form-label" for="spaceCodigo">Código de convite</label>
+                  <div class="input-group">
+                    <input class="form-input" type="text" id="spaceCodigo" value="4429AD" readonly style="font-family: var(--font-mono); color: var(--color-text-secondary);">
+                    <button type="button" class="btn btn-outline" id="copyCodeBtn">Copiar</button>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="spaceSenha">Nova senha do espaço</label>
+                  <div class="input-group">
+                    <input class="form-input" type="password" id="spaceSenha" placeholder="Deixe em branco para manter a atual">
+                    <button type="button" class="btn-icon" id="toggleSenhaBtn" aria-label="Mostrar senha">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                  <span class="form-hint">4-32 caracteres. A senha atual não é exibida por segurança — informe uma nova para trocá-la.</span>
+                </div>
+              </div>
+
+              <div class="settings-card__foot">
+                <button type="button" class="btn btn-primary" data-feature-toast>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Salvar alterações
+                </button>
+              </div>
             </form>
           </div>
-
-          <!-- Segurança -->
-          <div class="card">
-            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Segurança</h3>
-            <form>
-              <div class="form-group">
-                <label class="form-label" for="configSenhaAtual">Senha atual</label>
-                <input class="form-input" type="password" id="configSenhaAtual" placeholder="••••••••">
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label" for="configSenhaNova">Nova senha</label>
-                  <input class="form-input" type="password" id="configSenhaNova" placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="configSenhaConfirmar">Confirmar nova senha</label>
-                  <input class="form-input" type="password" id="configSenhaConfirmar" placeholder="••••••••">
-                </div>
-              </div>
-              <button type="button" class="btn btn-outline" data-feature-toast>Atualizar senha</button>
-            </form>
-          </div>
-
-          <!-- Notificações -->
-          <div class="card">
-            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Notificações</h3>
-            <div style="display:flex; flex-direction:column; gap: var(--space-3);">
-              <label class="checkbox-row">
-                <input type="checkbox" checked disabled>
-                Alertar por e-mail quando uma impressão falhar
-              </label>
-              <label class="checkbox-row">
-                <input type="checkbox" checked disabled>
-                Avisar quando uma impressão for concluída
-              </label>
-              <label class="checkbox-row">
-                <input type="checkbox" disabled>
-                Resumo semanal de produtividade
-              </label>
-            </div>
-            <p class="form-hint" style="margin-top: var(--space-4);">As preferências de notificação ainda não podem ser alteradas nesta versão.</p>
-          </div>
-
-          <!-- Espaço atual -->
-          <div class="card">
-            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-4);">Espaço atual</h3>
-            <div class="form-group">
-              <label class="form-label" for="configEspacoNome">Nome do espaço</label>
-              <input class="form-input" type="text" id="configEspacoNome" value="Espaço 1 (Exemplo)">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="configEspacoResponsavel">Responsável</label>
-              <input class="form-input" type="text" id="configEspacoResponsavel" value="Vinícius Aguilherme">
-            </div>
-            <button type="button" class="btn btn-outline" data-feature-toast>Salvar espaço</button>
-          </div>
-
-          <!-- Zona de risco -->
-          <div class="card" style="border-color: rgba(255, 93, 108, .3);">
-            <h3 style="font-size: 1.0625rem; margin-bottom: var(--space-2); color: var(--color-danger);">Zona de risco</h3>
-            <p style="margin-bottom: var(--space-4); font-size: .9375rem;">Sair do espaço remove seu acesso às impressoras e filas associadas a ele.</p>
-            <button type="button" class="btn btn-outline" data-feature-toast style="border-color: rgba(255, 93, 108, .4); color: var(--color-danger);">
-              Sair deste espaço
-            </button>
-          </div>
-
         </div>
+
+        <p class="text-muted" style="margin-top: var(--space-5); font-size: .8125rem; max-width: 620px; margin-inline: auto;">
+          Esta tela é apenas ilustrativa. Salvar alterações, copiar o código e gerar uma nova senha ainda não estão conectados ao backend.
+        </p>
       </main>
     </div>
   </div>
@@ -216,5 +182,43 @@
   <div class="toast-stack" id="toastStack"></div>
 
   <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Contador de caracteres da descrição
+      var descricao = document.getElementById('spaceDescricao');
+      var counter = document.getElementById('spaceDescricaoCounter');
+      if (descricao && counter) {
+        var max = descricao.getAttribute('maxlength');
+        var updateCounter = function () {
+          counter.textContent = descricao.value.length + '/' + max;
+        };
+        updateCounter();
+        descricao.addEventListener('input', updateCounter);
+      }
+
+      // Mostrar/ocultar senha
+      var senhaInput = document.getElementById('spaceSenha');
+      var toggleBtn = document.getElementById('toggleSenhaBtn');
+      if (senhaInput && toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          var isPassword = senhaInput.type === 'password';
+          senhaInput.type = isPassword ? 'text' : 'password';
+          toggleBtn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+        });
+      }
+
+      // Copiar código de convite
+      var copyBtn = document.getElementById('copyCodeBtn');
+      var codigoInput = document.getElementById('spaceCodigo');
+      if (copyBtn && codigoInput && typeof showToast === 'function') {
+        copyBtn.addEventListener('click', function () {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(codigoInput.value).catch(function () {});
+          }
+          showToast('Copiado', 'Código de convite copiado para a área de transferência.');
+        });
+      }
+    });
+  </script>
 </body>
 </html>

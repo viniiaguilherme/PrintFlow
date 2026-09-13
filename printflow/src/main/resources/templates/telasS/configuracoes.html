@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- Fundo escuro exibido atrás da sidebar quando aberta no mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar__brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow
+      </a>
+
+      <div class="sidebar__section-label">Controle</div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+          Painel
+        </a>
+        <a href="fila.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          Fila de Impressão
+        </a>
+        <a href="impressoras.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+          Impressoras
+        </a>
+        <a href="usuarios.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Usuários
+        </a>
+        <a href="configuracoes.html" class="sidebar__link is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Configurações
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="sidebar__status">
+          <span class="status-dot"></span>
+          Sistema online
+        </div>
+        <div class="sidebar__version">v0.1.0 · PrintFlow</div>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         ÁREA PRINCIPAL (TOPBAR + CONTEÚDO)
+    ====================================================== -->
+    <div class="dashboard-content">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <div class="topbar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
+          </div>
+        </div>
+
+        <div class="topbar__actions">
+          <div class="dropdown">
+            <div class="dropdown__menu" id="notifMenu">
+              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+            <div class="dropdown__menu" id="avatarMenu">
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                Perfil
+              </button>
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Configurações
+              </button>
+              <div class="dropdown__divider"></div>
+              <button class="dropdown__item" type="button" id="logoutButton">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTEÚDO PRINCIPAL -->
+      <main class="dashboard-main">
+        <div class="dashboard-head" style="max-width: 620px; margin-inline: auto; display:block;">
+          <span class="eyebrow">// CONFIGURAÇÕES</span>
+          <h1>
+            Configurações do espaço
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="title-crown"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+          </h1>
+          <p>Como dono, você pode editar o nome, a descrição e a senha de acesso.</p>
+        </div>
+
+        <!-- Formulário apenas ilustrativo: nenhum dado é salvo por
+             enquanto (mesmo padrão de "Em desenvolvimento" usado nos
+             demais links/botões ainda não implementados). -->
+        <div style="max-width: 620px; margin-inline: auto;">
+          <div class="card">
+            <form id="spaceForm">
+              <div class="form-group">
+                <label class="form-label" for="spaceNome">Nome</label>
+                <input class="form-input" type="text" id="spaceNome" value="Laboratório FabLab">
+              </div>
+
+              <div class="form-group" style="margin-bottom: var(--space-2);">
+                <label class="form-label" for="spaceDescricao">Descrição</label>
+                <textarea class="form-textarea" id="spaceDescricao" rows="3" maxlength="200">Espaço de demonstração com várias impressoras.</textarea>
+              </div>
+              <div class="form-textarea-counter" id="spaceDescricaoCounter" style="margin-bottom: var(--space-2);">46/200</div>
+
+              <!-- Acesso ao espaço -->
+              <div class="settings-subcard">
+                <div class="settings-subcard__head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                  <h4>Acesso ao espaço</h4>
+                </div>
+                <p class="settings-subcard__desc">O código é gerado automaticamente e não pode ser alterado. Compartilhe a senha apenas com pessoas de confiança.</p>
+
+                <div class="form-group">
+                  <label class="form-label" for="spaceCodigo">Código de convite</label>
+                  <div class="input-group">
+                    <input class="form-input" type="text" id="spaceCodigo" value="4429AD" readonly style="font-family: var(--font-mono); color: var(--color-text-secondary);">
+                    <button type="button" class="btn btn-outline" id="copyCodeBtn">Copiar</button>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="spaceSenha">Nova senha do espaço</label>
+                  <div class="input-group">
+                    <input class="form-input" type="password" id="spaceSenha" placeholder="Deixe em branco para manter a atual">
+                    <button type="button" class="btn-icon" id="toggleSenhaBtn" aria-label="Mostrar senha">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                  <span class="form-hint">4-32 caracteres. A senha atual não é exibida por segurança — informe uma nova para trocá-la.</span>
+                </div>
+              </div>
+
+              <div class="settings-card__foot">
+                <button type="button" class="btn btn-primary" data-feature-toast>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Salvar alterações
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <p class="text-muted" style="margin-top: var(--space-5); font-size: .8125rem; max-width: 620px; margin-inline: auto;">
+          Esta tela é apenas ilustrativa. Salvar alterações, copiar o código e gerar uma nova senha ainda não estão conectados ao backend.
+        </p>
+      </main>
+    </div>
+  </div>
+
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Contador de caracteres da descrição
+      var descricao = document.getElementById('spaceDescricao');
+      var counter = document.getElementById('spaceDescricaoCounter');
+      if (descricao && counter) {
+        var max = descricao.getAttribute('maxlength');
+        var updateCounter = function () {
+          counter.textContent = descricao.value.length + '/' + max;
+        };
+        updateCounter();
+        descricao.addEventListener('input', updateCounter);
+      }
+
+      // Mostrar/ocultar senha
+      var senhaInput = document.getElementById('spaceSenha');
+      var toggleBtn = document.getElementById('toggleSenhaBtn');
+      if (senhaInput && toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          var isPassword = senhaInput.type === 'password';
+          senhaInput.type = isPassword ? 'text' : 'password';
+          toggleBtn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+        });
+      }
+
+      // Copiar código de convite
+      var copyBtn = document.getElementById('copyCodeBtn');
+      var codigoInput = document.getElementById('spaceCodigo');
+      if (copyBtn && codigoInput && typeof showToast === 'function') {
+        copyBtn.addEventListener('click', function () {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(codigoInput.value).catch(function () {});
+          }
+          showToast('Copiado', 'Código de convite copiado para a área de transferência.');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

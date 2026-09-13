@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espaços — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- =====================================================
+       NAVBAR
+       Mesma estrutura da navbar da landing page (marca à
+       esquerda), mas com o avatar do usuário à direita no
+       lugar dos botões "Entrar" / "Cadastrar", já que esta
+       tela só é exibida após o login.
+  ====================================================== -->
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <a href="espacos.html" class="brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow
+      </a>
+
+      <div class="navbar__actions">
+        <div class="dropdown">
+          <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+          <div class="dropdown__menu" id="avatarMenu">
+            <button class="dropdown__item" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+              Perfil
+            </button>
+            <button class="dropdown__item" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              Configurações
+            </button>
+            <div class="dropdown__divider"></div>
+            <button class="dropdown__item" type="button" id="logoutButton">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+              Sair
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="spaces-main">
+    <div class="container">
+
+      <!-- =====================================================
+           CABEÇALHO DA PÁGINA
+           Reaproveita a estrutura .dashboard-head (título +
+           ações), já usada no dashboard.
+      ====================================================== -->
+      <div class="dashboard-head">
+        <div class="section-head">
+          <span class="eyebrow">// SEU AMBIENTE</span>
+          <h1>Espaços</h1>
+          <p>Cada espaço é um laboratório com suas próprias impressoras, usuários e cargos.</p>
+        </div>
+
+        <div class="dashboard-head__actions">
+          <!-- Funcionalidade ainda não implementada: por enquanto apenas
+               exibe um aviso (mesmo padrão usado nos links da sidebar). -->
+          <button type="button" class="btn btn-outline" data-feature-toast>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            Ingressar
+          </button>
+          <button type="button" class="btn btn-primary" data-feature-toast>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Criar espaço
+          </button>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           GRID DE ESPAÇOS
+           Dados de exemplo apenas para ilustrar o layout. A
+           listagem real virá do backend em uma próxima entrega.
+      ====================================================== -->
+      <div class="spaces-grid">
+
+        <article class="card card-hover card-space">
+          <div class="card-feature__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>
+          </div>
+
+          <h3 class="card-space__title">
+            Espaço 1 (Exemplo)
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7z"/><path d="M5 20h14"/></svg>
+          </h3>
+          <p class="card-space__desc">Descrição do espaço</p>
+
+          <div class="card-space__meta">
+            <span class="card-space__role">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+              Dono
+            </span>
+            <span class="card-space__code">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+              4429AD
+            </span>
+          </div>
+
+          <!-- Aponta para o dashboard geral, já que ainda não existe um
+               painel por espaço nesta entrega. -->
+          <a href="dashboard.html" class="btn btn-primary btn-block card-space__cta">
+            Abrir console
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+          </a>
+        </article>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

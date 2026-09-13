@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fila de Impressão — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- Fundo escuro exibido atrás da sidebar quando aberta no mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar__brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow
+      </a>
+
+      <div class="sidebar__section-label">Controle</div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+          Painel
+        </a>
+        <a href="fila.html" class="sidebar__link is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          Fila de Impressão
+        </a>
+        <a href="impressoras.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+          Impressoras
+        </a>
+        <a href="usuarios.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Usuários
+        </a>
+        <a href="configuracoes.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Configurações
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="sidebar__status">
+          <span class="status-dot"></span>
+          Sistema online
+        </div>
+        <div class="sidebar__version">v0.1.0 · PrintFlow</div>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         ÁREA PRINCIPAL (TOPBAR + CONTEÚDO)
+    ====================================================== -->
+    <div class="dashboard-content">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <div class="topbar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
+          </div>
+        </div>
+
+        <div class="topbar__actions">
+          <div class="dropdown">
+            <div class="dropdown__menu" id="notifMenu">
+              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+            <div class="dropdown__menu" id="avatarMenu">
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                Perfil
+              </button>
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Configurações
+              </button>
+              <div class="dropdown__divider"></div>
+              <button class="dropdown__item" type="button" id="logoutButton">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTEÚDO PRINCIPAL -->
+      <main class="dashboard-main">
+        <div class="dashboard-head">
+          <div>
+            <span class="eyebrow">// FILA DE IMPRESSÃO</span>
+            <h1>A Playlist</h1>
+            <p id="queueSummary">5 trabalhos · cada impressora tem sua própria fila</p>
+          </div>
+          <div class="dashboard-head__actions">
+            <!-- Funcionalidade ainda não implementada: por enquanto apenas
+                 exibe um aviso (mesmo padrão usado nos links da sidebar). -->
+            <button type="button" class="btn btn-primary" data-feature-toast>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nova impressão
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de ferramentas: abas de filtro por status + busca -->
+        <div class="queue-toolbar">
+          <div class="filter-tabs" id="queueTabs">
+            <button type="button" class="filter-tabs__btn is-active" data-filter="todos">Todos</button>
+            <button type="button" class="filter-tabs__btn" data-filter="imprimindo">Imprimindo</button>
+            <button type="button" class="filter-tabs__btn" data-filter="na-fila">Na fila</button>
+            <button type="button" class="filter-tabs__btn" data-filter="pausado">Pausado</button>
+            <button type="button" class="filter-tabs__btn" data-filter="erro">Erro</button>
+            <button type="button" class="filter-tabs__btn" data-filter="concluido">Concluído</button>
+          </div>
+
+          <div class="queue-toolbar__search">
+            <div class="search-field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo ou maker...">
+            </div>
+            <button type="button" class="btn-icon" data-feature-toast aria-label="Mais filtros">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grupos por impressora: cada impressora tem sua própria fila.
+             Dados de exemplo apenas para ilustrar o layout — a listagem
+             real virá do backend em uma próxima entrega. -->
+
+        <div class="printer-group" data-printer="bambu-x1">
+          <div class="printer-group__header">
+            <span class="status-dot"></span>
+            <span class="printer-group__name">Bambu-X1</span>
+            <span class="printer-group__meta">1 na fila · ocupada (printing)</span>
+          </div>
+          <div class="printer-group__rows">
+            <div class="job-row" data-status="imprimindo" data-title="suporte de câmera">
+              <span class="job-row__handle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+              </span>
+              <span class="job-row__index">01</span>
+              <span class="job-material-chip">PLA</span>
+              <div class="job-row__info">
+                <div class="job-row__title">Suporte de câmera</div>
+                <div class="job-row__subtitle">Conta de Exemplo · 38g · 0.2mm</div>
+              </div>
+              <span class="job-row__color">Branco</span>
+              <div class="job-progress">
+                <div class="job-progress__row">
+                  <div class="progress-bar"><div class="progress-bar__fill" style="width:42%;"></div></div>
+                  <span class="job-progress__pct">42%</span>
+                </div>
+              </div>
+              <span class="job-row__time">2h 10m</span>
+              <div style="display:flex; align-items:center; gap: var(--space-3);">
+                <span class="badge badge-success">Imprimindo</span>
+                <div class="job-row__actions">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Pausar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  </button>
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Cancelar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="printer-group" data-printer="ender-v3">
+          <div class="printer-group__header">
+            <span class="status-dot status-dot--idle"></span>
+            <span class="printer-group__name">Ender-V3</span>
+            <span class="printer-group__meta">0 na fila · livre</span>
+          </div>
+          <div class="printer-group__empty">Fila vazia</div>
+        </div>
+
+        <div class="printer-group" data-printer="prusa-mk4">
+          <div class="printer-group__header">
+            <span class="status-dot status-dot--idle"></span>
+            <span class="printer-group__name">Prusa-MK4</span>
+            <span class="printer-group__meta">1 na fila · livre</span>
+          </div>
+          <div class="printer-group__rows">
+            <div class="job-row" data-status="na-fila" data-title="case eletrônico">
+              <span class="job-row__handle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+              </span>
+              <span class="job-row__index">01</span>
+              <span class="job-material-chip">PLA</span>
+              <div class="job-row__info">
+                <div class="job-row__title">Case eletrônico</div>
+                <div class="job-row__subtitle">Conta de Exemplo · 52g · 0.2mm</div>
+              </div>
+              <span class="job-row__color">Stone</span>
+              <div class="job-progress">
+                <div class="job-progress__row">
+                  <div class="progress-bar"><div class="progress-bar__fill" style="width:0%;"></div></div>
+                  <span class="job-progress__pct">0%</span>
+                </div>
+              </div>
+              <span class="job-row__time">1h 45m</span>
+              <div style="display:flex; align-items:center; gap: var(--space-3);">
+                <span class="badge badge-info">Na fila</span>
+                <div class="job-row__actions">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Iniciar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </button>
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Remover">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="printer-group" data-printer="prusa-mk3">
+          <div class="printer-group__header">
+            <span class="status-dot status-dot--warning"></span>
+            <span class="printer-group__name">Prusa MK3</span>
+            <span class="printer-group__meta">1 na fila · pausada</span>
+          </div>
+          <div class="printer-group__rows">
+            <div class="job-row" data-status="pausado" data-title="engrenagem — protótipo v2">
+              <span class="job-row__handle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+              </span>
+              <span class="job-row__index">01</span>
+              <span class="job-material-chip">PETG</span>
+              <div class="job-row__info">
+                <div class="job-row__title">Engrenagem — protótipo v2</div>
+                <div class="job-row__subtitle">Camila R. · 61g · 0.16mm</div>
+              </div>
+              <span class="job-row__color">Preto</span>
+              <div class="job-progress">
+                <div class="job-progress__row">
+                  <div class="progress-bar"><div class="progress-bar__fill" style="width:57%;"></div></div>
+                  <span class="job-progress__pct">57%</span>
+                </div>
+              </div>
+              <span class="job-row__time">48m</span>
+              <div style="display:flex; align-items:center; gap: var(--space-3);">
+                <span class="badge badge-neutral">Pausado</span>
+                <div class="job-row__actions">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Retomar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </button>
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Cancelar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="printer-group" data-printer="ender-3">
+          <div class="printer-group__header">
+            <span class="status-dot status-dot--danger"></span>
+            <span class="printer-group__name">Ender 3</span>
+            <span class="printer-group__meta">2 na fila · erro reportado</span>
+          </div>
+          <div class="printer-group__rows">
+            <div class="job-row" data-status="erro" data-title="suporte de fone — lote 3">
+              <span class="job-row__handle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+              </span>
+              <span class="job-row__index">01</span>
+              <span class="job-material-chip">PLA</span>
+              <div class="job-row__info">
+                <div class="job-row__title">Suporte de fone — lote 3</div>
+                <div class="job-row__subtitle">Camila R. · 29g · 0.2mm</div>
+              </div>
+              <span class="job-row__color">Azul</span>
+              <div class="job-progress">
+                <div class="job-progress__row">
+                  <div class="progress-bar"><div class="progress-bar__fill" style="width:12%; background:linear-gradient(90deg, var(--color-danger), #ff8a94);"></div></div>
+                  <span class="job-progress__pct">12%</span>
+                </div>
+              </div>
+              <span class="job-row__time">—</span>
+              <div style="display:flex; align-items:center; gap: var(--space-3);">
+                <span class="badge badge-danger">Erro</span>
+                <div class="job-row__actions">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Reenviar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                  </button>
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Remover">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="job-row" data-status="concluido" data-title="peça de teste — calibração">
+              <span class="job-row__handle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+              </span>
+              <span class="job-row__index">02</span>
+              <span class="job-material-chip">PLA</span>
+              <div class="job-row__info">
+                <div class="job-row__title">Peça de teste — calibração</div>
+                <div class="job-row__subtitle">Rafael M. · 8g · 0.2mm</div>
+              </div>
+              <span class="job-row__color">Cinza</span>
+              <div class="job-progress">
+                <div class="job-progress__row">
+                  <div class="progress-bar"><div class="progress-bar__fill" style="width:100%;"></div></div>
+                  <span class="job-progress__pct">100%</span>
+                </div>
+              </div>
+              <span class="job-row__time">Concluído</span>
+              <div style="display:flex; align-items:center; gap: var(--space-3);">
+                <span class="badge badge-success">Concluído</span>
+                <div class="job-row__actions">
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Ver detalhes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-muted" id="queueEmptyState" style="text-align:center; padding: var(--space-6) 0; display:none;">
+          Nenhum trabalho encontrado para esse filtro/busca.
+        </p>
+
+        <p class="text-muted" style="margin-top: var(--space-4); font-size: .8125rem;">
+          Esta tela é apenas ilustrativa. A listagem real será conectada à fila de impressão do banco de dados em uma próxima entrega.
+        </p>
+      </main>
+    </div>
+  </div>
+
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="js/script.js"></script>
+  <script>
+    // Filtro por status (abas) + busca por texto — apenas front-end,
+    // não altera dados reais. Isolado nesta página.
+    document.addEventListener('DOMContentLoaded', function () {
+      var tabs = document.querySelectorAll('#queueTabs .filter-tabs__btn');
+      var searchInput = document.getElementById('queueSearch');
+      var groups = document.querySelectorAll('.printer-group');
+      var emptyState = document.getElementById('queueEmptyState');
+      var activeFilter = 'todos';
+
+      function applyFilters() {
+        var term = (searchInput.value || '').trim().toLowerCase();
+        var anyVisible = false;
+
+        groups.forEach(function (group) {
+          var rows = group.querySelectorAll('.job-row');
+          var groupHasVisible = false;
+
+          rows.forEach(function (row) {
+            var matchesStatus = activeFilter === 'todos' || row.dataset.status === activeFilter;
+            var matchesSearch = !term || row.dataset.title.indexOf(term) !== -1;
+            var visible = matchesStatus && matchesSearch;
+            row.style.display = visible ? '' : 'none';
+            if (visible) groupHasVisible = true;
+          });
+
+          var emptyMsg = group.querySelector('.printer-group__empty');
+          var hasRows = rows.length > 0;
+
+          if (hasRows) {
+            group.style.display = groupHasVisible ? '' : 'none';
+            if (groupHasVisible) anyVisible = true;
+          } else {
+            // Impressora sem nenhum trabalho cadastrado (fila vazia de verdade)
+            var showEmptyGroup = activeFilter === 'todos' && !term;
+            group.style.display = showEmptyGroup ? '' : 'none';
+            if (showEmptyGroup) anyVisible = true;
+          }
+        });
+
+        emptyState.style.display = anyVisible ? 'none' : '';
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tabs.forEach(function (t) { t.classList.remove('is-active'); });
+          tab.classList.add('is-active');
+          activeFilter = tab.dataset.filter;
+          applyFilters();
+        });
+      });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+      }
+    });
+  </script>
+</body>
+</html>

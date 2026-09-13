@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- Fundo escuro exibido atrás da sidebar quando aberta no mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar__brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow
+      </a>
+
+      <div class="sidebar__section-label">Controle</div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+          Painel
+        </a>
+        <a href="fila.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          Fila de Impressão
+        </a>
+        <a href="impressoras.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+          Impressoras
+        </a>
+        <a href="usuarios.html" class="sidebar__link is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Usuários
+        </a>
+        <a href="configuracoes.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Configurações
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="sidebar__status">
+          <span class="status-dot"></span>
+          Sistema online
+        </div>
+        <div class="sidebar__version">v0.1.0 · PrintFlow</div>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         ÁREA PRINCIPAL (TOPBAR + CONTEÚDO)
+    ====================================================== -->
+    <div class="dashboard-content">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <div class="topbar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
+          </div>
+        </div>
+
+        <div class="topbar__actions">
+          <div class="dropdown">
+            <div class="dropdown__menu" id="notifMenu">
+              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+            <div class="dropdown__menu" id="avatarMenu">
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                Perfil
+              </button>
+              <button class="dropdown__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Configurações
+              </button>
+              <div class="dropdown__divider"></div>
+              <button class="dropdown__item" type="button" id="logoutButton">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTEÚDO PRINCIPAL -->
+      <main class="dashboard-main">
+        <div class="dashboard-head">
+          <div>
+            <span class="eyebrow">// USUÁRIOS</span>
+            <h1>Equipe do espaço</h1>
+            <p>Gerencie cargos e acessos.</p>
+          </div>
+          <div class="dashboard-head__actions">
+            <!-- Funcionalidade ainda não implementada: por enquanto apenas
+                 exibe um aviso (mesmo padrão usado nos links da sidebar). -->
+            <button type="button" class="btn btn-primary" data-feature-toast>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+              Convidar usuário
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards de resumo: os valores começam em 0 e são preenchidos
+             via JS a partir de API(PHP)/buscar_estatisticas_usuarios.php
+             (mesmo padrão usado na home e no dashboard). -->
+        <div class="stat-simple-grid">
+          <div class="stat-simple">
+            <div class="stat-simple__label">Total de membros</div>
+            <div class="stat-simple__value" id="estatisticaMembros">0</div>
+          </div>
+          <div class="stat-simple">
+            <div class="stat-simple__label">Ativos agora</div>
+            <div class="stat-simple__value" id="estatisticaAtivos">0</div>
+          </div>
+          <div class="stat-simple">
+            <div class="stat-simple__label">Total de impressões</div>
+            <div class="stat-simple__value" id="estatisticaImpressoesUsuarios">0</div>
+          </div>
+          <div class="stat-simple">
+            <div class="stat-simple__label">Filamento usado</div>
+            <div class="stat-simple__value" id="estatisticaFilamentoUsuarios">0 kg</div>
+          </div>
+        </div>
+
+        <!-- Busca -->
+        <div class="table-toolbar">
+          <div class="search-field" style="max-width: 360px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" id="userSearch" placeholder="Buscar membros...">
+          </div>
+        </div>
+
+        <!-- Tabela de usuários: dados de exemplo apenas para ilustrar o layout —
+             a listagem real virá do backend em uma próxima entrega. -->
+        <div class="table-wrap">
+          <table class="table" id="userTable">
+            <thead>
+              <tr>
+                <th>Membro</th>
+                <th>Cargo</th>
+                <th>Impressões</th>
+                <th>Filamento</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-name="vinícius guilherme @vinii">
+                <td>
+                  <div style="display:flex; align-items:center; gap: var(--space-3);">
+                    <span class="avatar avatar-sm">VA</span>
+                    <div>
+                      <div style="color: var(--color-text-primary); font-weight: 500; display:flex; align-items:center; gap:6px;">
+                        Vinícius Guilherme
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:13px;height:13px;color:var(--color-warning);"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+                      </div>
+                      <div style="font-size: .8125rem;">@vinii</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="role-badge">
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+                    Dono
+                  </span>
+                </td>
+                <td>58</td>
+                <td>3.1 kg</td>
+                <td><span class="status-inline"><span class="status-dot"></span>Ativo</span></td>
+                <td>
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr data-name="emmily carvalho @emy.cr">
+                <td>
+                  <div style="display:flex; align-items:center; gap: var(--space-3);">
+                    <span class="avatar avatar-sm">EC</span>
+                    <div>
+                      <div style="color: var(--color-text-primary); font-weight: 500;">Emmily Carvalho</div>
+                      <div style="font-size: .8125rem;">@emy.cr</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">Operador</span></td>
+                <td>34</td>
+                <td>2.0 kg</td>
+                <td><span class="status-inline"><span class="status-dot"></span>Ativo</span></td>
+                <td>
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr data-name="ederson júnior @ederson.j">
+                <td>
+                  <div style="display:flex; align-items:center; gap: var(--space-3);">
+                    <span class="avatar avatar-sm">EJ</span>
+                    <div>
+                      <div style="color: var(--color-text-primary); font-weight: 500;">Ederson Júnior</div>
+                      <div style="font-size: .8125rem;">@ederson.j</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-neutral">Maker</span></td>
+                <td>19</td>
+                <td>1.3 kg</td>
+                <td><span class="status-inline"><span class="status-dot status-dot--idle"></span>Ocioso</span></td>
+                <td>
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr data-name="kdu paulino @kdu.paulino">
+                <td>
+                  <div style="display:flex; align-items:center; gap: var(--space-3);">
+                    <span class="avatar avatar-sm">KP</span>
+                    <div>
+                      <div style="color: var(--color-text-primary); font-weight: 500;">Kdú Paulino</div>
+                      <div style="font-size: .8125rem;">@kdu.paulino</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-neutral">Operador</span></td>
+                <td>0</td>
+                <td>0.0 kg</td>
+                <td><span class="status-inline"><span class="status-dot status-dot--warning"></span>Convite pendente</span></td>
+                <td>
+                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="text-muted" style="margin-top: var(--space-4); font-size: .8125rem;">
+
+        </p>
+      </main>
+    </div>
+  </div>
+
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="js/script.js"></script>
+  <script>
+    // Busca por nome/@usuário — apenas front-end, isolado nesta página.
+    document.addEventListener('DOMContentLoaded', function () {
+      var searchInput = document.getElementById('userSearch');
+      var rows = document.querySelectorAll('#userTable tbody tr');
+
+      if (!searchInput) return;
+
+      searchInput.addEventListener('input', function () {
+        var term = searchInput.value.trim().toLowerCase();
+        rows.forEach(function (row) {
+          var visible = !term || row.dataset.name.indexOf(term) !== -1;
+          row.style.display = visible ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

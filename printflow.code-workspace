@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../Downloads/printflow"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}

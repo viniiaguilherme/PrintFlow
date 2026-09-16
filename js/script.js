@@ -12,19 +12,18 @@ const serviceID = "printflowkey";
 
 const templateID = "PrintingError";
 
-// E-MAIL DO USUÁRIO -> substituir futuramente
-// o valor é fixo atualmente (meu e-mail)
-// Depois q vc implementar o login, tem que fazer o get com o email do usuario
+// E-MAIL DO USUÁRIO -> usado apenas pelo botão "Simular Alerta" do dashboard.
+// TODO: quando o alerta de falha real for implementado, buscar o e-mail do
+// usuário logado via supabase.auth.getUser() em vez de usar um valor fixo.
 const emailUsuario = "vinii.aguilherme@gmail.com";
 
 
 /* =========================================================================
    TOASTS (notificações rápidas no canto da tela)
    -------------------------------------------------------------------------
-   Função global  para poder ser chamada tanto
-   pelas interações internas deste arquivo quanto pela função
-   simularAlerta() logo abaixo, que é acionada via onclick="" direto no
-   HTML do botão "Simular Alerta".
+   Função global para poder ser chamada tanto pelas interações internas
+   deste arquivo quanto pela função simularAlerta() logo abaixo, que é
+   acionada via onclick="" direto no HTML do botão "Simular Alerta".
 
    type: "success" (padrão, verde) ou "error" (vermelho) — troca apenas
    o ícone e a cor, mantendo o mesmo modelo visual do toast.
@@ -106,22 +105,45 @@ document.addEventListener('DOMContentLoaded', function () {
   var toastStack = document.getElementById('toastStack');
 
   /* =======================================================================
-     2. LOGIN 
+     2. LOGIN — via Supabase Auth
      ======================================================================= */
   var loginForm = document.getElementById('loginForm');
   if (loginForm) {
-    loginForm.addEventListener('submit', function (event) {
+    loginForm.addEventListener('submit', async function (event) {
       event.preventDefault();
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const senha = document.getElementById('loginSenha').value;
+
+      if (!email || !senha) {
+        showToast('Atenção', 'Preencha todos os campos.', 'error');
+        return;
+      }
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: senha
+      });
+
+      if (error) {
+        showToast('Erro no login', error.message, 'error');
+        return;
+      }
+
       window.location.href = 'dashboard.html';
     });
   }
 
   /* =======================================================================
-     3. CADASTRO
+     3. CADASTRO — via Supabase Auth
+     -------------------------------------------------------------------------
+     nome e cargo vão no "data" do signUp; um gatilho no banco
+     (handle_new_user) copia esses valores pra tabela public.usuarios assim
+     que a conta é criada.
      ======================================================================= */
   var cadastroForm = document.getElementById('cadastroForm');
   if (cadastroForm) {
-    cadastroForm.addEventListener('submit', function (event) {
+    cadastroForm.addEventListener('submit', async function (event) {
       event.preventDefault();
 
       const nome = document.getElementById('cadastroNome').value.trim();
@@ -140,31 +162,23 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      const dados = { nome, email, cargo, senha };
+      const { error } = await supabase.auth.signUp({
+        email: email,
+        password: senha,
+        options: {
+          data: { nome: nome, cargo: cargo }
+        }
+      });
 
-      fetch('usuario_cadastro.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dados)
-      })
-        .then(async response => {
-          const resData = await response.json().catch(() => ({}));
-          if (!response.ok) {
-            throw new Error(resData.error || 'Não foi possível concluir o cadastro.');
-          }
-          return resData;
-        })
-        .then(data => {
-          showToast('Sucesso', data.message || 'Usuário cadastrado com sucesso!', 'success');
-          setTimeout(function () {
-            window.location.href = 'login.html';
-          }, 1500);
-        })
-        .catch(error => {
-          showToast('Erro no cadastro', error.message, 'error');
-        });
+      if (error) {
+        showToast('Erro no cadastro', error.message, 'error');
+        return;
+      }
+
+      showToast('Sucesso', 'Cadastro realizado! Verifique seu e-mail para confirmar a conta antes de entrar.', 'success');
+      setTimeout(function () {
+        window.location.href = 'login.html';
+      }, 1500);
     });
   }
 
@@ -228,11 +242,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* =======================================================================
-     7. BOTÃO "SAIR" — volta para a tela inicial
+     7. BOTÃO "SAIR" — encerra a sessão no Supabase e volta pra tela inicial
      ======================================================================= */
   var logoutButton = document.getElementById('logoutButton');
   if (logoutButton) {
-    logoutButton.addEventListener('click', function () {
+    logoutButton.addEventListener('click', async function () {
+      await supabase.auth.signOut();
       window.location.href = 'index.html';
     });
   }
@@ -249,8 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =======================================================================
-     9. TOAST DE BOAS-VINDAS (dashboard) — apenas para demonstrar o
-     componente de toast em uso
+     9. TOAST DE BOAS-VINDAS (dashboard)
      ======================================================================= */
   if (toastStack && sidebar) {
     setTimeout(function () {
@@ -258,95 +272,69 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 600);
   }
 
-/* =======================================================================
-     10. BUSCA DE ESTATÍSTICAS (pag. inicial)
+  /* =======================================================================
+     10. ESTATÍSTICAS GERAIS (página inicial)
      ======================================================================= */
-  fetch("buscar_estatisticas.php")
-    .then(response => response.json())
-    .then(dados => {
+  if (document.getElementById("espacos")) {
+    supabase.rpc('estatisticas_gerais').then(function (resultado) {
+      if (resultado.error) {
+        console.error("Erro ao buscar estatísticas:", resultado.error);
+        return;
+      }
 
-        document.getElementById("espacos").textContent =
-            dados.espacos;
+      var dados = resultado.data;
 
-        document.getElementById("impressoras").textContent =
-            dados.impressoras_cadastradas;
-
-        document.getElementById("usuarios").textContent =
-            dados.usuarios_cadastrados;
-
-        document.getElementById("impressoes").textContent =
-            dados.impressoes_totais;
-
-    })
-    .catch(erro => {
-        console.error("Erro ao buscar estatísticas:", erro);
+      document.getElementById("espacos").textContent = dados.espacos;
+      document.getElementById("impressoras").textContent = dados.impressoras_cadastradas;
+      document.getElementById("usuarios").textContent = dados.usuarios_cadastrados;
+      document.getElementById("impressoes").textContent = dados.impressoes_totais;
     });
+  }
 
-/* =======================================================================
-    11. BUSCA DE ESTATÍSTICAS (dashboard) 
-    ======================================================================= */
-  const espacoId = 1;
+  /* =======================================================================
+     11. ESTATÍSTICAS DO ESPAÇO (dashboard)
+     -------------------------------------------------------------------------
+     ======================================================================= */
+  if (document.getElementById("estatisticaImpressoras")) {
+    var espacoId = 1;
 
-fetch(`buscar_estatisticas_espaco.php?espaco_id=${espacoId}`)
-    .then(response => response.json())
-    .then(dados => {
+    supabase.rpc('estatisticas_espaco', { p_espaco_id: espacoId }).then(function (resultado) {
+      if (resultado.error) {
+        console.error("Erro ao buscar estatísticas do espaço:", resultado.error);
+        return;
+      }
 
-        if (dados.erro) {
-            console.error(dados.erro);
-            return;
-        }
+      var dados = resultado.data;
 
-        document.getElementById("estatisticaImpressoras").textContent =
-            dados.impressoras;
+      if (!dados) {
+        console.error("Espaço não encontrado.");
+        return;
+      }
 
-        document.getElementById("estatisticaFilas").textContent =
-            dados.filas;
-
-        document.getElementById("estatisticaAlertas").textContent =
-            dados.alertas;
-
-        document.getElementById("estatisticaUsuarios").textContent =
-            dados.usuarios;
-
-    })
-    .catch(erro => {
-        console.error("Erro ao buscar estatísticas:", erro);
+      document.getElementById("estatisticaImpressoras").textContent = dados.impressoras;
+      document.getElementById("estatisticaFilas").textContent = dados.filas;
+      document.getElementById("estatisticaAlertas").textContent = dados.alertas;
+      document.getElementById("estatisticaUsuarios").textContent = dados.usuarios;
     });
+  }
 
-/* =======================================================================
-    12. BUSCA DE ESTATÍSTICAS (usuários)
-    -------------------------------------------------------------------------
-    Mesmo padrão dos blocos 10 e 11 acima: busca os dados reais no
-    backend (buscar_estatisticas_usuarios.php) e substitui os valores
-    de exemplo dos cards em usuarios.html. O "if" evita rodar essa busca
-    em páginas que não têm esses elementos (ex: dashboard, login).
-    ======================================================================= */
+  /* =======================================================================
+     12. ESTATÍSTICAS DE USUÁRIOS (usuarios.html)
+     ======================================================================= */
   if (document.getElementById("estatisticaMembros")) {
-    fetch("buscar_estatisticas_usuarios.php")
-      .then(response => response.json())
-      .then(dados => {
+    supabase.rpc('estatisticas_usuarios').then(function (resultado) {
+      if (resultado.error) {
+        console.error("Erro ao buscar estatísticas de usuários:", resultado.error);
+        return;
+      }
 
-          if (dados.error) {
-              console.error(dados.error);
-              return;
-          }
+      var dados = resultado.data;
 
-          document.getElementById("estatisticaMembros").textContent =
-              dados.total_membros;
-
-          document.getElementById("estatisticaAtivos").textContent =
-              dados.ativos_agora;
-
-          document.getElementById("estatisticaImpressoesUsuarios").textContent =
-              dados.total_impressoes;
-
-          document.getElementById("estatisticaFilamentoUsuarios").textContent =
-              dados.filamento_usado_kg + " kg";
-
-      })
-      .catch(erro => {
-          console.error("Erro ao buscar estatísticas de usuários:", erro);
-      });
+      document.getElementById("estatisticaMembros").textContent = dados.total_membros;
+      document.getElementById("estatisticaAtivos").textContent = dados.ativos_agora;
+      document.getElementById("estatisticaImpressoesUsuarios").textContent = dados.total_impressoes;
+      document.getElementById("estatisticaFilamentoUsuarios").textContent = dados.filamento_usado_kg + " kg";
+    });
   }
 
 });

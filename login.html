@@ -28,32 +28,31 @@
       <h1 class="auth-card__title">Entrar</h1>
       <p class="auth-card__subtitle">Acesse seu painel PrintFlow.</p>
 
-      <!-- Formulário de login -->
-      <form action="login.php" method="POST">
+      <!-- Formulário de login — agora tratado via Supabase Auth (js/script.js) -->
+      <form id="loginForm">
         <div class="form-group">
           <label class="form-label" for="loginEmail">E-mail</label>
-          <input class="form-input" type="email" id="loginEmail" name="email" placeholder="voce@oficina.com">
+          <input class="form-input" type="email" id="loginEmail" name="email" placeholder="voce@oficina.com" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="loginSenha">Senha</label>
-          <input class="form-input" type="password" id="loginSenha" name="senha" placeholder="••••••••">
+          <input class="form-input" type="password" id="loginSenha" name="senha" placeholder="••••••••" required>
         </div>
 
         <button type="submit" class="btn btn-primary btn-block">Entrar</button>
       </form>
-
-      <div class="auth-example-box">
-        Exemplo:<br>
-        <strong>exemplo@printflow.com</strong><br>
-        printflow123
-      </div>
 
       <p class="auth-footer-text">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
     </div>
 
   </main>
 
+  <!-- Pilha de notificações toast (usada pelo showToast em caso de erro no login) -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>

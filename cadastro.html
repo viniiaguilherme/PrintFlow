@@ -37,8 +37,8 @@
       <h1 class="auth-card__title">Criar conta</h1>
       <p class="auth-card__subtitle">Comece a gerenciar suas impressoras 3D.</p>
 
-      <!-- Formulário de cadastro -->
-      <form id="cadastroForm" action="usuario_cadastro.php" method="POST">
+      <!-- Formulário de cadastro — agora tratado via Supabase Auth (js/script.js) -->
+      <form id="cadastroForm">
         <div class="form-group">
           <label class="form-label" for="cadastroNome">Nome</label>
           <input class="form-input" type="text" id="cadastroNome" name="nome" placeholder="Seu nome completo" required>
@@ -75,6 +75,11 @@
 
   </main>
 
+  <!-- Pilha de notificações toast (usada pelo showToast em caso de erro/sucesso no cadastro) -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/script.js"></script>
 </body>
 

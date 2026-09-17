@@ -16,7 +16,7 @@
   var paginaAtual = window.location.pathname.split('/').pop();
 
   if (PAGINAS_PUBLICAS.indexOf(paginaAtual) === -1) {
-    supabase.auth.getSession().then(function (resultado) {
+    supabaseClient.auth.getSession().then(function (resultado) {
       if (!resultado.data.session) {
         window.location.href = 'login.html';
       }
@@ -41,7 +41,7 @@ const templateID = "PrintingError";
 
 // E-MAIL DO USUÁRIO -> usado apenas pelo botão "Simular Alerta" do dashboard.
 // TODO: quando o alerta de falha real for implementado, buscar o e-mail do
-// usuário logado via supabase.auth.getUser() em vez de usar um valor fixo.
+// usuário logado via supabaseClient.auth.getUser() em vez de usar um valor fixo.
 const emailUsuario = "vinii.aguilherme@gmail.com";
 
 
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabaseClient.auth.signInWithPassword({
         email: email,
         password: senha
       });
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      const { error } = await supabase.auth.signUp({
+      const { error } = await supabaseClient.auth.signUp({
         email: email,
         password: senha,
         options: {
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var logoutButton = document.getElementById('logoutButton');
   if (logoutButton) {
     logoutButton.addEventListener('click', async function () {
-      await supabase.auth.signOut();
+      await supabaseClient.auth.signOut();
       window.location.href = 'index.html';
     });
   }
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
      RPC à função estatisticas_gerais() no Supabase.
      ======================================================================= */
   if (document.getElementById("espacos")) {
-    supabase.rpc('estatisticas_gerais').then(function (resultado) {
+    supabaseClient.rpc('estatisticas_gerais').then(function (resultado) {
       if (resultado.error) {
         console.error("Erro ao buscar estatísticas:", resultado.error);
         return;
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (document.getElementById("estatisticaImpressoras")) {
     var espacoId = 1;
 
-    supabase.rpc('estatisticas_espaco', { p_espaco_id: espacoId }).then(function (resultado) {
+    supabaseClient.rpc('estatisticas_espaco', { p_espaco_id: espacoId }).then(function (resultado) {
       if (resultado.error) {
         console.error("Erro ao buscar estatísticas do espaço:", resultado.error);
         return;
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
      chamada RPC à função estatisticas_usuarios().
      ======================================================================= */
   if (document.getElementById("estatisticaMembros")) {
-    supabase.rpc('estatisticas_usuarios').then(function (resultado) {
+    supabaseClient.rpc('estatisticas_usuarios').then(function (resultado) {
       if (resultado.error) {
         console.error("Erro ao buscar estatísticas de usuários:", resultado.error);
         return;

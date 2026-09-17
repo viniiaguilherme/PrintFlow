@@ -1,4 +1,31 @@
 /* =========================================================================
+   PROTEÇÃO DE ROTAS
+   -------------------------------------------------------------------------
+   index.html, login.html e cadastro.html podem ser vistas sem sessão ativa.
+   Qualquer outra página (dashboard, espaços, fila, impressoras, usuários,
+   configurações) exige um usuário logado no Supabase — caso contrário,
+   redireciona para login.html.
+
+   Importante: isso é só uma conveniência de navegação no front-end. Quem
+   realmente protege os dados é o RLS configurado nas tabelas do Supabase;
+   mesmo sem essa checagem, ninguém sem sessão consegue ler/escrever dados
+   sensíveis.
+   ========================================================================= */
+(function () {
+  var PAGINAS_PUBLICAS = ['', 'index.html', 'login.html', 'cadastro.html'];
+  var paginaAtual = window.location.pathname.split('/').pop();
+
+  if (PAGINAS_PUBLICAS.indexOf(paginaAtual) === -1) {
+    supabase.auth.getSession().then(function (resultado) {
+      if (!resultado.data.session) {
+        window.location.href = 'login.html';
+      }
+    });
+  }
+})();
+
+
+/* =========================================================================
    CONFIGURAÇÃO DO EMAILJS
    ========================================================================= */
 
@@ -130,16 +157,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      window.location.href = 'dashboard.html';
+      window.location.href = 'espacos.html';
     });
   }
 
   /* =======================================================================
      3. CADASTRO — via Supabase Auth
      -------------------------------------------------------------------------
-     nome e cargo vão no "data" do signUp; um gatilho no banco
-     (handle_new_user) copia esses valores pra tabela public.usuarios assim
-     que a conta é criada.
+     nome vai no "data" do signUp; um gatilho no banco (handle_new_user)
+     copia esse valor pra tabela public.usuarios assim que a conta é criada.
+     Cargo não é coletado aqui — é atribuído ao usuário dentro de um
+     espaço, em uma etapa futura.
      ======================================================================= */
   var cadastroForm = document.getElementById('cadastroForm');
   if (cadastroForm) {
@@ -148,11 +176,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const nome = document.getElementById('cadastroNome').value.trim();
       const email = document.getElementById('cadastroEmail').value.trim();
-      const cargo = document.getElementById('cadastroCargo').value.trim();
       const senha = document.getElementById('cadastroSenha').value;
       const confirmarSenha = document.getElementById('cadastroConfirmarSenha').value;
 
-      if (!nome || !email || !cargo || !senha) {
+      if (!nome || !email || !senha) {
         showToast('Atenção', 'Preencha todos os campos obrigatórios.', 'error');
         return;
       }
@@ -166,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
         email: email,
         password: senha,
         options: {
-          data: { nome: nome, cargo: cargo }
+          data: { nome: nome }
         }
       });
 
@@ -264,7 +291,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =======================================================================
-     9. TOAST DE BOAS-VINDAS (dashboard)
+     9. TOAST DE BOAS-VINDAS (dashboard) — apenas para demonstrar o
+     componente de toast em uso
      ======================================================================= */
   if (toastStack && sidebar) {
     setTimeout(function () {
@@ -274,6 +302,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* =======================================================================
      10. ESTATÍSTICAS GERAIS (página inicial)
+     -------------------------------------------------------------------------
+     Substitui o antigo fetch('buscar_estatisticas.php') por uma chamada
+     RPC à função estatisticas_gerais() no Supabase.
      ======================================================================= */
   if (document.getElementById("espacos")) {
     supabase.rpc('estatisticas_gerais').then(function (resultado) {
@@ -294,6 +325,8 @@ document.addEventListener('DOMContentLoaded', function () {
   /* =======================================================================
      11. ESTATÍSTICAS DO ESPAÇO (dashboard)
      -------------------------------------------------------------------------
+     Substitui o antigo fetch('buscar_estatisticas_espaco.php?espaco_id=...')
+     por uma chamada RPC à função estatisticas_espaco(p_espaco_id).
      ======================================================================= */
   if (document.getElementById("estatisticaImpressoras")) {
     var espacoId = 1;
@@ -320,6 +353,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* =======================================================================
      12. ESTATÍSTICAS DE USUÁRIOS (usuarios.html)
+     -------------------------------------------------------------------------
+     Substitui o antigo fetch('buscar_estatisticas_usuarios.php') por uma
+     chamada RPC à função estatisticas_usuarios().
      ======================================================================= */
   if (document.getElementById("estatisticaMembros")) {
     supabase.rpc('estatisticas_usuarios').then(function (resultado) {

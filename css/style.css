@@ -30,6 +30,8 @@
    25. Conteúdo do Dashboard
    26. Responsividade
    27. Acessibilidade / Preferências de movimento
+   28. Fila de impressão / Usuários / Configurações
+   29. Tela de Espaços
    ========================================================================= */
 
 /* =========================================================================
@@ -310,6 +312,16 @@ p {
 .btn-outline:hover {
   border-color: var(--color-accent-border);
   color: var(--color-accent-bright);
+}
+
+.btn-outline-accent {
+  background: transparent;
+  border: 1px solid var(--color-accent-border);
+  color: var(--color-accent-bright);
+}
+
+.btn-outline-accent:hover {
+  background: var(--color-accent-dim);
 }
 
 .btn-ghost {
@@ -2036,4 +2048,90 @@ p {
     display: none;
   }
 }
- 
+
+/* =========================================================================
+   29. TELA DE ESPAÇOS (espacos.html)
+   -------------------------------------------------------------------------
+   Essas classes já existiam no HTML mas nunca tinham sido definidas aqui,
+   o que fazia a tela renderizar sem nenhum estilo (grid quebrado, cards sem
+   card, textos desalinhados). Reaproveita os mesmos tokens do resto do
+   sistema (cores, espaçamento, .card, .card-feature__icon).
+   ========================================================================= */
+.spaces-main {
+  padding-block: var(--space-7);
+}
+
+.spaces-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-7);
+}
+
+.card-space {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-space__title {
+  font-size: 1.125rem;
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card-space__title svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-warning);
+  flex-shrink: 0;
+}
+
+.card-space__desc {
+  font-size: .9375rem;
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.card-space__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  margin-bottom: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.card-space__role,
+.card-space__code {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .8125rem;
+  color: var(--color-text-secondary);
+}
+
+.card-space__role svg,
+.card-space__code svg {
+  width: 15px;
+  height: 15px;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.card-space__code {
+  font-family: var(--font-mono);
+  letter-spacing: .04em;
+}
+
+.card-space__cta {
+  margin-top: auto;
+}
+
+@media (max-width: 640px) {
+  .spaces-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -32,8 +32,29 @@
       </nav> -->
 
       <div class="navbar__actions">
-        <a href="login.html" class="btn btn-ghost">Entrar</a>
-        <a href="cadastro.html" class="btn btn-primary">Cadastrar</a>
+        <div id="navAuthButtons" style="display:flex; gap: var(--space-3); align-items:center;">
+          <a href="login.html" class="btn btn-ghost">Entrar</a>
+          <a href="cadastro.html" class="btn btn-primary">Cadastrar</a>
+        </div>
+
+        <div class="dropdown" id="navAvatarWrap" style="display:none;">
+          <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+          <div class="dropdown__menu" id="avatarMenu">
+            <a href="perfil.html" class="dropdown__item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+              Perfil
+            </a>
+            <a href="espacos.html" class="dropdown__item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>
+              Meus espaços
+            </a>
+            <div class="dropdown__divider"></div>
+            <button class="dropdown__item" type="button" id="logoutButton">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+              Sair
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -199,8 +220,28 @@
     </div>
   </footer>
 
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/script.js"></script>
+  <script>
+    // Se já existe uma sessão ativa, troca "Entrar/Cadastrar" pelo avatar
+    // (mesmo componente usado no resto do app). Não afeta a sessão em si —
+    // só decide o que mostrar no navbar.
+    document.addEventListener('DOMContentLoaded', function () {
+      var authButtons = document.getElementById('navAuthButtons');
+      var avatarWrap = document.getElementById('navAvatarWrap');
+      if (!authButtons || !avatarWrap) return;
+
+      supabaseClient.auth.getSession().then(function (resultado) {
+        if (resultado.data.session) {
+          authButtons.style.display = 'none';
+          avatarWrap.style.display = '';
+        }
+      });
+    });
+  </script>
 </body>
 </html>

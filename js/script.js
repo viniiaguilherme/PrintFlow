@@ -238,6 +238,38 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('click', closeAllDropdowns);
 
   /* =======================================================================
+     4.1. AVATAR — mostra as iniciais do usuário logado (sessão ativa)
+     ======================================================================= */
+  var avatarButton = document.getElementById('avatarButton');
+  if (avatarButton) {
+    supabaseClient.auth.getUser().then(function (resultado) {
+      var usuarioAuth = resultado.data.user;
+      if (!usuarioAuth) return;
+
+      supabaseClient
+        .from('usuarios')
+        .select('nome')
+        .eq('id', usuarioAuth.id)
+        .single()
+        .then(function (resultado2) {
+          if (resultado2.error || !resultado2.data || !resultado2.data.nome) return;
+
+          var partes = resultado2.data.nome.trim().split(/\s+/).filter(Boolean);
+          var iniciais = '';
+          if (partes.length >= 2) {
+            iniciais = (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+          } else if (partes.length === 1) {
+            iniciais = partes[0].substring(0, 2).toUpperCase();
+          }
+
+          if (iniciais) {
+            avatarButton.textContent = iniciais;
+          }
+        });
+    });
+  }
+
+  /* =======================================================================
      5. SIDEBAR MOBILE (abrir/fechar em telas menores)
      ======================================================================= */
   var sidebar = document.getElementById('sidebar');

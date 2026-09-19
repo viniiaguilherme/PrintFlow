@@ -121,6 +121,30 @@ function simularAlerta() {
 }
 
 
+/* =========================================================================
+   INICIAIS DO NOME (usado no avatar) — função global para poder ser
+   chamada tanto pelo script.js quanto por scripts de página (perfil.html).
+   -------------------------------------------------------------------------
+   Várias palavras separadas por espaço: inicial de cada palavra
+   (ex.: "Vinícius Guilherme" -> "VG", "João Pedro Silva" -> "JPS").
+
+   Uma palavra só: apenas a inicial dela (ex.: "Maria" -> "M").
+   ========================================================================= */
+function calcularIniciais(nome) {
+  var partes = (nome || '').trim().split(/\s+/).filter(Boolean);
+
+  if (partes.length === 0) return '';
+
+  if (partes.length === 1) {
+    return partes[0][0].toUpperCase();
+  }
+
+  return partes.map(function (palavra) {
+    return palavra[0].toUpperCase();
+  }).join('');
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
   /* =======================================================================
@@ -254,13 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (resultado2) {
           if (resultado2.error || !resultado2.data || !resultado2.data.nome) return;
 
-          var partes = resultado2.data.nome.trim().split(/\s+/).filter(Boolean);
-          var iniciais = '';
-          if (partes.length >= 2) {
-            iniciais = (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
-          } else if (partes.length === 1) {
-            iniciais = partes[0].substring(0, 2).toUpperCase();
-          }
+          var iniciais = calcularIniciais(resultado2.data.nome);
 
           if (iniciais) {
             avatarButton.textContent = iniciais;

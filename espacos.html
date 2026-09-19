@@ -11,10 +11,6 @@
 
   <!-- =====================================================
        NAVBAR
-       Mesma estrutura da navbar da landing page (marca à
-       esquerda), mas com o avatar do usuário à direita no
-       lugar dos botões "Entrar" / "Cadastrar", já que esta
-       tela só é exibida após o login.
   ====================================================== -->
   <header class="navbar">
     <div class="container navbar__inner">
@@ -55,8 +51,6 @@
 
       <!-- =====================================================
            CABEÇALHO DA PÁGINA
-           Reaproveita a estrutura .dashboard-head (título +
-           ações), já usada no dashboard.
       ====================================================== -->
       <div class="dashboard-head">
         <div class="section-head">
@@ -66,13 +60,12 @@
         </div>
 
         <div class="dashboard-head__actions">
-          <!-- Funcionalidade ainda não implementada: por enquanto apenas
-               exibe um aviso (mesmo padrão usado nos links da sidebar). -->
+          <!-- Ingressar em um espaço via código ainda não está implementado. -->
           <button type="button" class="btn btn-outline" data-feature-toast>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
             Ingressar
           </button>
-          <button type="button" class="btn btn-primary" data-feature-toast>
+          <button type="button" class="btn btn-primary" id="criarEspacoBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Criar espaço
           </button>
@@ -80,45 +73,48 @@
       </div>
 
       <!-- =====================================================
-           GRID DE ESPAÇOS
-           Dados de exemplo apenas para ilustrar o layout. A
-           listagem real virá do backend em uma próxima entrega.
+           GRID DE ESPAÇOS — preenchido via JS a partir da função
+           RPC meus_espacos() no Supabase.
       ====================================================== -->
-      <div class="spaces-grid">
+      <div class="spaces-grid" id="spacesGrid"></div>
 
-        <article class="card card-hover card-space">
-          <div class="card-feature__icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>
-          </div>
-
-          <h3 class="card-space__title">
-            Espaço 1 (Exemplo)
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7z"/><path d="M5 20h14"/></svg>
-          </h3>
-          <p class="card-space__desc">Descrição do espaço</p>
-
-          <div class="card-space__meta">
-            <span class="card-space__role">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-              Dono
-            </span>
-            <span class="card-space__code">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
-              4429AD
-            </span>
-          </div>
-
-          <!-- Aponta para o dashboard geral, já que ainda não existe um
-               painel por espaço nesta entrega. -->
-          <a href="dashboard.html" class="btn btn-primary btn-block card-space__cta">
-            Abrir console
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
-          </a>
-        </article>
-
+      <!-- Estado vazio: mostrado quando o usuário ainda não tem espaços -->
+      <div id="spacesEmpty" style="display:none; text-align:center; padding: var(--space-9) 0;">
+        <p style="max-width: 40ch; margin-inline: auto;">Você ainda não faz parte de nenhum espaço. Crie o primeiro pra começar a organizar suas impressoras.</p>
       </div>
+
     </div>
   </main>
+
+  <!-- =====================================================
+       MODAL — CRIAR ESPAÇO
+  ====================================================== -->
+  <div class="modal-overlay" id="criarEspacoOverlay">
+    <div class="modal">
+      <div class="modal__head">
+        <h3 class="modal__title">Criar espaço</h3>
+        <button class="modal__close" type="button" id="criarEspacoClose" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <form id="criarEspacoForm">
+          <div class="form-group">
+            <label class="form-label" for="novoEspacoNome">Nome do espaço</label>
+            <input class="form-input" type="text" id="novoEspacoNome" placeholder="Ex: Laboratório de Prototipagem" maxlength="80" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="novoEspacoDescricao">Descrição (opcional)</label>
+            <textarea class="form-textarea" id="novoEspacoDescricao" rows="3" maxlength="200" placeholder="Do que se trata esse espaço?"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn-outline" id="criarEspacoCancelar">Cancelar</button>
+        <button type="submit" form="criarEspacoForm" class="btn btn-primary">Criar espaço</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>
@@ -126,5 +122,123 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/script.js"></script>
+  <script>
+    // Lista, cria espaços — tudo via Supabase (RPC meus_espacos / criar_espaco).
+    document.addEventListener('DOMContentLoaded', function () {
+      var grid = document.getElementById('spacesGrid');
+      var emptyState = document.getElementById('spacesEmpty');
+      var criarBtn = document.getElementById('criarEspacoBtn');
+      var overlay = document.getElementById('criarEspacoOverlay');
+      var closeBtn = document.getElementById('criarEspacoClose');
+      var cancelarBtn = document.getElementById('criarEspacoCancelar');
+      var form = document.getElementById('criarEspacoForm');
+
+      function abrirModal() {
+        overlay.classList.add('is-open');
+        document.getElementById('novoEspacoNome').focus();
+      }
+
+      function fecharModal() {
+        overlay.classList.remove('is-open');
+        form.reset();
+      }
+
+      if (criarBtn) criarBtn.addEventListener('click', abrirModal);
+      if (closeBtn) closeBtn.addEventListener('click', fecharModal);
+      if (cancelarBtn) cancelarBtn.addEventListener('click', fecharModal);
+      if (overlay) {
+        overlay.addEventListener('click', function (event) {
+          if (event.target === overlay) fecharModal();
+        });
+      }
+
+      // Evita injeção de HTML ao exibir nome/descrição digitados pelo usuário
+      function escapeHtml(texto) {
+        var div = document.createElement('div');
+        div.textContent = texto == null ? '' : String(texto);
+        return div.innerHTML;
+      }
+
+      function criarCardEspaco(espaco) {
+        var artigo = document.createElement('article');
+        artigo.className = 'card card-hover card-space';
+        artigo.innerHTML =
+          '<div class="card-feature__icon">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>' +
+          '</div>' +
+          '<h3 class="card-space__title">' + escapeHtml(espaco.nome) + '</h3>' +
+          '<p class="card-space__desc">' + escapeHtml(espaco.descricao || 'Sem descrição.') + '</p>' +
+          '<div class="card-space__meta">' +
+            '<span class="card-space__role">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>' +
+              escapeHtml(espaco.cargo) +
+            '</span>' +
+            '<span class="card-space__code">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>' +
+              escapeHtml(espaco.codigo) +
+            '</span>' +
+          '</div>' +
+          '<a href="dashboard.html" class="btn btn-primary btn-block card-space__cta">' +
+            'Abrir console' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>' +
+          '</a>';
+        return artigo;
+      }
+
+      function renderizarEspacos(espacos) {
+        grid.innerHTML = '';
+
+        if (!espacos || espacos.length === 0) {
+          emptyState.style.display = '';
+          return;
+        }
+
+        emptyState.style.display = 'none';
+        espacos.forEach(function (espaco) {
+          grid.appendChild(criarCardEspaco(espaco));
+        });
+      }
+
+      function carregarEspacos() {
+        supabaseClient.rpc('meus_espacos').then(function (resultado) {
+          if (resultado.error) {
+            showToast('Erro', 'Não foi possível carregar seus espaços.', 'error');
+            return;
+          }
+          renderizarEspacos(resultado.data);
+        });
+      }
+
+      carregarEspacos();
+
+      if (form) {
+        form.addEventListener('submit', async function (event) {
+          event.preventDefault();
+
+          var nome = document.getElementById('novoEspacoNome').value.trim();
+          var descricao = document.getElementById('novoEspacoDescricao').value.trim();
+
+          if (!nome) {
+            showToast('Atenção', 'Dê um nome para o espaço.', 'error');
+            return;
+          }
+
+          var resultado = await supabaseClient.rpc('criar_espaco', {
+            p_nome: nome,
+            p_descricao: descricao || null
+          });
+
+          if (resultado.error) {
+            showToast('Erro', 'Não foi possível criar o espaço.', 'error');
+            return;
+          }
+
+          showToast('Sucesso', 'Espaço "' + nome + '" criado com sucesso!', 'success');
+          fecharModal();
+          carregarEspacos();
+        });
+      }
+    });
+  </script>
 </body>
 </html>

@@ -60,8 +60,7 @@
         </div>
 
         <div class="dashboard-head__actions">
-          <!-- Ingressar em um espaço via código ainda não está implementado. -->
-          <button type="button" class="btn btn-outline" data-feature-toast>
+          <button type="button" class="btn btn-outline" id="ingressarEspacoBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
             Ingressar
           </button>
@@ -116,6 +115,39 @@
     </div>
   </div>
 
+  <!-- =====================================================
+       MODAL — INGRESSAR EM ESPAÇO
+       Usa o mesmo par código + senha configurado em
+       "Acesso ao espaço" (configuracoes.html).
+  ====================================================== -->
+  <div class="modal-overlay" id="ingressarEspacoOverlay">
+    <div class="modal">
+      <div class="modal__head">
+        <h3 class="modal__title">Ingressar em um espaço</h3>
+        <button class="modal__close" type="button" id="ingressarEspacoClose" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <form id="ingressarEspacoForm">
+          <div class="form-group">
+            <label class="form-label" for="ingressarCodigo">Código de convite</label>
+            <input class="form-input" type="text" id="ingressarCodigo" placeholder="Ex: AJX6P5" maxlength="6" required style="font-family: var(--font-mono); letter-spacing: .08em; text-transform: uppercase;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="ingressarSenha">Senha do espaço</label>
+            <input class="form-input" type="password" id="ingressarSenha" placeholder="Deixe em branco se o espaço não tiver senha">
+            <span class="form-hint">Só é pedida se o dono do espaço tiver definido uma em "Acesso ao espaço".</span>
+          </div>
+        </form>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn-outline" id="ingressarEspacoCancelar">Cancelar</button>
+        <button type="submit" form="ingressarEspacoForm" class="btn btn-primary">Ingressar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>
 
@@ -133,6 +165,12 @@
       var cancelarBtn = document.getElementById('criarEspacoCancelar');
       var form = document.getElementById('criarEspacoForm');
 
+      var ingressarBtn = document.getElementById('ingressarEspacoBtn');
+      var ingressarOverlay = document.getElementById('ingressarEspacoOverlay');
+      var ingressarCloseBtn = document.getElementById('ingressarEspacoClose');
+      var ingressarCancelarBtn = document.getElementById('ingressarEspacoCancelar');
+      var ingressarForm = document.getElementById('ingressarEspacoForm');
+
       function abrirModal() {
         overlay.classList.add('is-open');
         document.getElementById('novoEspacoNome').focus();
@@ -143,12 +181,31 @@
         form.reset();
       }
 
+      function abrirModalIngressar() {
+        ingressarOverlay.classList.add('is-open');
+        document.getElementById('ingressarCodigo').focus();
+      }
+
+      function fecharModalIngressar() {
+        ingressarOverlay.classList.remove('is-open');
+        ingressarForm.reset();
+      }
+
       if (criarBtn) criarBtn.addEventListener('click', abrirModal);
       if (closeBtn) closeBtn.addEventListener('click', fecharModal);
       if (cancelarBtn) cancelarBtn.addEventListener('click', fecharModal);
       if (overlay) {
         overlay.addEventListener('click', function (event) {
           if (event.target === overlay) fecharModal();
+        });
+      }
+
+      if (ingressarBtn) ingressarBtn.addEventListener('click', abrirModalIngressar);
+      if (ingressarCloseBtn) ingressarCloseBtn.addEventListener('click', fecharModalIngressar);
+      if (ingressarCancelarBtn) ingressarCancelarBtn.addEventListener('click', fecharModalIngressar);
+      if (ingressarOverlay) {
+        ingressarOverlay.addEventListener('click', function (event) {
+          if (event.target === ingressarOverlay) fecharModalIngressar();
         });
       }
 
@@ -178,7 +235,7 @@
               escapeHtml(espaco.codigo) +
             '</span>' +
           '</div>' +
-          '<a href="dashboard.html" class="btn btn-primary btn-block card-space__cta">' +
+          '<a href="dashboard.html?espaco_id=' + espaco.id + '" class="btn btn-primary btn-block card-space__cta">' +
             'Abrir console' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>' +
           '</a>';
@@ -235,6 +292,34 @@
 
           showToast('Sucesso', 'Espaço "' + nome + '" criado com sucesso!', 'success');
           fecharModal();
+          carregarEspacos();
+        });
+      }
+
+      if (ingressarForm) {
+        ingressarForm.addEventListener('submit', async function (event) {
+          event.preventDefault();
+
+          var codigo = document.getElementById('ingressarCodigo').value.trim();
+          var senha = document.getElementById('ingressarSenha').value;
+
+          if (!codigo) {
+            showToast('Atenção', 'Informe o código de convite.', 'error');
+            return;
+          }
+
+          var resultado = await supabaseClient.rpc('ingressar_espaco', {
+            p_codigo: codigo,
+            p_senha: senha || null
+          });
+
+          if (resultado.error) {
+            showToast('Erro', resultado.error.message, 'error');
+            return;
+          }
+
+          showToast('Sucesso', 'Você agora faz parte de "' + resultado.data.nome + '"!', 'success');
+          fecharModalIngressar();
           carregarEspacos();
         });
       }

@@ -112,27 +112,25 @@
           <span class="eyebrow">// CONFIGURAÇÕES</span>
           <h1>
             Configurações do espaço
-            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="title-crown"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="title-crown" id="configCoroa" style="display:none;"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
           </h1>
-          <p>Como dono, você pode editar o nome, a descrição e a senha de acesso.</p>
+          <p id="configSubtitulo">Carregando dados do espaço...</p>
         </div>
 
-        <!-- Formulário apenas ilustrativo: nenhum dado é salvo por
-             enquanto (mesmo padrão de "Em desenvolvimento" usado nos
-             demais links/botões ainda não implementados). -->
-        <div style="max-width: 620px; margin-inline: auto;">
+        <!-- Conteúdo só aparece depois que os dados reais do espaço carregarem -->
+        <div style="max-width: 620px; margin-inline: auto; display:none;" id="configConteudo">
           <div class="card">
             <form id="spaceForm">
               <div class="form-group">
                 <label class="form-label" for="spaceNome">Nome</label>
-                <input class="form-input" type="text" id="spaceNome" value="Laboratório">
+                <input class="form-input" type="text" id="spaceNome" maxlength="80" required>
               </div>
 
               <div class="form-group" style="margin-bottom: var(--space-2);">
                 <label class="form-label" for="spaceDescricao">Descrição</label>
-                <textarea class="form-textarea" id="spaceDescricao" rows="3" maxlength="200">Espaço de demonstração.</textarea>
+                <textarea class="form-textarea" id="spaceDescricao" rows="3" maxlength="200"></textarea>
               </div>
-              <div class="form-textarea-counter" id="spaceDescricaoCounter" style="margin-bottom: var(--space-2);">46/200</div>
+              <div class="form-textarea-counter" id="spaceDescricaoCounter" style="margin-bottom: var(--space-2);">0/200</div>
 
               <!-- Acesso ao espaço -->
               <div class="settings-subcard">
@@ -140,12 +138,12 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                   <h4>Acesso ao espaço</h4>
                 </div>
-                <p class="settings-subcard__desc">O código é gerado automaticamente e não pode ser alterado. Compartilhe a senha apenas com pessoas de confiança.</p>
+                <p class="settings-subcard__desc">O código é gerado automaticamente e não pode ser alterado. Compartilhe o código (e a senha, se houver) só com pessoas de confiança — é isso que alguém precisa pra ingressar neste espaço.</p>
 
                 <div class="form-group">
                   <label class="form-label" for="spaceCodigo">Código de convite</label>
                   <div class="input-group">
-                    <input class="form-input" type="text" id="spaceCodigo" value="4429AD" readonly style="font-family: var(--font-mono); color: var(--color-text-secondary);">
+                    <input class="form-input" type="text" id="spaceCodigo" readonly style="font-family: var(--font-mono); color: var(--color-text-secondary);">
                     <button type="button" class="btn btn-outline" id="copyCodeBtn">Copiar</button>
                   </div>
                 </div>
@@ -158,12 +156,12 @@
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                   </div>
-                  <span class="form-hint">4-32 caracteres. A senha atual não é exibida por segurança — informe uma nova para trocá-la.</span>
+                  <span class="form-hint" id="spaceSenhaHint">4-32 caracteres. Informe uma senha pra exigi-la de quem for ingressar.</span>
                 </div>
               </div>
 
               <div class="settings-card__foot">
-                <button type="button" class="btn btn-primary" data-feature-toast>
+                <button type="submit" class="btn btn-primary" id="salvarEspacoBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                   Salvar alterações
                 </button>
@@ -171,10 +169,6 @@
             </form>
           </div>
         </div>
-
-        <p class="text-muted" style="margin-top: var(--space-5); font-size: .8125rem; max-width: 620px; margin-inline: auto;">
-          Esta tela é apenas ilustrativa. Salvar alterações, copiar o código e gerar uma nova senha ainda não estão conectados ao backend.
-        </p>
       </main>
     </div>
   </div>
@@ -187,19 +181,67 @@
   <script src="js/script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Contador de caracteres da descrição
-      var descricao = document.getElementById('spaceDescricao');
-      var counter = document.getElementById('spaceDescricaoCounter');
-      if (descricao && counter) {
-        var max = descricao.getAttribute('maxlength');
-        var updateCounter = function () {
-          counter.textContent = descricao.value.length + '/' + max;
-        };
-        updateCounter();
-        descricao.addEventListener('input', updateCounter);
+      var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
+      var subtitulo = document.getElementById('configSubtitulo');
+      var conteudo = document.getElementById('configConteudo');
+      var coroa = document.getElementById('configCoroa');
+
+      if (!espacoId) {
+        showToast('Atenção', 'Nenhum espaço selecionado. Escolha um em "Meus espaços".', 'error');
+        setTimeout(function () { window.location.href = 'espacos.html'; }, 1500);
+        return;
       }
 
-      // Mostrar/ocultar senha
+      var nomeInput = document.getElementById('spaceNome');
+      var descricao = document.getElementById('spaceDescricao');
+      var counter = document.getElementById('spaceDescricaoCounter');
+      var codigoInput = document.getElementById('spaceCodigo');
+      var senhaHint = document.getElementById('spaceSenhaHint');
+      var ehDono = false;
+
+      function carregarEspaco() {
+        supabaseClient.rpc('detalhes_espaco', { p_espaco_id: espacoId }).then(function (resultado) {
+          if (resultado.error) {
+            showToast('Erro', 'Não foi possível carregar este espaço.', 'error');
+            setTimeout(function () { window.location.href = 'espacos.html'; }, 1500);
+            return;
+          }
+
+          var dados = resultado.data;
+          ehDono = dados.cargo === 'Dono';
+
+          nomeInput.value = dados.nome || '';
+          descricao.value = dados.descricao || '';
+          codigoInput.value = dados.codigo || '';
+          counter.textContent = descricao.value.length + '/200';
+          senhaHint.textContent = dados.tem_senha
+            ? 'Este espaço já tem uma senha definida. Informe uma nova pra trocá-la, ou deixe em branco pra manter.'
+            : 'Este espaço ainda não tem senha. Defina uma pra exigi-la de quem for ingressar.';
+
+          subtitulo.textContent = ehDono
+            ? 'Como dono, você pode editar o nome, a descrição e a senha de acesso.'
+            : 'Você é ' + dados.cargo + ' neste espaço — só o dono pode alterar essas configurações.';
+
+          if (ehDono) {
+            coroa.style.display = '';
+          }
+
+          conteudo.style.display = '';
+
+          // Membros que não são donos podem ver, mas não salvar.
+          document.getElementById('salvarEspacoBtn').disabled = !ehDono;
+          document.getElementById('spaceSenha').disabled = !ehDono;
+        });
+      }
+
+      carregarEspaco();
+
+      if (descricao && counter) {
+        descricao.addEventListener('input', function () {
+          counter.textContent = descricao.value.length + '/200';
+        });
+      }
+
       var senhaInput = document.getElementById('spaceSenha');
       var toggleBtn = document.getElementById('toggleSenhaBtn');
       if (senhaInput && toggleBtn) {
@@ -210,15 +252,49 @@
         });
       }
 
-      // Copiar código de convite
       var copyBtn = document.getElementById('copyCodeBtn');
-      var codigoInput = document.getElementById('spaceCodigo');
-      if (copyBtn && codigoInput && typeof showToast === 'function') {
+      if (copyBtn && codigoInput) {
         copyBtn.addEventListener('click', function () {
           if (navigator.clipboard) {
             navigator.clipboard.writeText(codigoInput.value).catch(function () {});
           }
           showToast('Copiado', 'Código de convite copiado para a área de transferência.');
+        });
+      }
+
+      var form = document.getElementById('spaceForm');
+      if (form) {
+        form.addEventListener('submit', async function (event) {
+          event.preventDefault();
+          if (!ehDono) return;
+
+          var nome = nomeInput.value.trim();
+          if (!nome) {
+            showToast('Atenção', 'O nome do espaço não pode ficar em branco.', 'error');
+            return;
+          }
+
+          var novaSenha = senhaInput.value;
+          if (novaSenha && (novaSenha.length < 4 || novaSenha.length > 32)) {
+            showToast('Atenção', 'A senha precisa ter entre 4 e 32 caracteres.', 'error');
+            return;
+          }
+
+          var resultado = await supabaseClient.rpc('atualizar_espaco', {
+            p_espaco_id: espacoId,
+            p_nome: nome,
+            p_descricao: descricao.value.trim() || null,
+            p_nova_senha: novaSenha || null
+          });
+
+          if (resultado.error) {
+            showToast('Erro', resultado.error.message, 'error');
+            return;
+          }
+
+          showToast('Sucesso', 'Configurações salvas com sucesso!', 'success');
+          senhaInput.value = '';
+          carregarEspaco();
         });
       }
     });

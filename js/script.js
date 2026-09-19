@@ -309,6 +309,26 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =======================================================================
+     5.1. CONTEXTO DE ESPAÇO — mantém o ?espaco_id= ao navegar pela sidebar
+     -------------------------------------------------------------------------
+     Sem isso, ir de "Painel" pra "Configurações" pelo menu lateral perderia
+     de vista qual espaço está aberto no momento.
+     ======================================================================= */
+  var sidebarNav = document.querySelector('.sidebar__nav');
+  if (sidebarNav) {
+    var parametrosAtuais = new URLSearchParams(window.location.search);
+    var espacoIdAtual = parametrosAtuais.get('espaco_id');
+
+    if (espacoIdAtual) {
+      sidebarNav.querySelectorAll('a.sidebar__link').forEach(function (link) {
+        var destino = new URL(link.href);
+        destino.searchParams.set('espaco_id', espacoIdAtual);
+        link.href = destino.toString();
+      });
+    }
+  }
+
+  /* =======================================================================
      6. LINKS DA SIDEBAR AINDA NÃO IMPLEMENTADOS - AVISO DE "EM DESENVOLVIMENTO"
      ======================================================================= */
   document.querySelectorAll('[data-feature-toast]').forEach(function (link) {

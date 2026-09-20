@@ -75,12 +75,19 @@
             Monitore impressoras em tempo real, organize filas de trabalho e mantenha
             toda a sua oficina sob controle em um único painel, do cadastro ao alerta de falha.
           </p>
-          <div class="hero__actions">
+          <div class="hero__actions" id="heroAuthButtons">
             <a href="cadastro.html" class="btn btn-primary">
               Criar conta grátis
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
             </a>
             <a href="login.html" class="btn btn-outline">Já tenho conta</a>
+          </div>
+
+          <div class="hero__actions" id="heroAppButton" style="display:none;">
+            <a href="espacos.html" class="btn btn-primary">
+              Seu ambiente
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+            </a>
           </div>
         </div>
 
@@ -100,12 +107,12 @@
 
     <div>
       <div class="stats-bar__value" id="espacos">0</div>
-      <div class="stats-bar__label">Espaços cadastrados</div>
+      <div class="stats-bar__label">Espaços ativos</div>
     </div>
 
     <div>
       <div class="stats-bar__value" id="impressoras">0</div>
-      <div class="stats-bar__label">Impressoras</div>
+      <div class="stats-bar__label">Impressoras cadastradas</div>
     </div>
 
     <div>
@@ -233,12 +240,15 @@
     document.addEventListener('DOMContentLoaded', function () {
       var authButtons = document.getElementById('navAuthButtons');
       var avatarWrap = document.getElementById('navAvatarWrap');
-      if (!authButtons || !avatarWrap) return;
+      var heroAuthButtons = document.getElementById('heroAuthButtons');
+      var heroAppButton = document.getElementById('heroAppButton');
 
       supabaseClient.auth.getSession().then(function (resultado) {
         if (resultado.data.session) {
-          authButtons.style.display = 'none';
-          avatarWrap.style.display = '';
+          if (authButtons) authButtons.style.display = 'none';
+          if (avatarWrap) avatarWrap.style.display = '';
+          if (heroAuthButtons) heroAuthButtons.style.display = 'none';
+          if (heroAppButton) heroAppButton.style.display = '';
         }
       });
     });

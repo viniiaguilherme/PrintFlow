@@ -195,6 +195,7 @@
       var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
       var tbody = document.getElementById('userTableBody');
       var searchInput = document.getElementById('userSearch');
+      var meuUsuarioId = null;
 
       function escapeHtml(texto) {
         var div = document.createElement('div');
@@ -222,12 +223,17 @@
           return;
         }
 
+        var souDono = membros.some(function (m) {
+          return m.usuario_id === meuUsuarioId && m.cargo === 'Dono';
+        });
+
         membros.forEach(function (membro) {
           var tr = document.createElement('tr');
           tr.dataset.name = (membro.nome + ' ' + membro.email).toLowerCase();
 
           var iniciais = calcularIniciais(membro.nome);
           var ativo = membro.status === 'Ativo';
+          var podeRemover = souDono && membro.usuario_id !== meuUsuarioId;
 
           tr.innerHTML =
             '<td><div style="display:flex; align-items:center; gap: var(--space-3);">' +
@@ -245,7 +251,18 @@
               '<button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' +
               '</button>' +
+              (podeRemover
+                ? '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-membro-btn" aria-label="Remover usuário" style="margin-left:6px;">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>' +
+                  '</button>'
+                : '') +
             '</td>';
+
+          if (podeRemover) {
+            var removerBtn = tr.querySelector('.remover-membro-btn');
+            removerBtn.usuarioId = membro.usuario_id;
+            removerBtn.usuarioNome = membro.nome;
+          }
 
           tbody.appendChild(tr);
         });
@@ -261,8 +278,13 @@
         });
       }
 
-      function carregarMembros() {
+      async function carregarMembros() {
         if (!espacoId) return;
+
+        if (!meuUsuarioId) {
+          var resultadoUsuario = await supabaseClient.auth.getUser();
+          meuUsuarioId = resultadoUsuario.data.user ? resultadoUsuario.data.user.id : null;
+        }
 
         supabaseClient.rpc('membros_espaco', { p_espaco_id: espacoId }).then(function (resultado) {
           if (resultado.error) {
@@ -274,6 +296,29 @@
       }
 
       carregarMembros();
+
+      // Remover membro — delegado no tbody, já que as linhas são recriadas
+      // a cada carregarMembros().
+      tbody.addEventListener('click', async function (event) {
+        var btn = event.target.closest('.remover-membro-btn');
+        if (!btn) return;
+
+        var confirmar = window.confirm('Remover "' + btn.usuarioNome + '" deste espaço?');
+        if (!confirmar) return;
+
+        var resultado = await supabaseClient.rpc('remover_membro_espaco', {
+          p_espaco_id: espacoId,
+          p_usuario_id: btn.usuarioId
+        });
+
+        if (resultado.error) {
+          showToast('Erro', resultado.error.message, 'error');
+          return;
+        }
+
+        showToast('Membro removido', '"' + btn.usuarioNome + '" não faz mais parte deste espaço.');
+        carregarMembros();
+      });
 
       // Busca por nome/e-mail — filtra as linhas já carregadas.
       if (searchInput) {

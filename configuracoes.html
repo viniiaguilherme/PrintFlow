@@ -152,7 +152,7 @@
                   <label class="form-label" for="spaceSenha">Nova senha do espaço</label>
                   <div class="input-group">
                     <input class="form-input" type="password" id="spaceSenha" placeholder="Deixe em branco para manter a atual">
-                    <button type="button" class="btn-icon" id="toggleSenhaBtn" aria-label="Mostrar senha">
+                    <button type="button" class="btn-icon" data-toggle-senha="spaceSenha" aria-label="Mostrar senha">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                   </div>
@@ -197,6 +197,7 @@
       var counter = document.getElementById('spaceDescricaoCounter');
       var codigoInput = document.getElementById('spaceCodigo');
       var senhaHint = document.getElementById('spaceSenhaHint');
+      var senhaInput = document.getElementById('spaceSenha');
       var ehDono = false;
 
       function carregarEspaco() {
@@ -239,16 +240,6 @@
       if (descricao && counter) {
         descricao.addEventListener('input', function () {
           counter.textContent = descricao.value.length + '/200';
-        });
-      }
-
-      var senhaInput = document.getElementById('spaceSenha');
-      var toggleBtn = document.getElementById('toggleSenhaBtn');
-      if (senhaInput && toggleBtn) {
-        toggleBtn.addEventListener('click', function () {
-          var isPassword = senhaInput.type === 'password';
-          senhaInput.type = isPassword ? 'text' : 'password';
-          toggleBtn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
         });
       }
 

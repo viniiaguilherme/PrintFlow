@@ -329,6 +329,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =======================================================================
+     5.2. MOSTRAR/OCULTAR SENHA
+     -------------------------------------------------------------------------
+     Qualquer botão com [data-toggle-senha="idDoCampo"] vira um alternador
+     de visibilidade pra aquele campo de senha. Reaproveitável em qualquer
+     página, sem precisar repetir esse JS toda vez.
+     ======================================================================= */
+  document.querySelectorAll('[data-toggle-senha]').forEach(function (botao) {
+    var campo = document.getElementById(botao.getAttribute('data-toggle-senha'));
+    if (!campo) return;
+
+    botao.addEventListener('click', function () {
+      var estaEscondida = campo.type === 'password';
+      campo.type = estaEscondida ? 'text' : 'password';
+      botao.setAttribute('aria-label', estaEscondida ? 'Ocultar senha' : 'Mostrar senha');
+    });
+  });
+
+  /* =======================================================================
      6. LINKS DA SIDEBAR AINDA NÃO IMPLEMENTADOS - AVISO DE "EM DESENVOLVIMENTO"
      ======================================================================= */
   document.querySelectorAll('[data-feature-toast]').forEach(function (link) {

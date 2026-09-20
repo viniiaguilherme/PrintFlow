@@ -395,52 +395,65 @@ document.addEventListener('DOMContentLoaded', function () {
   /* =======================================================================
      11. ESTATÍSTICAS DO ESPAÇO (dashboard)
      -------------------------------------------------------------------------
-     Substitui o antigo fetch('buscar_estatisticas_espaco.php?espaco_id=...')
-     por uma chamada RPC à função estatisticas_espaco(p_espaco_id).
+     Lê o espaço atual pela URL (?espaco_id=), a mesma que a seção 5.1
+     preserva ao navegar pela sidebar, e busca as estatísticas REAIS desse
+     espaço específico via RPC — não mais um id fixo.
      ======================================================================= */
   if (document.getElementById("estatisticaImpressoras")) {
-    var espacoId = 1;
+    var espacoIdDashboard = new URLSearchParams(window.location.search).get('espaco_id');
 
-    supabaseClient.rpc('estatisticas_espaco', { p_espaco_id: espacoId }).then(function (resultado) {
-      if (resultado.error) {
-        console.error("Erro ao buscar estatísticas do espaço:", resultado.error);
-        return;
-      }
+    if (!espacoIdDashboard) {
+      showToast('Atenção', 'Nenhum espaço selecionado. Escolha um em "Meus espaços".', 'error');
+      setTimeout(function () { window.location.href = 'espacos.html'; }, 1500);
+    } else {
+      supabaseClient.rpc('estatisticas_espaco', { p_espaco_id: espacoIdDashboard }).then(function (resultado) {
+        if (resultado.error) {
+          console.error("Erro ao buscar estatísticas do espaço:", resultado.error);
+          return;
+        }
 
-      var dados = resultado.data;
+        var dados = resultado.data;
 
-      if (!dados) {
-        console.error("Espaço não encontrado.");
-        return;
-      }
+        if (!dados) {
+          console.error("Espaço não encontrado.");
+          return;
+        }
 
-      document.getElementById("estatisticaImpressoras").textContent = dados.impressoras;
-      document.getElementById("estatisticaFilas").textContent = dados.filas;
-      document.getElementById("estatisticaAlertas").textContent = dados.alertas;
-      document.getElementById("estatisticaUsuarios").textContent = dados.usuarios;
-    });
+        document.getElementById("estatisticaImpressoras").textContent = dados.impressoras;
+        document.getElementById("estatisticaFilas").textContent = dados.filas;
+        document.getElementById("estatisticaAlertas").textContent = dados.alertas;
+        document.getElementById("estatisticaUsuarios").textContent = dados.usuarios;
+      });
+    }
   }
 
   /* =======================================================================
      12. ESTATÍSTICAS DE USUÁRIOS (usuarios.html)
      -------------------------------------------------------------------------
-     Substitui o antigo fetch('buscar_estatisticas_usuarios.php') por uma
-     chamada RPC à função estatisticas_usuarios().
+     Conta só os membros do espaço atual (via ?espaco_id=) — antes contava
+     TODOS os usuários cadastrados no sistema, de qualquer espaço.
      ======================================================================= */
   if (document.getElementById("estatisticaMembros")) {
-    supabaseClient.rpc('estatisticas_usuarios').then(function (resultado) {
-      if (resultado.error) {
-        console.error("Erro ao buscar estatísticas de usuários:", resultado.error);
-        return;
-      }
+    var espacoIdUsuarios = new URLSearchParams(window.location.search).get('espaco_id');
 
-      var dados = resultado.data;
+    if (!espacoIdUsuarios) {
+      showToast('Atenção', 'Nenhum espaço selecionado. Escolha um em "Meus espaços".', 'error');
+      setTimeout(function () { window.location.href = 'espacos.html'; }, 1500);
+    } else {
+      supabaseClient.rpc('estatisticas_usuarios', { p_espaco_id: espacoIdUsuarios }).then(function (resultado) {
+        if (resultado.error) {
+          console.error("Erro ao buscar estatísticas de usuários:", resultado.error);
+          return;
+        }
 
-      document.getElementById("estatisticaMembros").textContent = dados.total_membros;
-      document.getElementById("estatisticaAtivos").textContent = dados.ativos_agora;
-      document.getElementById("estatisticaImpressoesUsuarios").textContent = dados.total_impressoes;
-      document.getElementById("estatisticaFilamentoUsuarios").textContent = dados.filamento_usado_kg + " kg";
-    });
+        var dados = resultado.data;
+
+        document.getElementById("estatisticaMembros").textContent = dados.total_membros;
+        document.getElementById("estatisticaAtivos").textContent = dados.ativos_agora;
+        document.getElementById("estatisticaImpressoesUsuarios").textContent = dados.total_impressoes;
+        document.getElementById("estatisticaFilamentoUsuarios").textContent = dados.filamento_usado_kg + " kg";
+      });
+    }
   }
 
 });

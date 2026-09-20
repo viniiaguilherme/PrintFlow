@@ -219,6 +219,8 @@
       function criarCardEspaco(espaco) {
         var artigo = document.createElement('article');
         artigo.className = 'card card-hover card-space';
+        var podeSair = espaco.cargo !== 'Dono';
+
         artigo.innerHTML =
           '<div class="card-feature__icon">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>' +
@@ -235,10 +237,27 @@
               escapeHtml(espaco.codigo) +
             '</span>' +
           '</div>' +
-          '<a href="dashboard.html?espaco_id=' + espaco.id + '" class="btn btn-primary btn-block card-space__cta">' +
-            'Abrir console' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>' +
-          '</a>';
+          '<div class="card-space__cta" style="display:flex; gap: var(--space-3);">' +
+            '<a href="dashboard.html?espaco_id=' + espaco.id + '" class="btn btn-primary btn-block" style="flex:1;">' +
+              'Abrir console' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>' +
+            '</a>' +
+            (podeSair
+              ? '<button type="button" class="btn-icon btn-icon--danger sair-espaco-btn" aria-label="Sair do espaço">' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>' +
+                '</button>'
+              : '') +
+          '</div>';
+
+        // Guarda os dados do espaço como propriedades do elemento (não como
+        // atributo HTML), pra não ter risco de quebrar o HTML se o nome do
+        // espaço tiver aspas ou outros caracteres especiais.
+        if (podeSair) {
+          var sairBtn = artigo.querySelector('.sair-espaco-btn');
+          sairBtn.espacoId = espaco.id;
+          sairBtn.espacoNome = espaco.nome;
+        }
+
         return artigo;
       }
 
@@ -267,6 +286,26 @@
       }
 
       carregarEspacos();
+
+      // Sair de um espaço — delegado no grid, já que os cards são recriados
+      // a cada carregarEspacos().
+      grid.addEventListener('click', async function (event) {
+        var btn = event.target.closest('.sair-espaco-btn');
+        if (!btn) return;
+
+        var confirmar = window.confirm('Sair do espaço "' + btn.espacoNome + '"? Você vai perder o acesso a ele.');
+        if (!confirmar) return;
+
+        var resultado = await supabaseClient.rpc('sair_espaco', { p_espaco_id: btn.espacoId });
+
+        if (resultado.error) {
+          showToast('Erro', resultado.error.message, 'error');
+          return;
+        }
+
+        showToast('Você saiu do espaço', 'Não faz mais parte de "' + btn.espacoNome + '".');
+        carregarEspacos();
+      });
 
       if (form) {
         form.addEventListener('submit', async function (event) {

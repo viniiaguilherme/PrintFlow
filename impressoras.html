@@ -69,7 +69,7 @@
       <header class="topbar">
         <div class="topbar__left">
           <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <i data-lucide="menu"></i>
           </button>
 
           <div class="topbar__search">
@@ -93,16 +93,16 @@
             <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
             <div class="dropdown__menu" id="avatarMenu">
               <a href="perfil.html" class="dropdown__item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                <i data-lucide="user"></i>
                 Perfil
               </a>
               <a href="espacos.html" class="dropdown__item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>
+                <i data-lucide="layout-grid"></i>
                 Meus espaços
               </a>
               <div class="dropdown__divider"></div>
               <button class="dropdown__item" type="button" id="logoutButton">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                <i data-lucide="log-out"></i>
                 Sair
               </button>
             </div>
@@ -122,7 +122,7 @@
             <!-- Funcionalidade ainda não implementada: por enquanto apenas
                  exibe um aviso (mesmo padrão usado nos links da sidebar). -->
             <button type="button" class="btn btn-primary" data-feature-toast>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <i data-lucide="plus"></i>
               Adicionar impressora
             </button>
           </div>
@@ -137,7 +137,7 @@
           <article class="card card-printer">
             <div class="card-printer__head">
               <div class="card-printer__icon">
-                <!--<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg> -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
               </div>
               <div>
                 <h3 class="card-printer__name">Bambu-X1</h3>
@@ -158,7 +158,7 @@
             </div>
 
             <button type="button" class="btn btn-outline-accent btn-block card-printer__add" data-feature-toast>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <i data-lucide="plus"></i>
               Adicionar filamento
             </button>
           </article>
@@ -173,6 +173,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
 </body>
 </html>

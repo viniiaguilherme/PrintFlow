@@ -32,6 +32,7 @@
    27. Acessibilidade / Preferências de movimento
    28. Fila de impressão / Usuários / Configurações
    29. Tela de Espaços
+   30. Tela de Impressoras
    ========================================================================= */
 
 /* =========================================================================
@@ -287,9 +288,10 @@ p {
   white-space: nowrap;
 }
 
-.btn svg {
-  width: 18px;
-  height: 18px;
+.btn svg,
+.btn [data-lucide] {
+  width: 1em;
+  height: 1em;
 }
 
 .btn-primary {
@@ -343,19 +345,29 @@ p {
 }
 
 .btn-icon {
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
   color: var(--color-text-secondary);
+  font-size: 1.125rem;
   flex-shrink: 0;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.btn-icon svg,
+.btn-icon [data-lucide] {
+  width: 1em;
+  height: 1em;
 }
 
 .btn-icon:hover {
   background: var(--color-surface-hover);
-  border-color: var(--color-border-strong);
   color: var(--color-text-primary);
 }
 
@@ -651,9 +663,10 @@ p {
   text-align: left;
 }
 
-.dropdown__item svg {
-  width: 16px;
-  height: 16px;
+.dropdown__item svg,
+.dropdown__item [data-lucide] {
+  width: 1em;
+  height: 1em;
 }
 
 .dropdown__item:hover {
@@ -1887,13 +1900,13 @@ p {
 }
  
 .btn-icon--sm {
-  width: 34px;
-  height: 34px;
+  font-size: 1rem;
+  padding: var(--space-1);
 }
  
 .btn-icon--danger:hover {
   color: var(--color-danger);
-  border-color: rgba(255, 93, 108, .4);
+  background: var(--color-danger-dim);
 }
  
 /* --- Badge de cargo com coroa (dono do espaço) --- */
@@ -2132,6 +2145,112 @@ p {
 
 @media (max-width: 640px) {
   .spaces-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================================
+   30. TELA DE IMPRESSORAS (impressoras.html)
+   -------------------------------------------------------------------------
+   Mesmo problema da seção 29: essas classes já existiam no HTML mas nunca
+   tinham sido definidas aqui. Sem tamanho fixo em .card-printer__icon, o
+   SVG do ícone da impressora ficava sem nenhuma restrição de tamanho e
+   renderizava enorme, esticando o card inteiro.
+   ========================================================================= */
+.printers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+.card-printer {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-printer__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.card-printer__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-dim);
+  color: var(--color-accent-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-printer__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.card-printer__name {
+  font-size: 1.0625rem;
+  color: var(--color-text-primary);
+}
+
+.card-printer__count {
+  display: block;
+  font-size: .8125rem;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+}
+
+.card-printer__filaments {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.card-printer__filaments-label {
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-1);
+}
+
+.filament-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-1);
+}
+
+.filament-tag {
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: .25rem .55rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-info-dim);
+  color: var(--color-info);
+  flex-shrink: 0;
+}
+
+.filament-name {
+  font-size: .875rem;
+  color: var(--color-text-secondary);
+}
+
+.card-printer__add {
+  margin-top: auto;
+}
+
+@media (max-width: 640px) {
+  .printers-grid {
     grid-template-columns: 1fr;
   }
 }

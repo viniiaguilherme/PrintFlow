@@ -55,7 +55,7 @@
           <div class="input-group">
             <input class="form-input" type="password" id="cadastroSenha" name="senha" placeholder="••••••••" required>
             <button type="button" class="btn-icon" data-toggle-senha="cadastroSenha" aria-label="Mostrar senha">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <i data-lucide="eye" class="icone-senha-mostrar"></i><i data-lucide="eye-off" class="icone-senha-ocultar" style="display:none;"></i>
             </button>
           </div>
         </div>
@@ -66,7 +66,7 @@
             <input class="form-input" type="password" id="cadastroConfirmarSenha" name="confirmarSenha"
               placeholder="••••••••" required>
             <button type="button" class="btn-icon" data-toggle-senha="cadastroConfirmarSenha" aria-label="Mostrar senha">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <i data-lucide="eye" class="icone-senha-mostrar"></i><i data-lucide="eye-off" class="icone-senha-ocultar" style="display:none;"></i>
             </button>
           </div>
         </div>
@@ -84,6 +84,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
 </body>
 

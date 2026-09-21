@@ -69,7 +69,7 @@
       <header class="topbar">
         <div class="topbar__left">
           <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <i data-lucide="menu"></i>
           </button>
 
           <div class="topbar__search">
@@ -89,16 +89,16 @@
             <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
             <div class="dropdown__menu" id="avatarMenu">
               <a href="perfil.html" class="dropdown__item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                <i data-lucide="user"></i>
                 Perfil
               </a>
               <a href="espacos.html" class="dropdown__item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>
+                <i data-lucide="layout-grid"></i>
                 Meus espaços
               </a>
               <div class="dropdown__divider"></div>
               <button class="dropdown__item" type="button" id="logoutButton">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                <i data-lucide="log-out"></i>
                 Sair
               </button>
             </div>
@@ -119,7 +119,7 @@
                  exibe um aviso (mesmo padrão usado nos demais links/botões
                  ainda não implementados). -->
             <button type="button" class="btn btn-primary" data-feature-toast>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+              <i data-lucide="user-plus"></i>
               Convidar usuário
             </button>
           </div>
@@ -189,6 +189,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -249,11 +250,11 @@
             '<td><span class="status-inline"><span class="status-dot' + (ativo ? '' : ' status-dot--idle') + '"></span>' + escapeHtml(membro.status || 'Ativo') + '</span></td>' +
             '<td>' +
               '<button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' +
+                '<i data-lucide="pencil"></i>' +
               '</button>' +
               (podeRemover
                 ? '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-membro-btn" aria-label="Remover usuário" style="margin-left:6px;">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>' +
+                    '<i data-lucide="user-x"></i>' +
                   '</button>'
                 : '') +
             '</td>';
@@ -276,6 +277,8 @@
             showToast('Em desenvolvimento', 'Esta funcionalidade estará disponível em breve.');
           });
         });
+
+        renderizarIconesLucide();
       }
 
       async function carregarMembros() {

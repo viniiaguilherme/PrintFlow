@@ -1,4 +1,23 @@
 /* =========================================================================
+   ÍCONES (LUCIDE)
+   -------------------------------------------------------------------------
+   Renderiza todo <i data-lucide="..."></i> da página como SVG de verdade.
+   Roda assim que este arquivo executa (script no fim do <body>, então o
+   HTML da página já existe nesse momento).
+
+   Páginas que montam HTML novo depois disso via JavaScript (espacos.html,
+   usuarios.html) precisam chamar renderizarIconesLucide() de novo depois
+   de inserir esse HTML nas suas próprias funções de renderização.
+   ========================================================================= */
+function renderizarIconesLucide() {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+  }
+}
+renderizarIconesLucide();
+
+
+/* =========================================================================
    PROTEÇÃO DE ROTAS
    -------------------------------------------------------------------------
    index.html, login.html e cadastro.html podem ser vistas sem sessão ativa.
@@ -73,10 +92,11 @@ function showToast(title, message, type) {
     '<div class="toast__msg">' + message + '</div>' +
     '</div>' +
     '<button class="toast__close" type="button" aria-label="Fechar">' +
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>' +
+    '<i data-lucide="x"></i>' +
     '</button>';
 
   toastStack.appendChild(toast);
+  renderizarIconesLucide();
 
   // Pequeno delay para permitir a transição de entrada
   requestAnimationFrame(function () {
@@ -343,6 +363,13 @@ document.addEventListener('DOMContentLoaded', function () {
       var estaEscondida = campo.type === 'password';
       campo.type = estaEscondida ? 'text' : 'password';
       botao.setAttribute('aria-label', estaEscondida ? 'Ocultar senha' : 'Mostrar senha');
+
+      var iconeMostrar = botao.querySelector('.icone-senha-mostrar');
+      var iconeOcultar = botao.querySelector('.icone-senha-ocultar');
+      if (iconeMostrar && iconeOcultar) {
+        iconeMostrar.style.display = estaEscondida ? 'none' : '';
+        iconeOcultar.style.display = estaEscondida ? '' : 'none';
+      }
     });
   });
 

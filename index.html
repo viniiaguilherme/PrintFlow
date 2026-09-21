@@ -41,16 +41,16 @@
           <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
           <div class="dropdown__menu" id="avatarMenu">
             <a href="perfil.html" class="dropdown__item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+              <i data-lucide="user"></i>
               Perfil
             </a>
             <a href="espacos.html" class="dropdown__item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>
+              <i data-lucide="layout-grid"></i>
               Meus espaços
             </a>
             <div class="dropdown__divider"></div>
             <button class="dropdown__item" type="button" id="logoutButton">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+              <i data-lucide="log-out"></i>
               Sair
             </button>
           </div>
@@ -78,7 +78,7 @@
           <div class="hero__actions" id="heroAuthButtons">
             <a href="cadastro.html" class="btn btn-primary">
               Criar conta grátis
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+              <i data-lucide="arrow-right"></i>
             </a>
             <a href="login.html" class="btn btn-outline">Já tenho conta</a>
           </div>
@@ -86,7 +86,7 @@
           <div class="hero__actions" id="heroAppButton" style="display:none;">
             <a href="espacos.html" class="btn btn-primary">
               Seu ambiente
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+              <i data-lucide="arrow-right"></i>
             </a>
           </div>
         </div>
@@ -166,7 +166,7 @@
 
           <article class="card card-hover card-feature">
             <div class="card-feature__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              <i data-lucide="mail"></i>
             </div>
             <h3>Alertas por e-mail</h3>
             <p>Receba um aviso automático assim que uma falha de impressão for detectada, mesmo longe da oficina.</p>
@@ -200,7 +200,7 @@
         <p class="cta__subtitle">Crie sua conta em minutos, cadastre sua primeira impressora e comece a organizar sua produção hoje mesmo.</p>
         <a href="cadastro.html" class="btn btn-primary">
           Criar conta grátis
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+          <i data-lucide="arrow-right"></i>
         </a>
       </div>
     </section>
@@ -232,6 +232,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
   <script>
     // Se já existe uma sessão ativa, troca "Entrar/Cadastrar" pelo avatar

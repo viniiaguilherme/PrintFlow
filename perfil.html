@@ -9,16 +9,15 @@
 </head>
 <body>
 
-  <div class="dashboard-layout">
-
-    <!-- Fundo escuro exibido atrás da sidebar quando aberta no mobile -->
-    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-    <aside class="sidebar" id="sidebar">
-      <a href="index.html" class="sidebar__brand">
+  <!-- =====================================================
+       NAVBAR
+       Perfil é uma configuração da conta, não de um espaço
+       específico — por isso usa o mesmo layout simples (sem
+       sidebar) que espacos.html usa, em vez do layout de dashboard.
+  ====================================================== -->
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <a href="index.html" class="brand">
         <span class="brand__mark">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
@@ -27,167 +26,110 @@
         PrintFlow
       </a>
 
-      <div class="sidebar__section-label">Controle</div>
-      <nav class="sidebar__nav">
-        <a href="dashboard.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
-          Painel
-        </a>
-        <a href="fila.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
-          Fila de Impressão
-        </a>
-        <a href="impressoras.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
-          Impressoras
-        </a>
-        <a href="usuarios.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-          Usuários
-        </a>
-        <a href="configuracoes.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          Configurações
-        </a>
-      </nav>
-
-      <div class="sidebar__footer">
-        <div class="sidebar__status">
-          <span class="status-dot"></span>
-          Sistema online
-        </div>
-        <div class="sidebar__version">v0.1.0 · PrintFlow</div>
-      </div>
-    </aside>
-
-    <!-- =====================================================
-         ÁREA PRINCIPAL (TOPBAR + CONTEÚDO)
-    ====================================================== -->
-    <div class="dashboard-content">
-
-      <!-- TOPBAR -->
-      <header class="topbar">
-        <div class="topbar__left">
-          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
-            <i data-lucide="menu"></i>
-          </button>
-
-          <div class="topbar__search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
+      <div class="navbar__actions">
+        <div class="dropdown">
+          <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+          <div class="dropdown__menu" id="avatarMenu">
+            <a href="perfil.html" class="dropdown__item">
+              <i data-lucide="user"></i>
+              Perfil
+            </a>
+            <a href="espacos.html" class="dropdown__item">
+              <i data-lucide="layout-grid"></i>
+              Meus espaços
+            </a>
+            <div class="dropdown__divider"></div>
+            <button class="dropdown__item" type="button" id="logoutButton">
+              <i data-lucide="log-out"></i>
+              Sair
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+  </header>
 
-        <div class="topbar__actions">
-          <div class="dropdown">
-            <div class="dropdown__menu" id="notifMenu">
-              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
+  <main class="spaces-main">
+    <div class="container">
+      <div class="dashboard-head" style="max-width: 620px; margin-inline: auto; display:block;">
+        <span class="eyebrow">// PERFIL</span>
+        <h1>Meu perfil</h1>
+        <p>Suas informações pessoais e a senha de acesso a esta conta.</p>
+      </div>
+
+      <div style="max-width: 620px; margin-inline: auto; display:flex; flex-direction:column; gap: var(--space-5);">
+
+        <!-- Dados pessoais -->
+        <div class="card">
+          <div style="display:flex; align-items:center; gap: var(--space-4); margin-bottom: var(--space-6);">
+            <span class="avatar" id="perfilAvatar" style="width:64px; height:64px; font-size:1.25rem;">--</span>
+            <div>
+              <div style="color: var(--color-text-primary); font-weight: 600; font-size: 1.0625rem;" id="perfilNomeExibido">Carregando...</div>
+              <div class="status-inline" style="margin-top: 4px;">
+                <span class="status-dot"></span>
+                <span id="perfilStatus">Ativo</span>
+              </div>
             </div>
           </div>
 
-          <div class="dropdown">
-            <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
-            <div class="dropdown__menu" id="avatarMenu">
-              <a href="perfil.html" class="dropdown__item">
-                <i data-lucide="user"></i>
-                Perfil
-              </a>
-              <a href="espacos.html" class="dropdown__item">
-                <i data-lucide="layout-grid"></i>
-                Meus espaços
-              </a>
-              <div class="dropdown__divider"></div>
-              <button class="dropdown__item" type="button" id="logoutButton">
-                <i data-lucide="log-out"></i>
-                Sair
+          <form id="perfilForm">
+            <div class="form-group">
+              <label class="form-label" for="perfilNome">Nome</label>
+              <input class="form-input" type="text" id="perfilNome" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">E-mail</label>
+              <input class="form-input" type="text" id="perfilEmail" value="—" readonly style="color: var(--color-text-secondary);">
+              <span class="form-hint">O e-mail é o usado no login e não pode ser alterado por aqui.</span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Membro desde</label>
+              <input class="form-input" type="text" id="perfilMembroDesde" value="—" readonly style="color: var(--color-text-secondary);">
+            </div>
+
+            <div class="settings-card__foot">
+              <button type="submit" class="btn btn-primary">
+                <i data-lucide="save"></i>
+                Salvar alterações
               </button>
             </div>
+          </form>
+        </div>
+
+        <!-- Segurança / senha -->
+        <div class="card">
+          <div class="settings-subcard__head" style="margin-bottom: var(--space-4);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            <h4>Alterar senha</h4>
           </div>
-        </div>
-      </header>
+          <p style="font-size: .8125rem; color: var(--color-text-tertiary); margin-bottom: var(--space-4);">Escolha uma nova senha para entrar na sua conta. Você continuará usando o mesmo e-mail.</p>
 
-      <!-- CONTEÚDO PRINCIPAL -->
-      <main class="dashboard-main">
-        <div class="dashboard-head" style="max-width: 620px; margin-inline: auto; display:block;">
-          <span class="eyebrow">// PERFIL</span>
-          <h1>Meu perfil</h1>
-          <p>Suas informações pessoais e a senha de acesso a esta conta.</p>
-        </div>
-
-        <div style="max-width: 620px; margin-inline: auto; display:flex; flex-direction:column; gap: var(--space-5);">
-
-          <!-- Dados pessoais -->
-          <div class="card">
-            <div style="display:flex; align-items:center; gap: var(--space-4); margin-bottom: var(--space-6);">
-              <span class="avatar" id="perfilAvatar" style="width:64px; height:64px; font-size:1.25rem;">--</span>
-              <div>
-                <div style="color: var(--color-text-primary); font-weight: 600; font-size: 1.0625rem;" id="perfilNomeExibido">Carregando...</div>
-                <div class="status-inline" style="margin-top: 4px;">
-                  <span class="status-dot"></span>
-                  <span id="perfilStatus">Ativo</span>
-                </div>
-              </div>
+          <form id="senhaForm">
+            <div class="form-group">
+              <label class="form-label" for="perfilNovaSenha">Nova senha</label>
+              <input class="form-input" type="password" id="perfilNovaSenha" placeholder="••••••••" minlength="6" required>
             </div>
 
-            <form id="perfilForm">
-              <div class="form-group">
-                <label class="form-label" for="perfilNome">Nome</label>
-                <input class="form-input" type="text" id="perfilNome" required>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">E-mail</label>
-                <input class="form-input" type="text" id="perfilEmail" value="—" readonly style="color: var(--color-text-secondary);">
-                <span class="form-hint">O e-mail é o usado no login e não pode ser alterado por aqui.</span>
-              </div>
-
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Membro desde</label>
-                <input class="form-input" type="text" id="perfilMembroDesde" value="—" readonly style="color: var(--color-text-secondary);">
-              </div>
-
-              <div class="settings-card__foot">
-                <button type="submit" class="btn btn-primary">
-                  <i data-lucide="save"></i>
-                  Salvar alterações
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Segurança / senha -->
-          <div class="card">
-            <div class="settings-subcard__head" style="margin-bottom: var(--space-4);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-              <h4>Alterar senha</h4>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="perfilConfirmarSenha">Confirmar nova senha</label>
+              <input class="form-input" type="password" id="perfilConfirmarSenha" placeholder="••••••••" minlength="6" required>
+              <span class="form-hint">Mínimo de 6 caracteres.</span>
             </div>
-            <p style="font-size: .8125rem; color: var(--color-text-tertiary); margin-bottom: var(--space-4);">Escolha uma nova senha para entrar na sua conta. Você continuará usando o mesmo e-mail.</p>
 
-            <form id="senhaForm">
-              <div class="form-group">
-                <label class="form-label" for="perfilNovaSenha">Nova senha</label>
-                <input class="form-input" type="password" id="perfilNovaSenha" placeholder="••••••••" minlength="6" required>
-              </div>
-
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" for="perfilConfirmarSenha">Confirmar nova senha</label>
-                <input class="form-input" type="password" id="perfilConfirmarSenha" placeholder="••••••••" minlength="6" required>
-                <span class="form-hint">Mínimo de 6 caracteres.</span>
-              </div>
-
-              <div class="settings-card__foot">
-                <button type="submit" class="btn btn-primary">
-                  <i data-lucide="save"></i>
-                  Salvar nova senha
-                </button>
-              </div>
-            </form>
-          </div>
-
+            <div class="settings-card__foot">
+              <button type="submit" class="btn btn-primary">
+                <i data-lucide="save"></i>
+                Salvar nova senha
+              </button>
+            </div>
+          </form>
         </div>
-      </main>
+
+      </div>
     </div>
-  </div>
+  </main>
 
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>

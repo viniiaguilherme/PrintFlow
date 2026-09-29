@@ -75,7 +75,7 @@
             <span class="space-back-btn__label">Espaço</span>
             <span class="space-back-btn__name" id="voltarEspacoNome">Carregando...</span>
           </a>
-          
+
           <div class="topbar__search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
@@ -129,9 +129,7 @@
           </div>
         </div>
 
-        <!-- Cards de resumo: os valores começam em 0 e são preenchidos
-             via JS a partir da função RPC estatisticas_usuarios() no
-             Supabase (mesmo padrão usado na home e no dashboard). -->
+        <!-- Cards de resumo: preenchidos via RPC estatisticas_usuarios() -->
         <div class="stat-simple-grid">
           <div class="stat-simple">
             <div class="stat-simple__label">Total de membros</div>
@@ -159,8 +157,7 @@
           </div>
         </div>
 
-        <!-- Tabela de usuários: dados de exemplo apenas para ilustrar o layout —
-             a listagem real virá do backend em uma próxima entrega. -->
+        <!-- Tabela de membros (carregada do Supabase) -->
         <div class="table-wrap">
           <table class="table" id="userTable">
             <thead>
@@ -185,6 +182,37 @@
 
         </p>
       </main>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL — ALTERAR CARGO (só donos conseguem abrir)
+  ====================================================== -->
+  <div class="modal-overlay" id="cargoOverlay">
+    <div class="modal">
+      <div class="modal__head">
+        <h3 class="modal__title">Alterar cargo</h3>
+        <button class="modal__close" type="button" id="cargoClose" aria-label="Fechar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal__body">
+        <p id="cargoDescricao" style="margin-bottom: var(--space-4);"></p>
+        <form id="cargoForm">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="cargoSelect">Cargo</label>
+            <select class="form-select" id="cargoSelect">
+              <option value="Dono">Dono</option>
+              <option value="Operador">Operador</option>
+              <option value="Maker">Maker</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn-outline" id="cargoCancelar">Cancelar</button>
+        <button type="submit" form="cargoForm" class="btn btn-primary">Salvar</button>
+      </div>
     </div>
   </div>
 
@@ -217,6 +245,9 @@
         if (cargo === 'Operador') {
           return '<span class="badge badge-info">Operador</span>';
         }
+        if (cargo === 'Maker') {
+          return '<span class="badge badge-success">Maker</span>';
+        }
         return '<span class="badge badge-neutral">' + escapeHtml(cargo) + '</span>';
       }
 
@@ -238,7 +269,8 @@
 
           var iniciais = calcularIniciais(membro.nome);
           var ativo = membro.status === 'Ativo';
-          var podeRemover = souDono && membro.usuario_id !== meuUsuarioId;
+          // Dono pode editar cargo e remover qualquer outro membro (nunca a si mesmo)
+          var podeGerenciar = souDono && membro.usuario_id !== meuUsuarioId;
 
           tr.innerHTML =
             '<td><div style="display:flex; align-items:center; gap: var(--space-3);">' +
@@ -253,33 +285,28 @@
             '<td>—</td>' +
             '<td><span class="status-inline"><span class="status-dot' + (ativo ? '' : ' status-dot--idle') + '"></span>' + escapeHtml(membro.status || 'Ativo') + '</span></td>' +
             '<td>' +
-              '<button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">' +
-                '<i data-lucide="pencil"></i>' +
-              '</button>' +
-              (podeRemover
-                ? '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-membro-btn" aria-label="Remover usuário" style="margin-left:6px;">' +
+              (podeGerenciar
+                ? '<button type="button" class="btn-icon btn-icon--sm editar-cargo-btn" aria-label="Alterar cargo">' +
+                    '<i data-lucide="pencil"></i>' +
+                  '</button>' +
+                  '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-membro-btn" aria-label="Remover usuário" style="margin-left:6px;">' +
                     '<i data-lucide="user-x"></i>' +
                   '</button>'
                 : '') +
             '</td>';
 
-          if (podeRemover) {
+          if (podeGerenciar) {
             var removerBtn = tr.querySelector('.remover-membro-btn');
             removerBtn.usuarioId = membro.usuario_id;
             removerBtn.usuarioNome = membro.nome;
+
+            var editarBtn = tr.querySelector('.editar-cargo-btn');
+            editarBtn.usuarioId = membro.usuario_id;
+            editarBtn.usuarioNome = membro.nome;
+            editarBtn.cargoAtual = membro.cargo;
           }
 
           tbody.appendChild(tr);
-        });
-
-        // O listener global de [data-feature-toast] (script.js) já rodou no
-        // carregamento da página, antes dessas linhas existirem — reaplica
-        // aqui só nos botões recém-criados.
-        tbody.querySelectorAll('[data-feature-toast]').forEach(function (btn) {
-          btn.addEventListener('click', function (event) {
-            event.preventDefault();
-            showToast('Em desenvolvimento', 'Esta funcionalidade estará disponível em breve.');
-          });
         });
 
         renderizarIconesLucide();
@@ -324,6 +351,57 @@
         }
 
         showToast('Membro removido', '"' + btn.usuarioNome + '" não faz mais parte deste espaço.');
+        carregarMembros();
+      });
+
+      /* ---------- Alterar cargo (modal aberto pelo lápis da linha) ---------- */
+      var cargoOverlay = document.getElementById('cargoOverlay');
+      var cargoForm = document.getElementById('cargoForm');
+      var cargoSelect = document.getElementById('cargoSelect');
+      var cargoDescricao = document.getElementById('cargoDescricao');
+      var membroEmEdicao = null;
+
+      function fecharModalCargo() {
+        cargoOverlay.classList.remove('is-open');
+        membroEmEdicao = null;
+      }
+
+      tbody.addEventListener('click', function (event) {
+        var btn = event.target.closest('.editar-cargo-btn');
+        if (!btn) return;
+
+        membroEmEdicao = { id: btn.usuarioId, nome: btn.usuarioNome };
+        cargoDescricao.textContent = 'Escolha o novo cargo de ' + btn.usuarioNome + ' neste espaço.';
+        cargoSelect.value = btn.cargoAtual;
+        cargoOverlay.classList.add('is-open');
+      });
+
+      document.getElementById('cargoClose').addEventListener('click', fecharModalCargo);
+      document.getElementById('cargoCancelar').addEventListener('click', fecharModalCargo);
+      cargoOverlay.addEventListener('click', function (event) {
+        if (event.target === cargoOverlay) fecharModalCargo();
+      });
+
+      cargoForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        if (!membroEmEdicao) return;
+
+        var novoCargo = cargoSelect.value;
+        var nome = membroEmEdicao.nome;
+
+        var resultado = await supabaseClient.rpc('alterar_cargo_membro', {
+          p_espaco_id: espacoId,
+          p_usuario_id: membroEmEdicao.id,
+          p_cargo: novoCargo
+        });
+
+        if (resultado.error) {
+          showToast('Erro', resultado.error.message, 'error');
+          return;
+        }
+
+        showToast('Cargo atualizado', nome + ' agora é ' + novoCargo + '.', 'success');
+        fecharModalCargo();
         carregarMembros();
       });
 

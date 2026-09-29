@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var modais = document.createElement('div');
   modais.innerHTML =
     '<div class="modal-overlay" id="impressoraOverlay"><div class="modal">' +
-      '<div class="modal__head"><h3 class="modal__title">Adicionar impressora</h3>' +
+      '<div class="modal__head"><h3 class="modal__title" id="impressoraTitulo">Adicionar impressora</h3>' +
       '<button class="modal__close" type="button" data-fechar="impressoraOverlay" aria-label="Fechar"><i data-lucide="x"></i></button></div>' +
       '<div class="modal__body"><form id="impressoraForm">' +
         '<div class="form-group" style="margin-bottom:0;">' +
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '</div></form></div>' +
       '<div class="modal__actions">' +
         '<button type="button" class="btn btn-outline" data-fechar="impressoraOverlay">Cancelar</button>' +
-        '<button type="submit" form="impressoraForm" class="btn btn-primary">Adicionar</button>' +
+        '<button type="submit" form="impressoraForm" class="btn btn-primary" id="impressoraSubmit">Adicionar</button>' +
       '</div></div></div>' +
 
     '<div class="modal-overlay" id="filamentoOverlay"><div class="modal">' +
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '</div></form></div>' +
       '<div class="modal__actions">' +
         '<button type="button" class="btn btn-outline" data-fechar="filamentoOverlay">Cancelar</button>' +
-        '<button type="submit" form="filamentoForm" class="btn btn-primary">Adicionar</button>' +
+        '<button type="submit" form="filamentoForm" class="btn btn-primary" id="filamentoSubmit">Adicionar</button>' +
       '</div></div></div>';
   document.body.appendChild(modais);
   renderizarIconesLucide();
@@ -66,10 +66,22 @@ document.addEventListener('DOMContentLoaded', function () {
     if (input) input.focus();
   }
 
+  var impressoraEditandoId = null; // != null => modal de impressora em modo edição
+  var filamentoEditandoId = null;  // != null => modal de filamento em modo edição
+
   function fechar(id) {
     var el = document.getElementById(id);
     el.classList.remove('is-open');
     el.querySelector('form').reset();
+
+    if (id === 'impressoraOverlay') {
+      impressoraEditandoId = null;
+      document.getElementById('impressoraTitulo').textContent = 'Adicionar impressora';
+      document.getElementById('impressoraSubmit').textContent = 'Adicionar';
+    } else {
+      filamentoEditandoId = null;
+      document.getElementById('filamentoSubmit').textContent = 'Adicionar';
+    }
   }
 
   document.querySelectorAll('[data-fechar]').forEach(function (b) {
@@ -87,12 +99,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var filamentos = imp.filamentos || [];
     var listaHtml = filamentos.length
-      ? filamentos.map(function (f) {
+      ? filamentos.map(function (f, i) {
           return '<div class="filament-row"><span class="filament-tag">' + escapeHtml(f.tipo) +
                  '</span><span class="filament-name">' + escapeHtml(f.nome) + '</span>' +
+                 '<button type="button" class="btn-icon btn-icon--sm editar-filamento-btn" data-index="' + i + '" ' +
+                 'aria-label="Editar filamento" style="margin-left:auto;"><i data-lucide="pencil"></i></button>' +
                  '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-filamento-btn" ' +
                  'data-id="' + Number(f.id) + '" data-nome="' + escapeHtml(f.tipo + ' ' + f.nome).replace(/"/g, '&quot;') + '" ' +
-                 'aria-label="Remover filamento" style="margin-left:auto;"><i data-lucide="trash-2"></i></button></div>';
+                 'aria-label="Remover filamento"><i data-lucide="trash-2"></i></button></div>';
         }).join('')
       : '<span class="form-hint">Nenhum filamento carregado.</span>';
 
@@ -101,7 +115,9 @@ document.addEventListener('DOMContentLoaded', function () {
         '<div class="card-printer__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg></div>' +
         '<div><h3 class="card-printer__name">' + escapeHtml(imp.nome) + '</h3>' +
         '<span class="card-printer__count">' + filamentos.length + ' filamento(s)</span></div>' +
-        '<button type="button" class="btn-icon btn-icon--danger remover-impressora-btn" aria-label="Remover impressora" style="margin-left:auto;">' +
+        '<button type="button" class="btn-icon editar-impressora-btn" aria-label="Editar impressora" style="margin-left:auto;">' +
+          '<i data-lucide="pencil"></i></button>' +
+        '<button type="button" class="btn-icon btn-icon--danger remover-impressora-btn" aria-label="Remover impressora">' +
           '<i data-lucide="trash-2"></i></button>' +
       '</div>' +
       '<div class="card-printer__filaments">' +
@@ -118,6 +134,17 @@ document.addEventListener('DOMContentLoaded', function () {
     remover.impressoraId = imp.id;
     remover.impressoraNome = imp.nome;
     remover.qtdFilamentos = filamentos.length;
+
+    var editar = art.querySelector('.editar-impressora-btn');
+    editar.impressoraId = imp.id;
+    editar.impressoraNome = imp.nome;
+
+    art.querySelectorAll('.editar-filamento-btn').forEach(function (b) {
+      var f = filamentos[Number(b.getAttribute('data-index'))];
+      b.filamentoId = f.id;
+      b.filamentoTipo = f.tipo;
+      b.filamentoNome = f.nome;
+    });
     return art;
   }
 
@@ -151,6 +178,34 @@ document.addEventListener('DOMContentLoaded', function () {
     impressoraAlvoId = btn.impressoraId;
     document.getElementById('filamentoTitulo').textContent = 'Adicionar filamento — ' + btn.impressoraNome;
     abrir('filamentoOverlay');
+  });
+
+  // Editar impressora / filamento: abre o mesmo modal, preenchido
+  grid.addEventListener('click', function (e) {
+    var btnImp = e.target.closest('.editar-impressora-btn');
+    if (btnImp) {
+      impressoraEditandoId = btnImp.impressoraId;
+      document.getElementById('impressoraTitulo').textContent = 'Editar impressora';
+      document.getElementById('impressoraSubmit').textContent = 'Salvar';
+      abrir('impressoraOverlay');
+      document.getElementById('impressoraNome').value = btnImp.impressoraNome;
+      return;
+    }
+
+    var btnFil = e.target.closest('.editar-filamento-btn');
+    if (btnFil) {
+      filamentoEditandoId = btnFil.filamentoId;
+      document.getElementById('filamentoTitulo').textContent = 'Editar filamento';
+      document.getElementById('filamentoSubmit').textContent = 'Salvar';
+      abrir('filamentoOverlay');
+
+      // Tipos ficam salvos em maiúsculas; compara sem diferenciar caixa
+      var select = document.getElementById('filamentoTipo');
+      Array.prototype.forEach.call(select.options, function (opt) {
+        if (opt.value.toUpperCase() === String(btnFil.filamentoTipo).toUpperCase()) select.value = opt.value;
+      });
+      document.getElementById('filamentoNome').value = btnFil.filamentoNome;
+    }
   });
 
   // Remover impressora (apaga também todos os filamentos dela)
@@ -195,12 +250,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var nome = document.getElementById('impressoraNome').value.trim();
     if (!nome) return;
 
-    var r = await supabaseClient.rpc('adicionar_impressora', { p_espaco_id: espacoId, p_nome: nome });
+    var editando = impressoraEditandoId !== null;
+    var r = editando
+      ? await supabaseClient.rpc('editar_impressora', { p_impressora_id: impressoraEditandoId, p_nome: nome })
+      : await supabaseClient.rpc('adicionar_impressora', { p_espaco_id: espacoId, p_nome: nome });
     if (r.error) {
       showToast('Erro', r.error.message, 'error');
       return;
     }
-    showToast('Sucesso', 'Impressora "' + escapeHtml(nome) + '" adicionada!', 'success');
+    showToast('Sucesso', editando ? 'Impressora atualizada!' : 'Impressora "' + escapeHtml(nome) + '" adicionada!', 'success');
     fechar('impressoraOverlay');
     carregar();
   });
@@ -209,18 +267,17 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     var tipo = document.getElementById('filamentoTipo').value;
     var nome = document.getElementById('filamentoNome').value.trim();
-    if (!nome || !impressoraAlvoId) return;
+    var editando = filamentoEditandoId !== null;
+    if (!nome || (!editando && !impressoraAlvoId)) return;
 
-    var r = await supabaseClient.rpc('adicionar_filamento', {
-      p_impressora_id: impressoraAlvoId,
-      p_tipo: tipo,
-      p_nome: nome
-    });
+    var r = editando
+      ? await supabaseClient.rpc('editar_filamento', { p_filamento_id: filamentoEditandoId, p_tipo: tipo, p_nome: nome })
+      : await supabaseClient.rpc('adicionar_filamento', { p_impressora_id: impressoraAlvoId, p_tipo: tipo, p_nome: nome });
     if (r.error) {
       showToast('Erro', r.error.message, 'error');
       return;
     }
-    showToast('Sucesso', 'Filamento adicionado!', 'success');
+    showToast('Sucesso', editando ? 'Filamento atualizado!' : 'Filamento adicionado!', 'success');
     fechar('filamentoOverlay');
     carregar();
   });

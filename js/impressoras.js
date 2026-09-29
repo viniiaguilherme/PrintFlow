@@ -89,7 +89,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var listaHtml = filamentos.length
       ? filamentos.map(function (f) {
           return '<div class="filament-row"><span class="filament-tag">' + escapeHtml(f.tipo) +
-                 '</span><span class="filament-name">' + escapeHtml(f.nome) + '</span></div>';
+                 '</span><span class="filament-name">' + escapeHtml(f.nome) + '</span>' +
+                 '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-filamento-btn" ' +
+                 'data-id="' + Number(f.id) + '" data-nome="' + escapeHtml(f.tipo + ' ' + f.nome).replace(/"/g, '&quot;') + '" ' +
+                 'aria-label="Remover filamento" style="margin-left:auto;"><i data-lucide="trash-2"></i></button></div>';
         }).join('')
       : '<span class="form-hint">Nenhum filamento carregado.</span>';
 
@@ -98,6 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
         '<div class="card-printer__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg></div>' +
         '<div><h3 class="card-printer__name">' + escapeHtml(imp.nome) + '</h3>' +
         '<span class="card-printer__count">' + filamentos.length + ' filamento(s)</span></div>' +
+        '<button type="button" class="btn-icon btn-icon--danger remover-impressora-btn" aria-label="Remover impressora" style="margin-left:auto;">' +
+          '<i data-lucide="trash-2"></i></button>' +
       '</div>' +
       '<div class="card-printer__filaments">' +
         '<span class="card-printer__filaments-label">Filamentos carregados</span>' + listaHtml +
@@ -108,6 +113,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var btn = art.querySelector('.add-filamento-btn');
     btn.impressoraId = imp.id;
     btn.impressoraNome = imp.nome;
+
+    var remover = art.querySelector('.remover-impressora-btn');
+    remover.impressoraId = imp.id;
+    remover.impressoraNome = imp.nome;
+    remover.qtdFilamentos = filamentos.length;
     return art;
   }
 
@@ -141,6 +151,43 @@ document.addEventListener('DOMContentLoaded', function () {
     impressoraAlvoId = btn.impressoraId;
     document.getElementById('filamentoTitulo').textContent = 'Adicionar filamento — ' + btn.impressoraNome;
     abrir('filamentoOverlay');
+  });
+
+  // Remover impressora (apaga também todos os filamentos dela)
+  grid.addEventListener('click', async function (e) {
+    var btn = e.target.closest('.remover-impressora-btn');
+    if (!btn) return;
+
+    var aviso = 'Remover a impressora "' + btn.impressoraNome + '"?';
+    if (btn.qtdFilamentos > 0) {
+      aviso += ' Os ' + btn.qtdFilamentos + ' filamento(s) dela também serão apagados.';
+    }
+    if (!window.confirm(aviso)) return;
+
+    var r = await supabaseClient.rpc('remover_impressora', { p_impressora_id: btn.impressoraId });
+    if (r.error) {
+      showToast('Erro', r.error.message, 'error');
+      return;
+    }
+    showToast('Impressora removida', '"' + escapeHtml(btn.impressoraNome) + '" foi removida do espaço.');
+    carregar();
+  });
+
+  // Remover um filamento individual
+  grid.addEventListener('click', async function (e) {
+    var btn = e.target.closest('.remover-filamento-btn');
+    if (!btn) return;
+
+    var nome = btn.getAttribute('data-nome');
+    if (!window.confirm('Remover o filamento "' + nome + '"?')) return;
+
+    var r = await supabaseClient.rpc('remover_filamento', { p_filamento_id: Number(btn.getAttribute('data-id')) });
+    if (r.error) {
+      showToast('Erro', r.error.message, 'error');
+      return;
+    }
+    showToast('Filamento removido', '"' + escapeHtml(nome) + '" foi removido.');
+    carregar();
   });
 
   document.getElementById('impressoraForm').addEventListener('submit', async function (e) {

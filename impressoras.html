@@ -75,7 +75,7 @@
             <span class="space-back-btn__label">Espaço</span>
             <span class="space-back-btn__name" id="voltarEspacoNome">Carregando...</span>
           </a>
-          
+
           <div class="topbar__search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
@@ -84,10 +84,6 @@
 
         <div class="topbar__actions">
           <div class="dropdown">
-            <!--<button class="btn-icon topbar__icon-btn" id="notifButton" aria-label="Notificações">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-              <span class="notif-dot"></span>
-            </button> -->
             <div class="dropdown__menu" id="notifMenu">
               <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
             </div>
@@ -120,54 +116,19 @@
           <div>
             <span class="eyebrow">// IMPRESSORAS</span>
             <h1>Sua frota</h1>
-            <p>3 impressora(s) · gerencie filamentos disponíveis.</p>
+            <p id="impressorasResumo">Carregando...</p>
           </div>
           <div class="dashboard-head__actions">
-            <!-- Funcionalidade ainda não implementada: por enquanto apenas
-                 exibe um aviso (mesmo padrão usado nos links da sidebar). -->
-            <button type="button" class="btn btn-primary" data-feature-toast>
+            <button type="button" class="btn btn-primary" id="addImpressoraBtn">
               <i data-lucide="plus"></i>
               Adicionar impressora
             </button>
           </div>
         </div>
 
-        <!-- Grid da frota: cada card representa uma impressora e os
-             filamentos carregados nela no momento. Dados de exemplo apenas
-             para ilustrar o layout — a listagem real virá do backend em
-             uma próxima entrega. -->
-        <div class="printers-grid">
-
-          <article class="card card-printer">
-            <div class="card-printer__head">
-              <div class="card-printer__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
-              </div>
-              <div>
-                <h3 class="card-printer__name">Bambu-X1</h3>
-                <span class="card-printer__count">2 filamento(s)</span>
-              </div>
-            </div>
-
-            <div class="card-printer__filaments">
-              <span class="card-printer__filaments-label">Filamentos carregados</span>
-              <div class="filament-row">
-                <span class="filament-tag">PETG</span>
-                <span class="filament-name">Carbon</span>
-              </div>
-              <div class="filament-row">
-                <span class="filament-tag">PLA</span>
-                <span class="filament-name">Branco</span>
-              </div>
-            </div>
-
-            <button type="button" class="btn btn-outline-accent btn-block card-printer__add" data-feature-toast>
-              <i data-lucide="plus"></i>
-              Adicionar filamento
-            </button>
-          </article>
-
-        </div>
+        <!-- Grid da frota: preenchido via JS (js/impressoras.js) a partir da
+             RPC listar_impressoras() do Supabase, filtrado pelo espaço atual. -->
+        <div class="printers-grid" id="printersGrid"></div>
       </main>
     </div>
   </div>
@@ -179,5 +140,6 @@
   <script src="js/supabase-client.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
+  <script src="js/impressoras.js"></script>
 </body>
 </html>

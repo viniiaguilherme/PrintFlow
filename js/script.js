@@ -501,4 +501,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  /* =======================================================================
+     13. BOTÃO "VOLTAR PRO ESPAÇO" (topbar do dashboard)
+     -------------------------------------------------------------------------
+     Mostra o nome do espaço atual no botão que leva de volta pra tela de
+     Espaços. Reaproveita detalhes_espaco(), a mesma função da tela de
+     Configurações — ela já confere se o usuário tem acesso ao espaço.
+     ======================================================================= */
+  if (document.getElementById("voltarEspacoNome")) {
+    var espacoIdVoltar = new URLSearchParams(window.location.search).get('espaco_id');
+
+    if (espacoIdVoltar) {
+      supabaseClient.rpc('detalhes_espaco', { p_espaco_id: espacoIdVoltar }).then(function (resultado) {
+        if (resultado.error || !resultado.data) {
+          console.error("Erro ao buscar nome do espaço:", resultado.error);
+          return;
+        }
+        document.getElementById("voltarEspacoNome").textContent = resultado.data.nome;
+      });
+    }
+  }
+
 });

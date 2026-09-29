@@ -1364,6 +1364,57 @@ p {
   color: var(--color-text-tertiary);
 }
 
+/* --- Botão "voltar pro espaço" (topbar, quando dentro de um espaço) --- */
+.space-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: .5rem .9rem .5rem .65rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: .8125rem;
+  max-width: 100%;
+  overflow: hidden;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.space-back-btn:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+}
+
+.space-back-btn svg,
+.space-back-btn [data-lucide] {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+}
+
+.space-back-btn__label {
+  font-family: var(--font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  font-size: .6875rem;
+  flex-shrink: 0;
+}
+
+.space-back-btn__name {
+  color: var(--color-accent-bright);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .space-back-btn__label {
+    display: none;
+  }
+}
+
 .topbar__search input {
   padding-left: 2.75rem;
 }

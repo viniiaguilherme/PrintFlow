@@ -218,13 +218,18 @@
       function criarCardEspaco(espaco) {
         var artigo = document.createElement('article');
         artigo.className = 'card card-hover card-space';
-        var podeSair = espaco.cargo !== 'Dono';
+        // Só o dono principal (com a coroa) não pode sair: precisa passar a coroa antes
+        var podeSair = !espaco.principal;
 
         artigo.innerHTML =
           '<div class="card-feature__icon">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/></svg>' +
           '</div>' +
-          '<h3 class="card-space__title">' + escapeHtml(espaco.nome) + '</h3>' +
+          '<h3 class="card-space__title">' + escapeHtml(espaco.nome) +
+            (espaco.principal
+              ? '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-label="Dono principal"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>'
+              : '') +
+          '</h3>' +
           '<p class="card-space__desc">' + escapeHtml(espaco.descricao || 'Sem descrição.') + '</p>' +
           '<div class="card-space__meta">' +
             '<span class="card-space__role">' +

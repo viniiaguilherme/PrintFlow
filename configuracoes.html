@@ -215,6 +215,7 @@
 
           var dados = resultado.data;
           ehDono = dados.cargo === 'Dono';
+          var ehPrincipal = dados.principal === true;
 
           nomeInput.value = dados.nome || '';
           descricao.value = dados.descricao || '';
@@ -224,17 +225,20 @@
             ? 'Este espaço já tem uma senha definida. Informe uma nova pra trocá-la, ou deixe em branco pra manter.'
             : 'Este espaço ainda não tem senha. Defina uma pra exigi-la de quem for ingressar.';
 
-          subtitulo.textContent = ehDono
-            ? 'Como dono, você pode editar o nome, a descrição e a senha de acesso.'
-            : 'Você é ' + dados.cargo + ' neste espaço — só o dono pode alterar essas configurações.';
-
-          if (ehDono) {
-            coroa.style.display = '';
+          if (ehPrincipal) {
+            subtitulo.textContent = 'Como dono principal, você pode editar o nome, a descrição e a senha de acesso.';
+          } else if (ehDono) {
+            subtitulo.textContent = 'Como dono, você pode editar o nome, a descrição e a senha de acesso.';
+          } else {
+            subtitulo.textContent = 'Você é ' + dados.cargo + ' neste espaço — só os donos podem alterar essas configurações.';
           }
+
+          // A coroa aparece só para o dono principal
+          coroa.style.display = ehPrincipal ? '' : 'none';
 
           conteudo.style.display = '';
 
-          // Membros que não são donos podem ver, mas não salvar.
+          // Quem não é dono pode ver, mas não salvar.
           document.getElementById('salvarEspacoBtn').disabled = !ehDono;
           document.getElementById('spaceSenha').disabled = !ehDono;
         });

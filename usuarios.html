@@ -236,11 +236,15 @@
         return div.innerHTML;
       }
 
-      function badgeCargo(cargo) {
-        if (cargo === 'Dono') {
-          return '<span class="role-badge">' +
+      function badgeCargo(membro) {
+        var cargo = membro.cargo;
+        if (cargo === 'Dono' && membro.principal) {
+          return '<span class="role-badge" title="Dono principal">' +
             '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>' +
             'Dono</span>';
+        }
+        if (cargo === 'Dono') {
+          return '<span class="badge badge-warning">Dono</span>';
         }
         if (cargo === 'Operador') {
           return '<span class="badge badge-info">Operador</span>';
@@ -262,6 +266,9 @@
         var souDono = membros.some(function (m) {
           return m.usuario_id === meuUsuarioId && m.cargo === 'Dono';
         });
+        var souPrincipal = membros.some(function (m) {
+          return m.usuario_id === meuUsuarioId && m.principal;
+        });
 
         membros.forEach(function (membro) {
           var tr = document.createElement('tr');
@@ -269,8 +276,10 @@
 
           var iniciais = calcularIniciais(membro.nome);
           var ativo = membro.status === 'Ativo';
-          // Dono pode editar cargo e remover qualquer outro membro (nunca a si mesmo)
-          var podeGerenciar = souDono && membro.usuario_id !== meuUsuarioId;
+          // Dono edita cargo e remove outros membros — nunca a si mesmo e nunca o dono principal
+          var podeGerenciar = souDono && membro.usuario_id !== meuUsuarioId && !membro.principal;
+          // Só o dono principal passa a coroa, e só para outro Dono
+          var podePassarCoroa = souPrincipal && membro.cargo === 'Dono' && membro.usuario_id !== meuUsuarioId;
 
           tr.innerHTML =
             '<td><div style="display:flex; align-items:center; gap: var(--space-3);">' +
@@ -280,11 +289,16 @@
                 '<div style="font-size: .8125rem;">' + escapeHtml(membro.email) + '</div>' +
               '</div>' +
             '</div></td>' +
-            '<td>' + badgeCargo(membro.cargo) + '</td>' +
+            '<td>' + badgeCargo(membro) + '</td>' +
             '<td>—</td>' +
             '<td>—</td>' +
             '<td><span class="status-inline"><span class="status-dot' + (ativo ? '' : ' status-dot--idle') + '"></span>' + escapeHtml(membro.status || 'Ativo') + '</span></td>' +
             '<td>' +
+              (podePassarCoroa
+                ? '<button type="button" class="btn-icon btn-icon--sm passar-coroa-btn" aria-label="Passar a coroa" title="Passar a coroa" style="margin-right:6px;">' +
+                    '<i data-lucide="crown"></i>' +
+                  '</button>'
+                : '') +
               (podeGerenciar
                 ? '<button type="button" class="btn-icon btn-icon--sm editar-cargo-btn" aria-label="Alterar cargo">' +
                     '<i data-lucide="pencil"></i>' +
@@ -294,6 +308,12 @@
                   '</button>'
                 : '') +
             '</td>';
+
+          if (podePassarCoroa) {
+            var coroaBtn = tr.querySelector('.passar-coroa-btn');
+            coroaBtn.usuarioId = membro.usuario_id;
+            coroaBtn.usuarioNome = membro.nome;
+          }
 
           if (podeGerenciar) {
             var removerBtn = tr.querySelector('.remover-membro-btn');
@@ -351,6 +371,28 @@
         }
 
         showToast('Membro removido', '"' + btn.usuarioNome + '" não faz mais parte deste espaço.');
+        carregarMembros();
+      });
+
+      // Passar a coroa de dono principal para outro dono
+      tbody.addEventListener('click', async function (event) {
+        var btn = event.target.closest('.passar-coroa-btn');
+        if (!btn) return;
+
+        var confirmar = window.confirm('Passar a coroa de dono principal para "' + btn.usuarioNome + '"? Você continuará como dono, mas sem a coroa.');
+        if (!confirmar) return;
+
+        var resultado = await supabaseClient.rpc('transferir_coroa', {
+          p_espaco_id: espacoId,
+          p_usuario_id: btn.usuarioId
+        });
+
+        if (resultado.error) {
+          showToast('Erro', resultado.error.message, 'error');
+          return;
+        }
+
+        showToast('Coroa transferida', btn.usuarioNome + ' agora é o dono principal.', 'success');
         carregarMembros();
       });
 

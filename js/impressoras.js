@@ -15,6 +15,17 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
+  // Permissões por cargo (obterPermissoes() vem do js/script.js):
+  // impressoras -> só Dono; filamentos -> Dono e Operador; Maker só visualiza.
+  // O banco também bloqueia — aqui só escondemos o que a pessoa não pode usar.
+  var podeEditarImpressoras = false;
+  var podeEditarFilamentos = false;
+  var permissoesProntas = obterPermissoes().then(function (dados) {
+    if (!dados) return;
+    podeEditarImpressoras = dados.cargo === 'Dono';
+    podeEditarFilamentos = dados.cargo === 'Dono' || dados.cargo === 'Operador';
+  });
+
   var TIPOS = ['PLA', 'PETG', 'ABS', 'ASA', 'TPU', 'Nylon', 'Outro'];
   var impressoraAlvoId = null; // impressora que vai receber o filamento
 
@@ -102,11 +113,14 @@ document.addEventListener('DOMContentLoaded', function () {
       ? filamentos.map(function (f, i) {
           return '<div class="filament-row"><span class="filament-tag">' + escapeHtml(f.tipo) +
                  '</span><span class="filament-name">' + escapeHtml(f.nome) + '</span>' +
-                 '<button type="button" class="btn-icon btn-icon--sm editar-filamento-btn" data-index="' + i + '" ' +
-                 'aria-label="Editar filamento" style="margin-left:auto;"><i data-lucide="pencil"></i></button>' +
-                 '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-filamento-btn" ' +
-                 'data-id="' + Number(f.id) + '" data-nome="' + escapeHtml(f.tipo + ' ' + f.nome).replace(/"/g, '&quot;') + '" ' +
-                 'aria-label="Remover filamento"><i data-lucide="trash-2"></i></button></div>';
+                 (podeEditarFilamentos
+                   ? '<button type="button" class="btn-icon btn-icon--sm editar-filamento-btn" data-index="' + i + '" ' +
+                     'aria-label="Editar filamento" style="margin-left:auto;"><i data-lucide="pencil"></i></button>' +
+                     '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-filamento-btn" ' +
+                     'data-id="' + Number(f.id) + '" data-nome="' + escapeHtml(f.tipo + ' ' + f.nome).replace(/"/g, '&quot;') + '" ' +
+                     'aria-label="Remover filamento"><i data-lucide="trash-2"></i></button>'
+                   : '') +
+                 '</div>';
         }).join('')
       : '<span class="form-hint">Nenhum filamento carregado.</span>';
 
@@ -115,29 +129,39 @@ document.addEventListener('DOMContentLoaded', function () {
         '<div class="card-printer__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg></div>' +
         '<div><h3 class="card-printer__name">' + escapeHtml(imp.nome) + '</h3>' +
         '<span class="card-printer__count">' + filamentos.length + ' filamento(s)</span></div>' +
-        '<button type="button" class="btn-icon editar-impressora-btn" aria-label="Editar impressora" style="margin-left:auto;">' +
-          '<i data-lucide="pencil"></i></button>' +
-        '<button type="button" class="btn-icon btn-icon--danger remover-impressora-btn" aria-label="Remover impressora">' +
-          '<i data-lucide="trash-2"></i></button>' +
+        (podeEditarImpressoras
+          ? '<button type="button" class="btn-icon editar-impressora-btn" aria-label="Editar impressora" style="margin-left:auto;">' +
+              '<i data-lucide="pencil"></i></button>' +
+            '<button type="button" class="btn-icon btn-icon--danger remover-impressora-btn" aria-label="Remover impressora">' +
+              '<i data-lucide="trash-2"></i></button>'
+          : '') +
       '</div>' +
       '<div class="card-printer__filaments">' +
         '<span class="card-printer__filaments-label">Filamentos carregados</span>' + listaHtml +
       '</div>' +
-      '<button type="button" class="btn btn-outline-accent btn-block card-printer__add add-filamento-btn">' +
-        '<i data-lucide="plus"></i>Adicionar filamento</button>';
+      (podeEditarFilamentos
+        ? '<button type="button" class="btn btn-outline-accent btn-block card-printer__add add-filamento-btn">' +
+            '<i data-lucide="plus"></i>Adicionar filamento</button>'
+        : '');
 
     var btn = art.querySelector('.add-filamento-btn');
-    btn.impressoraId = imp.id;
-    btn.impressoraNome = imp.nome;
+    if (btn) {
+      btn.impressoraId = imp.id;
+      btn.impressoraNome = imp.nome;
+    }
 
     var remover = art.querySelector('.remover-impressora-btn');
-    remover.impressoraId = imp.id;
-    remover.impressoraNome = imp.nome;
-    remover.qtdFilamentos = filamentos.length;
+    if (remover) {
+      remover.impressoraId = imp.id;
+      remover.impressoraNome = imp.nome;
+      remover.qtdFilamentos = filamentos.length;
+    }
 
     var editar = art.querySelector('.editar-impressora-btn');
-    editar.impressoraId = imp.id;
-    editar.impressoraNome = imp.nome;
+    if (editar) {
+      editar.impressoraId = imp.id;
+      editar.impressoraNome = imp.nome;
+    }
 
     art.querySelectorAll('.editar-filamento-btn').forEach(function (b) {
       var f = filamentos[Number(b.getAttribute('data-index'))];
@@ -149,7 +173,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function carregar() {
-    supabaseClient.rpc('listar_impressoras', { p_espaco_id: espacoId }).then(function (r) {
+    Promise.all([
+      permissoesProntas,
+      supabaseClient.rpc('listar_impressoras', { p_espaco_id: espacoId })
+    ]).then(function (resultados) {
+      var r = resultados[1];
       if (r.error) {
         showToast('Erro', 'Não foi possível carregar as impressoras.', 'error');
         return;
@@ -159,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
       resumo.textContent = lista.length + ' impressora(s) · gerencie filamentos disponíveis.';
 
       if (lista.length === 0) {
-        grid.innerHTML = '<p class="text-muted" style="grid-column:1/-1; text-align:center; padding: var(--space-8) 0;">Este espaço ainda não tem impressoras. Adicione a primeira.</p>';
+        grid.innerHTML = '<p class="text-muted" style="grid-column:1/-1; text-align:center; padding: var(--space-8) 0;">Este espaço ainda não tem impressoras. ' + (podeEditarImpressoras ? 'Adicione a primeira.' : 'Peça a um dono para adicionar a primeira.') + '</p>';
         return;
       }
       lista.forEach(function (imp) { grid.appendChild(criarCard(imp)); });

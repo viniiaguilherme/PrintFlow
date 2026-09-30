@@ -165,6 +165,49 @@ function calcularIniciais(nome) {
 }
 
 
+/* =========================================================================
+   PERMISSÕES POR CARGO
+   -------------------------------------------------------------------------
+   obterPermissoes() devolve (uma única vez por página, em cache) os dados
+   do espaço atual (?espaco_id=) — incluindo { cargo, principal, nome } —
+   via RPC detalhes_espaco(). Retorna null se não houver espaço na URL ou
+   se o usuário não tiver acesso a ele.
+
+   Cargos: 'Dono' (com 'principal' = true para o dono principal 👑),
+   'Operador' e 'Maker'.
+
+   Uso no HTML: qualquer elemento com data-requer-cargo="Dono,Operador"
+   só aparece para quem tem um desses cargos (fica escondido para os demais).
+
+   Importante: isso só esconde botões na tela. Quem realmente bloqueia as
+   ações são as funções RPC e o RLS do Supabase.
+   ========================================================================= */
+var permissoesPromise = null;
+
+function obterPermissoes() {
+  if (permissoesPromise) return permissoesPromise;
+
+  var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
+
+  if (!espacoId) {
+    permissoesPromise = Promise.resolve(null);
+    return permissoesPromise;
+  }
+
+  permissoesPromise = supabaseClient
+    .rpc('detalhes_espaco', { p_espaco_id: espacoId })
+    .then(function (resultado) {
+      if (resultado.error || !resultado.data) {
+        console.error('Erro ao buscar permissões do espaço:', resultado.error);
+        return null;
+      }
+      return resultado.data;
+    });
+
+  return permissoesPromise;
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
   /* =======================================================================
@@ -211,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
      nome vai no "data" do signUp; um gatilho no banco (handle_new_user)
      copia esse valor pra tabela public.usuarios assim que a conta é criada.
      Cargo não é coletado aqui — é atribuído ao usuário dentro de um
-     espaço, em uma etapa futura.
+     espaço (quem ingressa entra como Maker).
      ======================================================================= */
   var cadastroForm = document.getElementById('cadastroForm');
   if (cadastroForm) {
@@ -505,21 +548,46 @@ document.addEventListener('DOMContentLoaded', function () {
      13. BOTÃO "VOLTAR PRO ESPAÇO" (topbar do dashboard)
      -------------------------------------------------------------------------
      Mostra o nome do espaço atual no botão que leva de volta pra tela de
-     Espaços. Reaproveita detalhes_espaco(), a mesma função da tela de
-     Configurações — ela já confere se o usuário tem acesso ao espaço.
+     Espaços. Usa obterPermissoes() (detalhes_espaco em cache), a mesma
+     chamada que as permissões abaixo — não faz duas requisições.
      ======================================================================= */
   if (document.getElementById("voltarEspacoNome")) {
-    var espacoIdVoltar = new URLSearchParams(window.location.search).get('espaco_id');
+    obterPermissoes().then(function (dados) {
+      if (!dados) return;
+      document.getElementById("voltarEspacoNome").textContent = dados.nome;
+    });
+  }
 
-    if (espacoIdVoltar) {
-      supabaseClient.rpc('detalhes_espaco', { p_espaco_id: espacoIdVoltar }).then(function (resultado) {
-        if (resultado.error || !resultado.data) {
-          console.error("Erro ao buscar nome do espaço:", resultado.error);
-          return;
+  /* =======================================================================
+     14. PERMISSÕES POR CARGO (sidebar + botões)
+     -------------------------------------------------------------------------
+     - Link "Configurações" da sidebar: só aparece para Donos.
+     - Qualquer elemento com data-requer-cargo="Dono,Operador" só aparece
+       para os cargos listados.
+     Começam escondidos e são revelados só depois de confirmar o cargo, pra
+     nunca "piscar" na tela um botão que a pessoa não pode usar.
+     ======================================================================= */
+  var linkConfiguracoes = document.querySelector('.sidebar__link[href*="configuracoes.html"]');
+  var elementosRestritos = document.querySelectorAll('[data-requer-cargo]');
+
+  if (linkConfiguracoes || elementosRestritos.length) {
+    if (linkConfiguracoes) linkConfiguracoes.style.display = 'none';
+    elementosRestritos.forEach(function (el) { el.style.display = 'none'; });
+
+    obterPermissoes().then(function (dados) {
+      if (!dados) return;
+
+      if (linkConfiguracoes && dados.cargo === 'Dono') {
+        linkConfiguracoes.style.display = '';
+      }
+
+      elementosRestritos.forEach(function (el) {
+        var permitidos = el.getAttribute('data-requer-cargo').split(',').map(function (c) { return c.trim(); });
+        if (permitidos.indexOf(dados.cargo) !== -1) {
+          el.style.display = '';
         }
-        document.getElementById("voltarEspacoNome").textContent = resultado.data.nome;
       });
-    }
+    });
   }
 
 });

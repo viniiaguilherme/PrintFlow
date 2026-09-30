@@ -204,6 +204,7 @@
       var senhaHint = document.getElementById('spaceSenhaHint');
       var senhaInput = document.getElementById('spaceSenha');
       var ehDono = false;
+      var ehPrincipal = false;
 
       function carregarEspaco() {
         supabaseClient.rpc('detalhes_espaco', { p_espaco_id: espacoId }).then(function (resultado) {
@@ -215,7 +216,14 @@
 
           var dados = resultado.data;
           ehDono = dados.cargo === 'Dono';
-          var ehPrincipal = dados.principal === true;
+          ehPrincipal = dados.principal === true;
+
+          // Operador e Maker não têm acesso a esta página
+          if (!ehDono) {
+            showToast('Sem acesso', 'Só os donos do espaço podem ver as configurações.', 'error');
+            setTimeout(function () { window.location.href = 'dashboard.html?espaco_id=' + espacoId; }, 1500);
+            return;
+          }
 
           nomeInput.value = dados.nome || '';
           descricao.value = dados.descricao || '';
@@ -225,22 +233,20 @@
             ? 'Este espaço já tem uma senha definida. Informe uma nova pra trocá-la, ou deixe em branco pra manter.'
             : 'Este espaço ainda não tem senha. Defina uma pra exigi-la de quem for ingressar.';
 
-          if (ehPrincipal) {
-            subtitulo.textContent = 'Como dono principal, você pode editar o nome, a descrição e a senha de acesso.';
-          } else if (ehDono) {
-            subtitulo.textContent = 'Como dono, você pode editar o nome, a descrição e a senha de acesso.';
-          } else {
-            subtitulo.textContent = 'Você é ' + dados.cargo + ' neste espaço — só os donos podem alterar essas configurações.';
-          }
+          subtitulo.textContent = ehPrincipal
+            ? 'Como dono principal, você pode editar o nome, a descrição e a senha de acesso.'
+            : 'Você é dono deste espaço e pode ver as configurações, mas só o dono principal pode alterá-las.';
 
           // A coroa aparece só para o dono principal
           coroa.style.display = ehPrincipal ? '' : 'none';
 
           conteudo.style.display = '';
 
-          // Quem não é dono pode ver, mas não salvar.
-          document.getElementById('salvarEspacoBtn').disabled = !ehDono;
-          document.getElementById('spaceSenha').disabled = !ehDono;
+          // Só o dono principal edita; os demais donos apenas visualizam.
+          nomeInput.readOnly = !ehPrincipal;
+          descricao.readOnly = !ehPrincipal;
+          senhaInput.disabled = !ehPrincipal;
+          document.getElementById('salvarEspacoBtn').style.display = ehPrincipal ? '' : 'none';
         });
       }
 
@@ -266,7 +272,7 @@
       if (form) {
         form.addEventListener('submit', async function (event) {
           event.preventDefault();
-          if (!ehDono) return;
+          if (!ehPrincipal) return;
 
           var nome = nomeInput.value.trim();
           if (!nome) {

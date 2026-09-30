@@ -33,6 +33,12 @@
           <a href="cadastro.html" class="btn btn-primary">Cadastrar</a>
         </div>
 
+        <!-- Botão "Seu ambiente" na navbar (só aparece logado, ao lado do avatar) -->
+        <a href="espacos.html" class="btn btn-outline-accent btn-sm" id="navAmbienteBtn" style="display:none;">
+          Seu ambiente
+          <i data-lucide="arrow-right"></i>
+        </a>
+
         <div class="dropdown" id="navAvatarWrap" style="display:none;">
           <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
           <div class="dropdown__menu" id="avatarMenu">
@@ -229,11 +235,12 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
   <script>
-    // Se já existe uma sessão ativa, troca "Entrar/Cadastrar" pelo avatar
-    // (mesmo componente usado no resto do app). Não afeta a sessão em si —
-    // só decide o que mostrar no navbar.
+    // Se já existe uma sessão ativa, troca "Entrar/Cadastrar" pelo botão
+    // "Seu ambiente" + avatar (mesmo componente usado no resto do app).
+    // Não afeta a sessão em si — só decide o que mostrar no navbar.
     document.addEventListener('DOMContentLoaded', function () {
       var authButtons = document.getElementById('navAuthButtons');
+      var ambienteBtn = document.getElementById('navAmbienteBtn');
       var avatarWrap = document.getElementById('navAvatarWrap');
       var heroAuthButtons = document.getElementById('heroAuthButtons');
       var heroAppButton = document.getElementById('heroAppButton');
@@ -241,6 +248,7 @@
       supabaseClient.auth.getSession().then(function (resultado) {
         if (resultado.data.session) {
           if (authButtons) authButtons.style.display = 'none';
+          if (ambienteBtn) ambienteBtn.style.display = '';
           if (avatarWrap) avatarWrap.style.display = '';
           if (heroAuthButtons) heroAuthButtons.style.display = 'none';
           if (heroAppButton) heroAppButton.style.display = '';

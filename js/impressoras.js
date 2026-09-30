@@ -245,7 +245,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btn.qtdFilamentos > 0) {
       aviso += ' Os ' + btn.qtdFilamentos + ' filamento(s) dela também serão apagados.';
     }
-    if (!window.confirm(aviso)) return;
+    var confirmar = await confirmarAcao({
+      titulo: 'Remover impressora',
+      mensagem: aviso,
+      textoConfirmar: 'Remover',
+      perigo: true
+    });
+    if (!confirmar) return;
 
     var r = await supabaseClient.rpc('remover_impressora', { p_impressora_id: btn.impressoraId });
     if (r.error) {
@@ -262,7 +268,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!btn) return;
 
     var nome = btn.getAttribute('data-nome');
-    if (!window.confirm('Remover o filamento "' + nome + '"?')) return;
+    var confirmar = await confirmarAcao({
+      titulo: 'Remover filamento',
+      mensagem: 'Remover o filamento "' + nome + '"?',
+      textoConfirmar: 'Remover',
+      perigo: true
+    });
+    if (!confirmar) return;
 
     var r = await supabaseClient.rpc('remover_filamento', { p_filamento_id: Number(btn.getAttribute('data-id')) });
     if (r.error) {

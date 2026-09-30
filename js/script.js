@@ -166,6 +166,63 @@ function calcularIniciais(nome) {
 
 
 /* =========================================================================
+   CONFIRMAÇÃO (substitui o window.confirm do navegador)
+   -------------------------------------------------------------------------
+   Uso:  var ok = await confirmarAcao({
+           titulo: 'Remover usuário',
+           mensagem: 'Remover "Ana" deste espaço?',
+           textoConfirmar: 'Remover',
+           perigo: true          // botão vermelho (ações destrutivas)
+         });
+         if (!ok) return;
+   Devolve uma Promise: true = Confirmar, false = Cancelar/X/clique fora/Esc.
+   Usa textContent, então nomes digitados por usuários não injetam HTML.
+   ========================================================================= */
+function confirmarAcao(opcoes) {
+  opcoes = opcoes || {};
+
+  return new Promise(function (resolve) {
+    var overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML =
+      '<div class="modal" role="dialog" aria-modal="true">' +
+        '<div class="modal__head"><h3 class="modal__title"></h3>' +
+        '<button class="modal__close" type="button" aria-label="Fechar"><i data-lucide="x"></i></button></div>' +
+        '<div class="modal__body"><p></p></div>' +
+        '<div class="modal__actions">' +
+          '<button type="button" class="btn btn-outline" data-cancelar>Cancelar</button>' +
+          '<button type="button" class="btn ' + (opcoes.perigo ? 'btn-danger' : 'btn-primary') + '" data-confirmar></button>' +
+        '</div>' +
+      '</div>';
+
+    overlay.querySelector('.modal__title').textContent = opcoes.titulo || 'Confirmar';
+    overlay.querySelector('.modal__body p').textContent = opcoes.mensagem || '';
+    var btnConfirmar = overlay.querySelector('[data-confirmar]');
+    btnConfirmar.textContent = opcoes.textoConfirmar || 'Confirmar';
+
+    document.body.appendChild(overlay);
+    renderizarIconesLucide();
+    requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+    btnConfirmar.focus();
+
+    function fechar(resultado) {
+      document.removeEventListener('keydown', aoTeclar);
+      overlay.classList.remove('is-open');
+      setTimeout(function () { overlay.remove(); }, 250);
+      resolve(resultado);
+    }
+    function aoTeclar(e) { if (e.key === 'Escape') fechar(false); }
+
+    btnConfirmar.addEventListener('click', function () { fechar(true); });
+    overlay.querySelector('[data-cancelar]').addEventListener('click', function () { fechar(false); });
+    overlay.querySelector('.modal__close').addEventListener('click', function () { fechar(false); });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) fechar(false); });
+    document.addEventListener('keydown', aoTeclar);
+  });
+}
+
+
+/* =========================================================================
    PERMISSÕES POR CARGO
    -------------------------------------------------------------------------
    obterPermissoes() devolve (uma única vez por página, em cache) os dados

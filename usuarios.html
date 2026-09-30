@@ -331,7 +331,12 @@
         var btn = event.target.closest('.remover-membro-btn');
         if (!btn) return;
 
-        var confirmar = window.confirm('Remover "' + btn.usuarioNome + '" deste espaço?');
+        var confirmar = await confirmarAcao({
+          titulo: 'Remover membro',
+          mensagem: 'Remover "' + btn.usuarioNome + '" deste espaço?',
+          textoConfirmar: 'Remover',
+          perigo: true
+        });
         if (!confirmar) return;
 
         var resultado = await supabaseClient.rpc('remover_membro_espaco', {
@@ -353,7 +358,11 @@
         var btn = event.target.closest('.passar-coroa-btn');
         if (!btn) return;
 
-        var confirmar = window.confirm('Passar a coroa de dono principal para "' + btn.usuarioNome + '"? Você continuará como dono, mas sem a coroa.');
+        var confirmar = await confirmarAcao({
+          titulo: 'Passar a coroa',
+          mensagem: 'Passar a coroa de dono principal para "' + btn.usuarioNome + '"? Você continuará como dono, mas sem a coroa.',
+          textoConfirmar: 'Passar a coroa'
+        });
         if (!confirmar) return;
 
         var resultado = await supabaseClient.rpc('transferir_coroa', {

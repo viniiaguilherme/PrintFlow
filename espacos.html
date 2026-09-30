@@ -298,7 +298,12 @@
         var btn = event.target.closest('.sair-espaco-btn');
         if (!btn) return;
 
-        var confirmar = window.confirm('Sair do espaço "' + btn.espacoNome + '"? Você vai perder o acesso a ele.');
+        var confirmar = await confirmarAcao({
+          titulo: 'Sair do espaço',
+          mensagem: 'Sair do espaço "' + btn.espacoNome + '"? Você vai perder o acesso a ele.',
+          textoConfirmar: 'Sair',
+          perigo: true
+        });
         if (!confirmar) return;
 
         var resultado = await supabaseClient.rpc('sair_espaco', { p_espaco_id: btn.espacoId });

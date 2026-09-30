@@ -2303,3 +2303,17 @@ p {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================================
+   31. BOTÃO DE AÇÃO DESTRUTIVA
+   Usado nos modais de confirmação (confirmarAcao em js/script.js).
+   ========================================================================= */
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -8px rgba(255, 93, 108, .55);
+}

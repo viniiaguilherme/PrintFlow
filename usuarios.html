@@ -185,36 +185,8 @@
     </div>
   </div>
 
-  <!-- =====================================================
-       MODAL — ALTERAR CARGO (só donos conseguem abrir)
-  ====================================================== -->
-  <div class="modal-overlay" id="cargoOverlay">
-    <div class="modal">
-      <div class="modal__head">
-        <h3 class="modal__title">Alterar cargo</h3>
-        <button class="modal__close" type="button" id="cargoClose" aria-label="Fechar">
-          <i data-lucide="x"></i>
-        </button>
-      </div>
-      <div class="modal__body">
-        <p id="cargoDescricao" style="margin-bottom: var(--space-4);"></p>
-        <form id="cargoForm">
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="cargoSelect">Cargo</label>
-            <select class="form-select" id="cargoSelect">
-              <option value="Dono">Dono</option>
-              <option value="Operador">Operador</option>
-              <option value="Maker">Maker</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal__actions">
-        <button type="button" class="btn btn-outline" id="cargoCancelar">Cancelar</button>
-        <button type="submit" form="cargoForm" class="btn btn-primary">Salvar</button>
-      </div>
-    </div>
-  </div>
+  <!-- Menu de escolha de cargo (aberto ao clicar no cargo de um membro; só donos) -->
+  <div class="dropdown__menu" id="cargoMenu" style="position: fixed; right: auto; min-width: 160px;"></div>
 
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>
@@ -289,7 +261,12 @@
                 '<div style="font-size: .8125rem;">' + escapeHtml(membro.email) + '</div>' +
               '</div>' +
             '</div></td>' +
-            '<td>' + badgeCargo(membro) + '</td>' +
+            '<td>' + (podeGerenciar
+              ? '<button type="button" class="cargo-trigger" aria-label="Alterar cargo" title="Clique para alterar o cargo" style="display:inline-flex; align-items:center; gap:4px; cursor:pointer;">' +
+                  badgeCargo(membro) +
+                  '<i data-lucide="chevron-down" width="14" height="14" style="width:14px; height:14px; color: var(--color-text-tertiary);"></i>' +
+                '</button>'
+              : badgeCargo(membro)) + '</td>' +
             '<td>—</td>' +
             '<td>—</td>' +
             '<td><span class="status-inline"><span class="status-dot' + (ativo ? '' : ' status-dot--idle') + '"></span>' + escapeHtml(membro.status || 'Ativo') + '</span></td>' +
@@ -300,10 +277,7 @@
                   '</button>'
                 : '') +
               (podeGerenciar
-                ? '<button type="button" class="btn-icon btn-icon--sm editar-cargo-btn" aria-label="Alterar cargo">' +
-                    '<i data-lucide="pencil"></i>' +
-                  '</button>' +
-                  '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-membro-btn" aria-label="Remover usuário" style="margin-left:6px;">' +
+                ? '<button type="button" class="btn-icon btn-icon--sm btn-icon--danger remover-membro-btn" aria-label="Remover usuário">' +
                     '<i data-lucide="user-x"></i>' +
                   '</button>'
                 : '') +
@@ -320,10 +294,10 @@
             removerBtn.usuarioId = membro.usuario_id;
             removerBtn.usuarioNome = membro.nome;
 
-            var editarBtn = tr.querySelector('.editar-cargo-btn');
-            editarBtn.usuarioId = membro.usuario_id;
-            editarBtn.usuarioNome = membro.nome;
-            editarBtn.cargoAtual = membro.cargo;
+            var cargoTrigger = tr.querySelector('.cargo-trigger');
+            cargoTrigger.usuarioId = membro.usuario_id;
+            cargoTrigger.usuarioNome = membro.nome;
+            cargoTrigger.cargoAtual = membro.cargo;
           }
 
           tbody.appendChild(tr);
@@ -396,44 +370,62 @@
         carregarMembros();
       });
 
-      /* ---------- Alterar cargo (modal aberto pelo lápis da linha) ---------- */
-      var cargoOverlay = document.getElementById('cargoOverlay');
-      var cargoForm = document.getElementById('cargoForm');
-      var cargoSelect = document.getElementById('cargoSelect');
-      var cargoDescricao = document.getElementById('cargoDescricao');
+      /* ---------- Alterar cargo: clica no cargo e escolhe no menu ---------- */
+      var cargoMenu = document.getElementById('cargoMenu');
       var membroEmEdicao = null;
+      var CARGOS = ['Dono', 'Operador', 'Maker'];
 
-      function fecharModalCargo() {
-        cargoOverlay.classList.remove('is-open');
+      function fecharMenuCargo() {
+        cargoMenu.classList.remove('is-open');
         membroEmEdicao = null;
       }
 
       tbody.addEventListener('click', function (event) {
-        var btn = event.target.closest('.editar-cargo-btn');
-        if (!btn) return;
+        var trigger = event.target.closest('.cargo-trigger');
+        if (!trigger) return;
+        event.stopPropagation();
 
-        membroEmEdicao = { id: btn.usuarioId, nome: btn.usuarioNome };
-        cargoDescricao.textContent = 'Escolha o novo cargo de ' + btn.usuarioNome + ' neste espaço.';
-        cargoSelect.value = btn.cargoAtual;
-        cargoOverlay.classList.add('is-open');
+        // Fecha qualquer outro dropdown aberto (avatar etc.)
+        document.querySelectorAll('.dropdown__menu.is-open').forEach(function (m) {
+          m.classList.remove('is-open');
+        });
+
+        // Clicar de novo no mesmo cargo fecha o menu
+        if (membroEmEdicao && membroEmEdicao.id === trigger.usuarioId && cargoMenu.classList.contains('is-open')) {
+          fecharMenuCargo();
+          return;
+        }
+
+        membroEmEdicao = { id: trigger.usuarioId, nome: trigger.usuarioNome, cargoAtual: trigger.cargoAtual };
+
+        cargoMenu.innerHTML = CARGOS.map(function (cargo) {
+          var atual = cargo === trigger.cargoAtual;
+          return '<button type="button" class="dropdown__item" data-cargo="' + cargo + '"' +
+            (atual ? ' style="color: var(--color-accent-bright);"' : '') + '>' +
+            cargo + (atual ? ' <span style="margin-left:auto;">✓</span>' : '') +
+            '</button>';
+        }).join('');
+
+        // Posição fixa: a tabela tem overflow e cortaria um menu absoluto
+        var rect = trigger.getBoundingClientRect();
+        cargoMenu.style.top = (rect.bottom + 6) + 'px';
+        cargoMenu.style.left = rect.left + 'px';
+        cargoMenu.classList.add('is-open');
       });
 
-      document.getElementById('cargoClose').addEventListener('click', fecharModalCargo);
-      document.getElementById('cargoCancelar').addEventListener('click', fecharModalCargo);
-      cargoOverlay.addEventListener('click', function (event) {
-        if (event.target === cargoOverlay) fecharModalCargo();
-      });
+      cargoMenu.addEventListener('click', async function (event) {
+        var item = event.target.closest('[data-cargo]');
+        if (!item || !membroEmEdicao) return;
 
-      cargoForm.addEventListener('submit', async function (event) {
-        event.preventDefault();
-        if (!membroEmEdicao) return;
+        var novoCargo = item.getAttribute('data-cargo');
+        var alvo = membroEmEdicao;
+        fecharMenuCargo();
 
-        var novoCargo = cargoSelect.value;
-        var nome = membroEmEdicao.nome;
+        if (novoCargo === alvo.cargoAtual) return;
 
         var resultado = await supabaseClient.rpc('alterar_cargo_membro', {
           p_espaco_id: espacoId,
-          p_usuario_id: membroEmEdicao.id,
+          p_usuario_id: alvo.id,
           p_cargo: novoCargo
         });
 
@@ -442,10 +434,13 @@
           return;
         }
 
-        showToast('Cargo atualizado', nome + ' agora é ' + novoCargo + '.', 'success');
-        fecharModalCargo();
+        showToast('Cargo atualizado', alvo.nome + ' agora é ' + novoCargo + '.', 'success');
         carregarMembros();
       });
+
+      // O menu é fixo na tela: fecha ao rolar/redimensionar pra não ficar solto
+      window.addEventListener('scroll', function () { cargoMenu.classList.remove('is-open'); }, true);
+      window.addEventListener('resize', function () { cargoMenu.classList.remove('is-open'); });
 
       // Busca por nome/e-mail — filtra as linhas já carregadas.
       if (searchInput) {

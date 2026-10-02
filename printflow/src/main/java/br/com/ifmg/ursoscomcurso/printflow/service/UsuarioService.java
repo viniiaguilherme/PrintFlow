@@ -7,6 +7,7 @@ import br.com.ifmg.ursoscomcurso.printflow.exception.RecursoNaoEncontradoExcepti
 import br.com.ifmg.ursoscomcurso.printflow.exception.RegraNegocioException;
 import br.com.ifmg.ursoscomcurso.printflow.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<UsuarioResponseDTO> listarTodos() {
         return usuarioRepository.findAll()
@@ -30,10 +34,21 @@ public class UsuarioService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com o ID: " + id));
     }
 
-    public UsuarioResponseDTO findByEmail(String email) {
+    public boolean existsByEmail(String email) {
+        return usuarioRepository.findByEmail(email).isPresent();
+    }
+
+    public Usuario buscarEntityPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
-                .map(UsuarioResponseDTO::fromEntity)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com o email: " + email));
+    }
+
+    public UsuarioResponseDTO findByEmail(String email) {
+        return UsuarioResponseDTO.fromEntity(buscarEntityPorEmail(email));
+    }
+
+    public UsuarioResponseDTO buscarPorEmail(String email) {
+        return findByEmail(email);
     }
 
     public Usuario save(Usuario usuario) {
@@ -49,7 +64,7 @@ public class UsuarioService {
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
         usuario.setRole(dto.role());
-        usuario.setSenha(dto.senha());
+        usuario.setSenha(passwordEncoder.encode(dto.senha()));
 
         Usuario salvo = usuarioRepository.save(usuario);
         return UsuarioResponseDTO.fromEntity(salvo);
@@ -62,3 +77,4 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 }
+

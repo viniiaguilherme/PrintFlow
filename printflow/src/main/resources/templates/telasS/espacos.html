@@ -65,13 +65,11 @@
         </div>
 
         <div class="dashboard-head__actions">
-          <!-- Funcionalidade ainda não implementada: por enquanto apenas
-               exibe um aviso (mesmo padrão usado nos links da sidebar). -->
-          <button type="button" class="btn btn-outline" data-feature-toast>
+          <button type="button" class="btn btn-outline" id="btnAbrirModalIngressar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
             Ingressar
           </button>
-          <button type="button" class="btn btn-primary" data-feature-toast>
+          <button type="button" class="btn btn-primary" id="btnAbrirModalEspaco">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Criar espaço
           </button>
@@ -80,10 +78,9 @@
 
       <!-- =====================================================
            GRID DE ESPAÇOS
-           Dados de exemplo apenas para ilustrar o layout. A
-           listagem real virá do backend em uma próxima entrega.
+           Listagem de espaços carregada dinamicamente ou cards.
       ====================================================== -->
-      <div class="spaces-grid">
+      <div class="spaces-grid" id="spacesGrid">
 
         <article class="card card-hover card-space">
           <div class="card-feature__icon">
@@ -91,10 +88,10 @@
           </div>
 
           <h3 class="card-space__title">
-            Espaço 1 (Exemplo)
+            Espaço Principal
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7z"/><path d="M5 20h14"/></svg>
           </h3>
-          <p class="card-space__desc">Descrição do espaço</p>
+          <p class="card-space__desc">Laboratório Maker Principal</p>
 
           <div class="card-space__meta">
             <span class="card-space__role">
@@ -107,8 +104,6 @@
             </span>
           </div>
 
-          <!-- Aponta para o dashboard geral, já que ainda não existe um
-               painel por espaço nesta entrega. -->
           <a href="dashboard.html" class="btn btn-primary btn-block card-space__cta">
             Abrir console
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
@@ -118,6 +113,66 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal Criar Espaço -->
+  <div class="modal-overlay" id="modalEspaco">
+    <div class="modal">
+      <div class="modal__head">
+        <h2 class="modal__title">Criar Novo Espaço</h2>
+        <button class="modal__close" type="button" id="btnFecharModalEspaco" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="formEspaco">
+        <div class="modal__body">
+          <div class="form-group">
+            <label class="form-label" for="novoEspacoNome">Nome do Espaço</label>
+            <input class="form-input" type="text" id="novoEspacoNome" name="nome" placeholder="Ex: Laboratório Maker A" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoEspacoResponsavel">Responsável (opcional)</label>
+            <input class="form-input" type="text" id="novoEspacoResponsavel" name="responsavel" placeholder="Ex: Prof. Silva">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoEspacoStatus">Status</label>
+            <select class="form-select" id="novoEspacoStatus" name="status">
+              <option value="Ativo" selected>Ativo</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" id="btnCancelarModalEspaco">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar Espaço</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Ingressar em Espaço -->
+  <div class="modal-overlay" id="modalIngressar">
+    <div class="modal">
+      <div class="modal__head">
+        <h2 class="modal__title">Ingressar em um Espaço</h2>
+        <button class="modal__close" type="button" id="btnFecharModalIngressar" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="formIngressarEspaco">
+        <div class="modal__body">
+          <p style="margin-bottom: 1rem;">Digite o código de convite ou ID do espaço para o qual deseja ingressar.</p>
+          <div class="form-group">
+            <label class="form-label" for="codigoEspaco">Código do Espaço</label>
+            <input class="form-input" type="text" id="codigoEspaco" name="codigo" placeholder="Ex: 4429AD ou ID do Espaço" required>
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" id="btnCancelarModalIngressar">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Ingressar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>

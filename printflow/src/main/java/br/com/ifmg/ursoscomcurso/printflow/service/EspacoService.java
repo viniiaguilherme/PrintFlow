@@ -6,6 +6,8 @@ import br.com.ifmg.ursoscomcurso.printflow.dto.EspacoResponseDTO;
 import br.com.ifmg.ursoscomcurso.printflow.exception.RecursoNaoEncontradoException;
 import br.com.ifmg.ursoscomcurso.printflow.exception.RegraNegocioException;
 import br.com.ifmg.ursoscomcurso.printflow.repository.EspacoRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ public class EspacoService {
     @Autowired
     private EspacoRepository espacoRepository;
 
+    @Transactional(readOnly = true)
     public List<EspacoResponseDTO> listarTodos() {
         return espacoRepository.findAll()
                 .stream()
@@ -24,12 +27,14 @@ public class EspacoService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public EspacoResponseDTO buscarPorId(Long id) {
         return espacoRepository.findById(id)
                 .map(EspacoResponseDTO::fromEntity)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Espaço não encontrado com o ID: " + id));
     }
-
+    
+    @Transactional 
     public EspacoResponseDTO salvar(EspacoRequestDTO dto) {
         if (espacoRepository.findByNome(dto.nome()).isPresent()) {
             throw new RegraNegocioException("Espaço com este nome já cadastrado!");
@@ -44,6 +49,7 @@ public class EspacoService {
         return EspacoResponseDTO.fromEntity(salvo);
     }
 
+    @Transactional
     public void deletarPorId(Long id) {
         if (!espacoRepository.existsById(id)) {
             throw new RecursoNaoEncontradoException("Espaço não encontrado com o ID: " + id);

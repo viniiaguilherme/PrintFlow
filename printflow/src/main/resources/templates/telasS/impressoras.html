@@ -48,6 +48,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           Configurações
         </a>
+        <a href="alerta.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 01-3.46 0" />
+          </svg>
+          Alertas
+        </a>
       </nav>
 
       <div class="sidebar__footer">
@@ -118,20 +125,15 @@
             <p>3 impressora(s) · gerencie filamentos disponíveis.</p>
           </div>
           <div class="dashboard-head__actions">
-            <!-- Funcionalidade ainda não implementada: por enquanto apenas
-                 exibe um aviso (mesmo padrão usado nos links da sidebar). -->
-            <button type="button" class="btn btn-primary" data-feature-toast>
+            <button type="button" class="btn btn-primary" id="btnAbrirModalImpressora">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Adicionar impressora
             </button>
           </div>
         </div>
 
-        <!-- Grid da frota: cada card representa uma impressora e os
-             filamentos carregados nela no momento. Dados de exemplo apenas
-             para ilustrar o layout — a listagem real virá do backend em
-             uma próxima entrega. -->
-        <div class="printers-grid">
+        <!-- Grid da frota -->
+        <div class="printers-grid" id="printersGrid">
 
           <article class="card card-printer">
             <div class="card-printer__head">
@@ -164,6 +166,38 @@
 
         </div>
       </main>
+    </div>
+  </div>
+
+  <!-- Modal Adicionar Impressora -->
+  <div class="modal-overlay" id="modalImpressora">
+    <div class="modal">
+      <div class="modal__head">
+        <h2 class="modal__title">Adicionar Impressora</h2>
+        <button class="modal__close" type="button" id="btnFecharModalImpressora" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="formImpressora">
+        <div class="modal__body">
+          <div class="form-group">
+            <label class="form-label" for="novaImpressoraNome">Nome da Impressora</label>
+            <input class="form-input" type="text" id="novaImpressoraNome" name="nome" placeholder="Ex: Bambu-X1, Ender 3" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novaImpressoraModelo">Modelo</label>
+            <input class="form-input" type="text" id="novaImpressoraModelo" name="modelo" placeholder="Ex: FDM / CoreXY" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novaImpressoraMaterial">Material Padrão</label>
+            <input class="form-input" type="text" id="novaImpressoraMaterial" name="material" placeholder="Ex: PLA, PETG, ABS">
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" id="btnCancelarModalImpressora">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Cadastrar Impressora</button>
+        </div>
+      </form>
     </div>
   </div>
 

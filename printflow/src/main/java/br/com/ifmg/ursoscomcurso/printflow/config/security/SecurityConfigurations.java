@@ -22,16 +22,33 @@ public class SecurityConfigurations {
     private SecurityFilter securityFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
+    public SecurityFilterChain securityChain(HttpSecurity http) throws Exception {
+        return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/printflow/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/printflow/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers("/", "/login", "/cadastro", "/dashboard", "/impressoras", "/usuarios", "/espacos", "/fila", "/configuracoes", "/telasS/**", "/css/**", "/js/**", "/style.css", "/script.js", "/*.html", "/*.css", "/*.js").permitAll()
+                        // 1. Rotas públicas (estáticos, auth e views de templates HTML)
+                        .requestMatchers("/", "/index", "/index.html", "/login", "/login.html", "/cadastro", "/cadastro.html").permitAll()
+                        .requestMatchers("/printflow/auth/login", "/printflow/auth/register", "/auth/login", "/auth/register").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/web/**", "/style.css", "/script.js", "/*.html", "/*.css", "/*.js", "/telasS/**").permitAll()
+                        // Views HTML permitidas para que o JS da página possa ler o token do localStorage e redirecionar se não autenticado
+                        .requestMatchers("/dashboard", "/dashboard.html", "/impressoras", "/impressoras.html", "/usuarios", "/usuarios.html", "/espacos", "/espacos.html", "/fila", "/fila.html", "/configuracoes", "/configuracoes.html", "/perfil", "/perfil.html", "/alerta", "/alerta.html").permitAll()
+
+                        // 2. Permissões de APIs REST autenticadas
+                        .requestMatchers(HttpMethod.GET, "/espaco", "/espaco/**").hasAnyRole("MAKER", "OPERADOR", "ADMINISTRADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/espaco", "/espaco/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/espaco", "/espaco/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/espaco", "/espaco/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/impressora", "/impressora/**").hasAnyRole("MAKER", "OPERADOR", "ADMINISTRADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/impressora", "/impressora/**").hasAnyRole("OPERADOR", "ADMINISTRADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/impressora", "/impressora/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
+
+                        .requestMatchers("/usuario", "/usuario/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
+
+                        .requestMatchers("/api/estatisticas/**").hasAnyRole("MAKER", "OPERADOR", "ADMINISTRADOR", "ADMIN")
+
+                        // Qualquer outra requisição de API exige autenticação
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -48,3 +65,4 @@ public class SecurityConfigurations {
         return new BCryptPasswordEncoder();
     }
 }
+

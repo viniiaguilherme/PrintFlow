@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alertas — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- EmailJS SDK para simulação de envio de alertas por e-mail -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- Fundo escuro exibido atrás da sidebar quando aberta no mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar__brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+          </svg>
+        </span>
+        PrintFlow
+      </a>
+
+      <div class="sidebar__section-label">Controle</div>
+      <nav class="sidebar__nav">
+        <a href="dashboard.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+          Painel
+        </a>
+        <a href="fila.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          Fila de Impressão
+        </a>
+        <a href="impressoras.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+          Impressoras
+        </a>
+        <a href="usuarios.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Usuários
+        </a>
+        <a href="configuracoes.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Configurações
+        </a>
+        <a href="alerta.html" class="sidebar__link is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 01-3.46 0" />
+          </svg>
+          Alertas
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="sidebar__status">
+          <span class="status-dot"></span>
+          Sistema online
+        </div>
+        <div class="sidebar__version">v0.1.0 · PrintFlow</div>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         ÁREA PRINCIPAL (TOPBAR + CONTEÚDO)
+    ====================================================== -->
+    <div class="dashboard-content">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <div class="topbar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" placeholder="Buscar alertas, erros, eventos...">
+          </div>
+        </div>
+
+        <div class="topbar__actions">
+          <div class="dropdown">
+            <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+            <div class="dropdown__menu" id="avatarMenu">
+              <a href="perfil.html" class="dropdown__item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                Perfil
+              </a>
+              <a href="espacos.html" class="dropdown__item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Meus espaços
+              </a>
+              <div class="dropdown__divider"></div>
+              <button class="dropdown__item" type="button" id="logoutButton">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTEÚDO PRINCIPAL -->
+      <main class="dashboard-main">
+        <div class="dashboard-head">
+          <div>
+            <span class="eyebrow">// NOTIFICAÇÕES & ALERTAS</span>
+            <h1>Alertas do Sistema</h1>
+            <p>Monitore falhas de impressão, escassez de filamento e avisos em tempo real.</p>
+          </div>
+          <div class="dashboard-head__actions">
+            <button type="button" class="btn btn-primary" onclick="simularAlerta()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 003-3V9a7 7 0 0114 0v5a3 3 0 003 3zm-9 4a2 2 0 01-2 2 2 2 0 01-2-2"/></svg>
+              Enviar E-mail de Teste
+            </button>
+          </div>
+        </div>
+
+        <!-- Métrica resumida de alertas -->
+        <div class="stats-grid" style="margin-bottom: var(--space-6);">
+          <div class="card card-stat">
+            <div class="card-stat__head">
+              <span class="card-stat__icon card-stat__icon--warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              <span class="badge badge-warning">Ativo</span>
+            </div>
+            <div class="card-stat__body">
+              <span class="card-stat__value">2</span>
+              <span class="card-stat__label">Alertas pendentes</span>
+            </div>
+          </div>
+
+          <div class="card card-stat">
+            <div class="card-stat__head">
+              <span class="card-stat__icon card-stat__icon--info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              </span>
+              <span class="badge badge-info">E-mail</span>
+            </div>
+            <div class="card-stat__body">
+              <span class="card-stat__value">EmailJS</span>
+              <span class="card-stat__label">Serviço configurado</span>
+            </div>
+          </div>
+
+          <div class="card card-stat">
+            <div class="card-stat__head">
+              <span class="card-stat__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+              </span>
+              <span class="badge badge-success">Operacional</span>
+            </div>
+            <div class="card-stat__body">
+              <span class="card-stat__value">100%</span>
+              <span class="card-stat__label">Disponibilidade</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de Alertas Ativos -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-5);">
+            <h3>Histórico de Eventos & Alertas</h3>
+            <span class="form-hint">Ordenado por mais recentes</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap: var(--space-3);">
+
+            <!-- Alerta 1 -->
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; padding: var(--space-4); background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-md); gap: var(--space-4);">
+              <div style="display:flex; gap: var(--space-3); align-items:flex-start;">
+                <span class="badge badge-danger" style="margin-top: 2px;">Crítico</span>
+                <div>
+                  <h4 style="font-size: .9375rem;">Falha de Extrusão — Ender 3 (Oficina B)</h4>
+                  <p style="font-size: .875rem; margin-top: 2px;">Bico impressor entupido detectado na camada #42. A impressão foi interrompida automaticamente.</p>
+                  <span style="font-size: .75rem; color: var(--color-text-tertiary); font-family: var(--font-mono); margin-top: 4px; display:block;">Hoje às 14:32</span>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="this.closest('div').style.opacity='0.5'; showToast('Resolvido', 'Alerta marcado como resolvido.');">Resolver</button>
+            </div>
+
+            <!-- Alerta 2 -->
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; padding: var(--space-4); background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-md); gap: var(--space-4);">
+              <div style="display:flex; gap: var(--space-3); align-items:flex-start;">
+                <span class="badge badge-warning" style="margin-top: 2px;">Aviso</span>
+                <div>
+                  <h4 style="font-size: .9375rem;">Pouco Filamento — Bambu-X1</h4>
+                  <p style="font-size: .875rem; margin-top: 2px;">Restam menos de 15% do rolo de PETG Carbon. Considere substituir o carretel antes da próxima fila.</p>
+                  <span style="font-size: .75rem; color: var(--color-text-tertiary); font-family: var(--font-mono); margin-top: 4px; display:block;">Hoje às 11:15</span>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="this.closest('div').style.opacity='0.5'; showToast('Resolvido', 'Alerta marcado como resolvido.');">Resolver</button>
+            </div>
+
+            <!-- Alerta 3 -->
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; padding: var(--space-4); background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-md); gap: var(--space-4);">
+              <div style="display:flex; gap: var(--space-3); align-items:flex-start;">
+                <span class="badge badge-success" style="margin-top: 2px;">Sucesso</span>
+                <div>
+                  <h4 style="font-size: .9375rem;">Impressão Concluída — Suporte_Engrenagem_V2</h4>
+                  <p style="font-size: .875rem; margin-top: 2px;">Trabalho concluído com sucesso em 2h 45m na impressora Prusa i3 MK3S+.</p>
+                  <span style="font-size: .75rem; color: var(--color-text-tertiary); font-family: var(--font-mono); margin-top: 4px; display:block;">Ontem às 18:20</span>
+                </div>
+              </div>
+              <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.6;">Concluído</button>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

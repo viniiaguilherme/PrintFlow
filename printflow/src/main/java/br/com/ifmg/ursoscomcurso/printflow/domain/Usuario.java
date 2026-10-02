@@ -1,5 +1,6 @@
 package br.com.ifmg.ursoscomcurso.printflow.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.ifmg.ursoscomcurso.printflow.dto.UsuarioRole;
 
-@Entity(name = "usuarios")
+@Entity
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
 
@@ -25,11 +26,17 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String senha;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UsuarioRole role;
 
     public Usuario() {}
@@ -94,6 +101,7 @@ public class Usuario implements UserDetails {
         if (this.role == UsuarioRole.ADMINISTRADOR) {
             return List.of(
                 new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"),
                 new SimpleGrantedAuthority("ROLE_OPERADOR"),
                 new SimpleGrantedAuthority("ROLE_MAKER"),
                 new SimpleGrantedAuthority("ROLE_USER")
@@ -145,13 +153,12 @@ public class Usuario implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id);
+        if (!(o instanceof Usuario usuario)) return false;
+        return id != null && Objects.equals(id, usuario.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return getClass().hashCode();
     }
 }

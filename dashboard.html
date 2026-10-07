@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
-   <link rel="icon" type="image/png" href="assets/logo-icon.png">
+  <link rel="icon" type="image/png" href="assets/logo-icon.png">
 </head>
 <body>
 
@@ -85,7 +85,7 @@
         <div class="topbar__actions">
           <div class="dropdown">
             <!--<button class="btn-icon topbar__icon-btn" id="notifButton" aria-label="Notificações">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0z"/></svg>
               <span class="notif-dot"></span>
             </button> -->
             <div class="dropdown__menu" id="notifMenu">
@@ -247,6 +247,41 @@
             </div>
           </div>
         </div>
+
+        <!-- Estatísticas por usuário (só visualização, sem gerenciamento) -->
+        <div class="dashboard-head" style="margin-top: var(--space-7);">
+          <div>
+            <span class="eyebrow">// EQUIPE</span>
+            <h2 style="font-size: 1.5rem; margin-top: var(--space-2);">Desempenho dos usuários</h2>
+          </div>
+        </div>
+
+        <div class="table-toolbar">
+          <div class="search-field" style="max-width: 360px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="form-input" type="text" id="dashUserSearch" placeholder="Buscar membros...">
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table" id="dashUserTable">
+            <thead>
+              <tr>
+                <th>Membro</th>
+                <th>Adicionadas na fila</th>
+                <th>Adicionadas</th>
+                <th>Removidas</th>
+                <th>Filamento usado</th>
+                <th>Total de impressões</th>
+              </tr>
+            </thead>
+            <tbody id="dashUserTableBody">
+              <tr>
+                <td colspan="6" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Carregando membros...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </main>
     </div>
   </div>
@@ -260,5 +295,86 @@
   <script src="js/supabase-client.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/script.js"></script>
+  <script>
+    // Tabela de desempenho por usuário (membros do espaço + contadores do banco)
+    document.addEventListener('DOMContentLoaded', function () {
+      var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
+      var tbody = document.getElementById('dashUserTableBody');
+      var searchInput = document.getElementById('dashUserSearch');
+
+      // Sem espaço na URL o script.js já avisa e redireciona
+      if (!espacoId) return;
+
+      function escapeHtml(texto) {
+        var div = document.createElement('div');
+        div.textContent = texto == null ? '' : String(texto);
+        return div.innerHTML;
+      }
+
+      function fmtFilamento(g) {
+        g = Number(g) || 0;
+        var opcoes = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+        return g >= 1000
+          ? (g / 1000).toLocaleString('pt-BR', opcoes) + ' kg'
+          : g.toLocaleString('pt-BR', opcoes) + ' g';
+      }
+
+      function renderMembros(membros, estatisticas) {
+        tbody.innerHTML = '';
+
+        if (!membros || membros.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Nenhum membro encontrado.</td></tr>';
+          return;
+        }
+
+        var porUsuario = {};
+        (estatisticas || []).forEach(function (e) { porUsuario[e.usuario_id] = e; });
+
+        membros.forEach(function (membro) {
+          var s = porUsuario[membro.usuario_id] || {};
+          var tr = document.createElement('tr');
+          tr.dataset.name = (membro.nome + ' ' + membro.email).toLowerCase();
+
+          tr.innerHTML =
+            '<td><div style="display:flex; align-items:center; gap: var(--space-3);">' +
+              '<span class="avatar avatar-sm">' + escapeHtml(calcularIniciais(membro.nome)) + '</span>' +
+              '<div>' +
+                '<div style="color: var(--color-text-primary); font-weight: 500;">' + escapeHtml(membro.nome) + '</div>' +
+                '<div style="font-size: .8125rem;">' + escapeHtml(membro.email) + '</div>' +
+              '</div>' +
+            '</div></td>' +
+            '<td>' + (s.na_fila || 0) + '</td>' +
+            '<td>' + (s.adicionadas || 0) + '</td>' +
+            '<td>' + (s.removidas || 0) + '</td>' +
+            '<td>' + fmtFilamento(s.filamento_g) + '</td>' +
+            '<td>' + (s.total || 0) + '</td>';
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      Promise.all([
+        supabaseClient.rpc('membros_espaco', { p_espaco_id: espacoId }),
+        supabaseClient.rpc('estatisticas_usuarios_espaco', { p_espaco_id: espacoId })
+      ]).then(function (r) {
+        if (r[0].error || r[1].error) {
+          showToast('Erro', 'Não foi possível carregar as estatísticas dos usuários.', 'error');
+          tbody.innerHTML = '<tr><td colspan="6" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Não foi possível carregar os dados.</td></tr>';
+          return;
+        }
+        renderMembros(r[0].data, r[1].data);
+      });
+
+      // Busca por nome/e-mail — filtra as linhas já carregadas.
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          var term = searchInput.value.trim().toLowerCase();
+          tbody.querySelectorAll('tr[data-name]').forEach(function (row) {
+            row.style.display = (!term || row.dataset.name.indexOf(term) !== -1) ? '' : 'none';
+          });
+        });
+      }
+    });
+  </script>
 </body>
 </html>

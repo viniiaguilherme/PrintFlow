@@ -577,6 +577,8 @@ document.addEventListener('DOMContentLoaded', function () {
      -------------------------------------------------------------------------
      Conta só os membros do espaço atual (via ?espaco_id=) — antes contava
      TODOS os usuários cadastrados no sistema, de qualquer espaço.
+     Os totais de impressões e de filamento por usuário ficam agora na
+     tabela de desempenho do dashboard.html.
      ======================================================================= */
   if (document.getElementById("estatisticaMembros")) {
     var espacoIdUsuarios = new URLSearchParams(window.location.search).get('espaco_id');
@@ -595,8 +597,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById("estatisticaMembros").textContent = dados.total_membros;
         document.getElementById("estatisticaAtivos").textContent = dados.ativos_agora;
-        document.getElementById("estatisticaImpressoesUsuarios").textContent = dados.total_impressoes;
-        document.getElementById("estatisticaFilamentoUsuarios").textContent = dados.filamento_usado_kg + " kg";
       });
     }
   }

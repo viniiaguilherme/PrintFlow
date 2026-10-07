@@ -164,7 +164,15 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!ok) return;
     }
     if (acao === 'remover') {
-      if (!window.confirm('Remover esta impressão da fila?')) return;
+      var linhaRemover = b.closest('.job-row');
+      var nomeRemover = linhaRemover ? linhaRemover.querySelector('.job-row__title').textContent : 'esta impressão';
+      var confirmarRemocao = await confirmarAcao({
+        titulo: 'Remover impressão',
+        mensagem: 'Remover "' + nomeRemover + '" da fila?',
+        textoConfirmar: 'Remover',
+        perigo: true
+      });
+      if (!confirmarRemocao) return;
       r = await supabaseClient.rpc('remover_impressao', { p_impressao_id: id });
     } else {
       r = await supabaseClient.rpc('atualizar_status_impressao', { p_impressao_id: id, p_status: acao });

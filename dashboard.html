@@ -6,6 +6,53 @@
   <title>Dashboard — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="assets/logo-icon.png">
+  <style>
+    /* Os dois cards do meio ocupam exatamente metade cada (minmax(0,1fr) impede que o conteúdo alargue um deles) */
+    @media (min-width: 1081px) {
+      .charts-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* Histórico de impressões dentro do card, com barra de rolagem própria */
+    .hist-scroll {
+      height: 260px;
+      overflow-y: auto;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-elevated);
+    }
+
+    .hist-scroll .job-row {
+      grid-template-columns: 24px 40px minmax(0, 1fr) auto;
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .hist-scroll .job-row__subtitle {
+      white-space: normal;
+    }
+
+    /* Linhas apagadinhas, igual ao histórico da fila */
+    .job-row--history {
+      opacity: .55;
+      transition: opacity var(--transition-fast);
+    }
+
+    .job-row--history:hover {
+      opacity: .85;
+    }
+
+    .hist-empty {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-6);
+      font-size: .875rem;
+      color: var(--color-text-tertiary);
+    }
+  </style>
 </head>
 <body>
 
@@ -222,14 +269,13 @@
           <div class="card">
             <div class="chart-card__head">
               <div>
-                <div class="chart-card__title">Atividade de impressão</div>
-                <div class="chart-card__subtitle">Últimos 7 dias</div>
+                <div class="chart-card__title">Histórico de impressões</div>
+                <div class="chart-card__subtitle">Impressões concluídas, da mais recente para a mais antiga</div>
               </div>
-              <span class="badge badge-neutral">Sem dados</span>
+              <span class="badge badge-neutral" id="histBadge">Carregando</span>
             </div>
-            <div class="chart-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-              <span>Nenhum dado disponível ainda. O gráfico será exibido aqui assim que houver impressões registradas.</span>
+            <div class="hist-scroll" id="histLista">
+              <div class="hist-empty">Carregando histórico...</div>
             </div>
           </div>
 
@@ -374,6 +420,79 @@
           });
         });
       }
+    });
+  </script>
+  <script>
+    // Histórico de impressões do espaço (mesmos dados do histórico da fila), no card do meio
+    document.addEventListener('DOMContentLoaded', function () {
+      var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
+      var lista = document.getElementById('histLista');
+      var badge = document.getElementById('histBadge');
+      if (!espacoId || !lista) return;
+
+      function esc(t) {
+        var d = document.createElement('div');
+        d.textContent = t == null ? '' : String(t);
+        return d.innerHTML;
+      }
+
+      function fmtG(n) {
+        return Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' g';
+      }
+
+      function fmtData(iso) {
+        if (!iso) return null;
+        return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      }
+
+      function linha(j, i, nomesImpressoras) {
+        var impressora = nomesImpressoras[j.impressora_id];
+        var quando = fmtData(j.concluido_em);
+        var linha1 = [
+          impressora ? 'Impressora ' + impressora : null,
+          j.peso_g ? fmtG(j.peso_g) : null,
+          j.camada_mm ? j.camada_mm + 'mm' : null,
+          quando ? 'concluída em ' + quando : null
+        ].filter(Boolean).join(' · ');
+        var linha2 = 'Na fila: ' + (j.autor || '—') +
+          ' · Enviou: ' + (j.enviado_por_nome || '—') +
+          ' · Retirou: ' + (j.arquivado_por_nome || '—');
+
+        return '<div class="job-row job-row--history">' +
+          '<span class="job-row__index">' + String(i + 1).padStart(2, '0') + '</span>' +
+          '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
+          '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
+            '<div class="job-row__subtitle">' + esc(linha1) + '</div>' +
+            '<div class="job-row__subtitle">' + esc(linha2) + '</div></div>' +
+          '<span class="badge badge-success">Concluído</span></div>';
+      }
+
+      Promise.all([
+        supabaseClient.rpc('listar_impressoras', { p_espaco_id: espacoId }),
+        supabaseClient.rpc('listar_impressoes', { p_espaco_id: espacoId })
+      ]).then(function (r) {
+        if (r[0].error || r[1].error) {
+          lista.innerHTML = '<div class="hist-empty">Não foi possível carregar o histórico.</div>';
+          badge.textContent = 'Erro';
+          return;
+        }
+
+        var nomes = {};
+        (r[0].data || []).forEach(function (imp) { nomes[imp.id] = imp.nome; });
+
+        var historico = (r[1].data || []).filter(function (j) { return !!j.arquivado_em; }).sort(function (a, b) {
+          return new Date(b.concluido_em || 0) - new Date(a.concluido_em || 0);
+        });
+
+        badge.textContent = historico.length ? historico.length + ' concluída(s)' : 'Sem dados';
+
+        if (!historico.length) {
+          lista.innerHTML = '<div class="hist-empty">Nenhuma impressão no histórico ainda. As impressões concluídas e enviadas para o histórico aparecem aqui.</div>';
+          return;
+        }
+
+        lista.innerHTML = historico.map(function (j, i) { return linha(j, i, nomes); }).join('');
+      });
     });
   </script>
 </body>

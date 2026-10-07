@@ -71,6 +71,16 @@
       gap: var(--space-3);
     }
 
+    /* Histórico: linhas apagadinhas */
+    .job-row--history {
+      opacity: .55;
+      transition: opacity var(--transition-fast);
+    }
+
+    .job-row--history:hover {
+      opacity: .85;
+    }
+
     /* Lista de escolha de impressora (modal "Enviar para impressora") */
     .pick-list {
       display: flex;
@@ -251,6 +261,9 @@
 
         <!-- Fila geral: impressões que ainda não foram para uma impressora -->
         <div id="queueGroups"></div>
+
+        <!-- Histórico de impressões: concluídas que já saíram da impressora -->
+        <div id="queueHistory" style="margin-top: var(--space-6);"></div>
 
         <p class="text-muted" id="queueEmptyState" style="text-align:center; padding: var(--space-6) 0; display:none;">
           Nenhum trabalho encontrado para essa busca.

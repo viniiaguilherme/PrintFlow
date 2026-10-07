@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
   var container = document.getElementById('queueGroups');
   var slotsEl = document.getElementById('printerSlots');
+  var historicoEl = document.getElementById('queueHistory');
   var resumo = document.getElementById('queueSummary');
   var emptyState = document.getElementById('queueEmptyState');
   var searchInput = document.getElementById('queueSearch');
@@ -71,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (j.status === 'na-fila') return btn(j, 'imprimindo', 'play', 'Iniciar') + btn(j, 'remover', 'trash-2', 'Remover', true);
       if (j.status === 'pausado') return btn(j, 'imprimindo', 'play', 'Retomar') + btn(j, 'remover', 'x', 'Cancelar', true);
       if (j.status === 'erro') return btn(j, 'devolver', 'refresh-cw', 'Devolver à fila') + btn(j, 'remover', 'trash-2', 'Remover', true);
+      if (j.status === 'concluido') return btn(j, 'arquivar', 'arrow-down', 'Enviar para o histórico');
       return '';
     }
     return (j.meu && j.status === 'na-fila') ? btn(j, 'remover', 'trash-2', 'Remover', true) : '';
@@ -98,9 +100,32 @@ document.addEventListener('DOMContentLoaded', function () {
         '<div class="job-row__actions">' + acoesFila(j) + '</div></div></div>';
   }
 
+  /* ---------- Histórico (concluídas enviadas para baixo) ---------- */
+  function fmtData(iso) {
+    if (!iso) return null;
+    return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function linhaHistorico(j, i) {
+    var quando = fmtData(j.concluido_em);
+    var sub = [subtitulo(j), quando ? 'concluída em ' + quando : null].filter(Boolean).join(' · ');
+    return '<div class="job-row job-row--history" data-status="concluido" data-title="' + esc((j.titulo + ' ' + (j.autor || '')).toLowerCase()) + '">' +
+      '<span class="job-row__handle" aria-hidden="true" style="visibility:hidden;">' + HANDLE + '</span>' +
+      '<span class="job-row__index">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
+      '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
+        '<div class="job-row__subtitle">' + esc(sub) + '</div></div>' +
+      '<span class="job-row__color">' + esc(j.cor || '—') + '</span>' +
+      '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill" style="width:100%;"></div></div>' +
+        '<span class="job-progress__pct">100%</span></div></div>' +
+      '<span class="job-row__time">' + fmtTempo(j.tempo_min, 'concluido') + '</span>' +
+      '<div style="display:flex; align-items:center; gap: var(--space-3);"><span class="badge badge-success">Concluído</span>' +
+        '<div class="job-row__actions"></div></div></div>';
+  }
+
   /* ---------- Cards das impressoras ---------- */
   function jobDaImpressora(imp) {
-    return jobs.find(function (j) { return j.impressora_id === imp.id && j.status !== 'concluido'; }) || null;
+    return jobs.find(function (j) { return j.impressora_id === imp.id && !j.arquivado_em; }) || null;
   }
 
   function slotJob(j) {
@@ -125,12 +150,15 @@ document.addEventListener('DOMContentLoaded', function () {
     return '<article class="card card-printer slot-card">' +
       '<div class="card-printer__head"><div class="card-printer__icon">' + PRINTER_ICON + '</div>' +
         '<div><h3 class="card-printer__name">' + esc(imp.nome) + '</h3>' +
-        '<span class="card-printer__count"><span class="status-dot' + (dot ? ' status-dot--' + dot : '') + '" style="display:inline-block; margin-right:6px;"></span>' + (j ? 'Ocupada' : 'Livre') + '</span></div></div>' +
+        '<span class="card-printer__count"><span class="status-dot' + (dot ? ' status-dot--' + dot : '') + '" style="display:inline-block; margin-right:6px;"></span>' + (j ? (j.status === 'concluido' ? 'Concluída' : 'Ocupada') : 'Livre') + '</span></div></div>' +
       (j ? slotJob(j) : '<div class="slot-empty">Sem nenhuma impressão</div>') + '</article>';
   }
 
   function render() {
-    var fila = jobs.filter(function (j) { return !j.impressora_id; });
+    var fila = jobs.filter(function (j) { return !j.impressora_id && !j.arquivado_em; });
+    var historico = jobs.filter(function (j) { return !!j.arquivado_em; }).sort(function (a, b) {
+      return new Date(b.concluido_em || 0) - new Date(a.concluido_em || 0);
+    });
     var imprimindo = jobs.filter(function (j) { return j.status === 'imprimindo'; }).length;
     resumo.textContent = fila.length + ' na fila · ' + imprimindo + ' imprimindo agora';
 
@@ -147,13 +175,21 @@ document.addEventListener('DOMContentLoaded', function () {
       (fila.length ? '<div class="printer-group__rows">' + fila.map(linha).join('') + '</div>'
                    : '<div class="printer-group__empty">Fila vazia</div>') + '</div>';
 
+    // Histórico (mais recentes primeiro)
+    historicoEl.innerHTML = '<div class="printer-group"><div class="printer-group__header">' +
+      '<span class="status-dot status-dot--idle"></span>' +
+      '<span class="printer-group__name">Histórico de impressões</span>' +
+      '<span class="printer-group__meta">' + historico.length + ' concluída(s)</span></div>' +
+      (historico.length ? '<div class="printer-group__rows">' + historico.map(linhaHistorico).join('') + '</div>'
+                        : '<div class="printer-group__empty">Nenhuma impressão no histórico</div>') + '</div>';
+
     renderizarIconesLucide();
     aplicarFiltros();
   }
 
   function aplicarFiltros() {
     var termo = (searchInput.value || '').trim().toLowerCase();
-    var rows = container.querySelectorAll('.job-row');
+    var rows = document.querySelectorAll('#queueGroups .job-row, #queueHistory .job-row');
     var algum = false;
     rows.forEach(function (r) {
       var ok = !termo || r.dataset.title.indexOf(termo) !== -1;
@@ -192,6 +228,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var r;
 
     if (acao === 'enviar') { abrirSelecao(job); return; }
+
+    if (acao === 'arquivar') {
+      r = await supabaseClient.rpc('arquivar_impressao', { p_impressao_id: id });
+      if (r.error) { showToast('Erro', esc(r.error.message), 'error'); return; }
+      showToast('Histórico', '"' + esc(nome) + '" foi para o histórico e a impressora está livre.', 'success');
+      carregar();
+      return;
+    }
 
     if (acao === 'concluido') {
       var ok = await confirmarConclusao(nome);
@@ -387,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Devolve uma Promise<boolean>: true = Confirmar, false = Cancelar/fechar
   function confirmarConclusao(nomeModelo) {
     document.getElementById('concluirMsg').textContent =
-      'Marcar "' + nomeModelo + '" como concluída? O progresso vai para 100% e a impressora fica livre.';
+      'Marcar "' + nomeModelo + '" como concluída? O progresso vai para 100%. A impressora só fica livre quando você enviar a impressão para o histórico.';
     concluirOverlay.classList.add('is-open');
     document.getElementById('concluirConfirmar').focus();
     return new Promise(function (resolve) { concluirResolver = resolve; });

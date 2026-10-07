@@ -5,6 +5,8 @@
    Tudo filtrado pelo ?espaco_id= da URL. Carregar DEPOIS de js/script.js.
    RPCs usadas: listar_impressoras, listar_impressoes, adicionar_impressao,
    enviar_para_impressora, atualizar_status_impressao, remover_impressao.
+   Nova impressão: o .3mf é lido no navegador (js/leitor-3mf.js, precisa do
+   JSZip) e enviado ao bucket privado "impressoes" do Supabase Storage.
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', function () {
   var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ehGestor = !!d && (d.cargo === 'Dono' || d.cargo === 'Operador');
   });
 
-  var TIPOS = ['PLA', 'PETG', 'ABS', 'ASA', 'TPU', 'Nylon', 'Outro'];
+  var LIMITE_ARQUIVO = 50 * 1024 * 1024; // 50 MB (limite do bucket)
   var BADGES = {
     'imprimindo': ['badge-success', 'Imprimindo'],
     'na-fila': ['badge-info', 'Na fila'],
@@ -44,6 +46,25 @@ document.addEventListener('DOMContentLoaded', function () {
     var d = document.createElement('div');
     d.textContent = t == null ? '' : String(t);
     return d.innerHTML;
+  }
+
+  function fmtG(n) {
+    return Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' g';
+  }
+
+  // 1098 -> "18m 18s" | 4000 -> "1h 6m"
+  function fmtSeg(seg) {
+    var h = Math.floor(seg / 3600), m = Math.floor((seg % 3600) / 60), s = seg % 60;
+    var partes = [];
+    if (h) partes.push(h + 'h');
+    if (m) partes.push(m + 'm');
+    if (s && !h) partes.push(s + 's');
+    return partes.join(' ') || '0s';
+  }
+
+  function tempoJob(j) {
+    if (j.status !== 'concluido' && j.tempo_seg) return fmtSeg(j.tempo_seg);
+    return fmtTempo(j.tempo_min, j.status);
   }
 
   function fmtTempo(min, status) {
@@ -79,8 +100,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function subtitulo(j) {
-    return [j.autor || '—', j.peso_g ? j.peso_g + 'g' : null, j.camada_mm ? j.camada_mm + 'mm' : null]
+    return [j.autor || '—', j.peso_g ? fmtG(j.peso_g) : null, j.camada_mm ? j.camada_mm + 'mm' : null]
       .filter(Boolean).join(' · ');
+  }
+
+  // Descrição e filamentos (ex.: "PLA branco: 2,89 g"), exibidos abaixo do nome
+  function detalhesHtml(j) {
+    var html = '';
+    if (j.descricao) {
+      html += '<div class="job-row__subtitle" title="' + esc(j.descricao) + '">' + esc(j.descricao) + '</div>';
+    }
+    var fs = Array.isArray(j.filamentos) ? j.filamentos : [];
+    if (fs.length) {
+      html += '<div class="job-row__subtitle job-row__filaments">' + fs.map(function (f) {
+        var hex = /^#[0-9a-f]{6}$/i.test(f.cor_hex || '') ? f.cor_hex : null;
+        return '<span class="fil-item">' + (hex ? '<span class="fil-dot" style="background:' + hex + ';"></span>' : '') +
+          esc([f.tipo, f.nome].filter(Boolean).join(' ') + ': ' + fmtG(f.g)) + '</span>';
+      }).join('') + '</div>';
+    }
+    return html;
   }
 
   /* ---------- Fila geral (impressões sem impressora) ---------- */
@@ -91,11 +129,11 @@ document.addEventListener('DOMContentLoaded', function () {
       '<span class="job-row__index">' + String(i + 1).padStart(2, '0') + '</span>' +
       '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
       '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
-        '<div class="job-row__subtitle">' + esc(subtitulo(j)) + '</div></div>' +
+        '<div class="job-row__subtitle">' + esc(subtitulo(j)) + '</div>' + detalhesHtml(j) + '</div>' +
       '<span class="job-row__color">' + esc(j.cor || '—') + '</span>' +
       '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill" style="width:' + j.progresso + '%;"></div></div>' +
         '<span class="job-progress__pct">' + j.progresso + '%</span></div></div>' +
-      '<span class="job-row__time">' + fmtTempo(j.tempo_min, j.status) + '</span>' +
+      '<span class="job-row__time">' + tempoJob(j) + '</span>' +
       '<div style="display:flex; align-items:center; gap: var(--space-3);"><span class="badge ' + b[0] + '">' + b[1] + '</span>' +
         '<div class="job-row__actions">' + acoesFila(j) + '</div></div></div>';
   }
@@ -106,15 +144,30 @@ document.addEventListener('DOMContentLoaded', function () {
     return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
   }
 
+  function nomeImpressora(id) {
+    var imp = impressoras.find(function (i) { return i.id === id; });
+    return imp ? imp.nome : null;
+  }
+
   function linhaHistorico(j, i) {
     var quando = fmtData(j.concluido_em);
-    var sub = [subtitulo(j), quando ? 'concluída em ' + quando : null].filter(Boolean).join(' · ');
-    return '<div class="job-row job-row--history" data-status="concluido" data-title="' + esc((j.titulo + ' ' + (j.autor || '')).toLowerCase()) + '">' +
+    var linha1 = [
+      nomeImpressora(j.impressora_id) ? 'Impressora ' + nomeImpressora(j.impressora_id) : null,
+      j.peso_g ? fmtG(j.peso_g) : null,
+      j.camada_mm ? j.camada_mm + 'mm' : null,
+      quando ? 'concluída em ' + quando : null
+    ].filter(Boolean).join(' · ');
+    var linha2 = 'Na fila: ' + (j.autor || '—') +
+      ' · Enviou: ' + (j.enviado_por_nome || '—') +
+      ' · Retirou: ' + (j.arquivado_por_nome || '—');
+    return '<div class="job-row job-row--history" data-status="concluido" data-title="' +
+      esc((j.titulo + ' ' + (j.autor || '') + ' ' + (j.enviado_por_nome || '') + ' ' + (j.arquivado_por_nome || '') + ' ' + (nomeImpressora(j.impressora_id) || '')).toLowerCase()) + '">' +
       '<span class="job-row__handle" aria-hidden="true" style="visibility:hidden;">' + HANDLE + '</span>' +
       '<span class="job-row__index">' + String(i + 1).padStart(2, '0') + '</span>' +
       '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
       '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
-        '<div class="job-row__subtitle">' + esc(sub) + '</div></div>' +
+        '<div class="job-row__subtitle" title="' + esc(linha1) + '">' + esc(linha1) + '</div>' +
+        '<div class="job-row__subtitle" title="' + esc(linha2) + '">' + esc(linha2) + '</div></div>' +
       '<span class="job-row__color">' + esc(j.cor || '—') + '</span>' +
       '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill" style="width:100%;"></div></div>' +
         '<span class="job-progress__pct">100%</span></div></div>' +
@@ -136,11 +189,11 @@ document.addEventListener('DOMContentLoaded', function () {
     return '<div class="slot-job" data-id="' + j.id + '">' +
       '<div class="slot-job__top"><span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
         '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
-        '<div class="job-row__subtitle">' + esc(subtitulo(j)) + '</div></div></div>' +
+        '<div class="job-row__subtitle">' + esc(subtitulo(j)) + '</div>' + detalhesHtml(j) + '</div></div>' +
       '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill"' + fill + '></div></div>' +
         '<span class="job-progress__pct">' + j.progresso + '%</span></div></div>' +
       '<div class="slot-job__foot"><div class="slot-job__meta"><span class="badge ' + b[0] + '">' + b[1] + '</span>' +
-        '<span class="job-row__time">' + fmtTempo(j.tempo_min, j.status) + '</span></div>' +
+        '<span class="job-row__time">' + tempoJob(j) + '</span></div>' +
         '<div class="job-row__actions">' + acoesImpressora(j) + '</div></div></div>';
   }
 
@@ -251,6 +304,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       if (!confirmarRemocao) return;
       r = await supabaseClient.rpc('remover_impressao', { p_impressao_id: id });
+      if (!r.error && job && job.arquivo_path) {
+        // Limpeza do arquivo (best effort: o banco só deixa apagar arquivo que não está mais em uso)
+        supabaseClient.storage.from('impressoes').remove([job.arquivo_path]).catch(function () {});
+      }
     } else if (acao === 'devolver') {
       r = await supabaseClient.rpc('enviar_para_impressora', { p_impressao_id: id, p_impressora_id: null });
     } else {
@@ -328,49 +385,128 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape' && enviarOverlay.classList.contains('is-open')) fecharSelecao();
   });
 
-  /* ---------- Modal "Nova impressão" (sem escolher impressora) ---------- */
+  /* ---------- Modal "Nova impressão" (arquivo .3mf + 4 filamentos) ---------- */
   var modal = document.createElement('div');
   modal.innerHTML =
-    '<div class="modal-overlay" id="impressaoOverlay"><div class="modal">' +
+    '<div class="modal-overlay" id="impressaoOverlay"><div class="modal" style="max-width: 580px;">' +
       '<div class="modal__head"><h3 class="modal__title">Nova impressão</h3>' +
       '<button class="modal__close" type="button" id="impressaoClose" aria-label="Fechar"><i data-lucide="x"></i></button></div>' +
-      '<div class="modal__body"><form id="impressaoForm">' +
-        '<div class="form-group"><label class="form-label" for="impTitulo">Modelo</label>' +
-          '<input class="form-input" type="text" id="impTitulo" placeholder="Ex: Suporte de câmera" maxlength="80" required></div>' +
-        '<div class="form-row">' +
-          '<div class="form-group"><label class="form-label" for="impMaterial">Material</label>' +
-            '<select class="form-select" id="impMaterial"><option value="">Não informado</option>' +
-              TIPOS.map(function (t) { return '<option>' + t + '</option>'; }).join('') + '</select></div>' +
-          '<div class="form-group"><label class="form-label" for="impCor">Cor</label>' +
-            '<input class="form-input" type="text" id="impCor" placeholder="Ex: Branco" maxlength="40"></div>' +
-        '</div>' +
-        '<div class="form-row">' +
-          '<div class="form-group"><label class="form-label" for="impPeso">Peso (g)</label>' +
-            '<input class="form-input" type="number" id="impPeso" min="0" step="0.1" placeholder="38"></div>' +
-          '<div class="form-group"><label class="form-label" for="impCamada">Camada (mm)</label>' +
-            '<select class="form-select" id="impCamada"><option>0.12</option><option>0.16</option><option selected>0.2</option><option>0.28</option></select></div>' +
-        '</div>' +
-        '<div class="form-row">' +
-          '<div class="form-group" style="margin-bottom:0;"><label class="form-label" for="impHoras">Horas</label>' +
-            '<input class="form-input" type="number" id="impHoras" min="0" value="0"></div>' +
-          '<div class="form-group" style="margin-bottom:0;"><label class="form-label" for="impMinutos">Minutos</label>' +
-            '<input class="form-input" type="number" id="impMinutos" min="0" max="59" value="0"></div>' +
-        '</div></form></div>' +
+      '<div class="modal__body"><form id="impressaoForm" autocomplete="off">' +
+        '<div class="form-group"><label class="form-label" for="impTitulo">Nome da peça</label>' +
+          '<input class="form-input" type="text" id="impTitulo" placeholder="Ex: Chaveiro" maxlength="80" required></div>' +
+        '<div class="form-group"><label class="form-label" for="impDescricao">Descrição</label>' +
+          '<textarea class="form-textarea" id="impDescricao" rows="2" maxlength="300" placeholder="Opcional"></textarea></div>' +
+        '<div class="form-group"><label class="form-label" for="impArquivo">Arquivo .3mf (já fatiado no Bambu Studio)</label>' +
+          '<input class="form-input" type="file" id="impArquivo" accept=".3mf">' +
+          '<span class="form-hint" id="impArquivoStatus">O tempo e o filamento gasto são lidos automaticamente do arquivo.</span></div>' +
+        '<div class="file-summary" id="impResumo" style="display:none;"></div>' +
+        '<div class="form-group" style="margin-bottom:0;"><label class="form-label">Cor de cada filamento</label>' +
+          '<div class="fil-inputs">' +
+            [1, 2, 3, 4].map(function (n) {
+              return '<div class="fil-inputs__col"><label class="form-hint" for="impFil' + n + '">Filamento ' + n + '</label>' +
+                '<input class="form-input" type="text" id="impFil' + n + '" placeholder="-" maxlength="30"></div>';
+            }).join('') +
+          '</div>' +
+          '<span class="form-hint">Digite a cor de cada filamento usado. Deixe em branco para nenhuma (-).</span></div>' +
+      '</form></div>' +
       '<div class="modal__actions"><button type="button" class="btn btn-outline" id="impressaoCancelar">Cancelar</button>' +
-        '<button type="submit" form="impressaoForm" class="btn btn-primary">Adicionar à fila</button></div>' +
+        '<button type="submit" form="impressaoForm" class="btn btn-primary" id="impressaoSubmit" disabled style="opacity:.5; cursor:not-allowed;">Adicionar à fila</button></div>' +
     '</div></div>';
   document.body.appendChild(modal);
   renderizarIconesLucide();
 
   var overlay = document.getElementById('impressaoOverlay');
+  var arquivoInput = document.getElementById('impArquivo');
+  var arquivoStatus = document.getElementById('impArquivoStatus');
+  var resumoEl = document.getElementById('impResumo');
+  var submitBtn = document.getElementById('impressaoSubmit');
+  var STATUS_PADRAO = arquivoStatus.textContent;
+
+  var arquivoLido = null;        // dados extraídos do .3mf
+  var arquivoSelecionado = null; // o File em si
+  var enviando = false;
+
+  function filInput(n) { return document.getElementById('impFil' + n); }
+
+  function atualizarSubmit() {
+    var ok = !!arquivoLido && !enviando;
+    submitBtn.disabled = !ok;
+    submitBtn.style.opacity = ok ? '' : '.5';
+    submitBtn.style.cursor = ok ? '' : 'not-allowed';
+  }
+
+  // Mostra o que foi lido do arquivo; os nomes de cor digitados entram ao vivo
+  function atualizarResumo() {
+    if (!arquivoLido) { resumoEl.style.display = 'none'; resumoEl.innerHTML = ''; return; }
+
+    var linhas = arquivoLido.filamentos.map(function (f) {
+      var cor = filInput(f.slot).value.trim();
+      var nome = [f.tipo, cor].filter(Boolean).join(' ');
+      return '<div class="file-summary__fil"><span class="fil-dot" style="background:' + (f.hex || 'transparent') + ';"></span>' +
+        '<span class="file-summary__slot">Filamento ' + f.slot + '</span>' + esc(nome) + ': <strong>' + fmtG(f.g) + '</strong></div>';
+    }).join('');
+
+    resumoEl.innerHTML =
+      '<div class="file-summary__row"><span>Tempo de impressão</span><strong>' + fmtSeg(arquivoLido.tempoSeg) + '</strong></div>' +
+      '<div class="file-summary__row"><span>Filamento total</span><strong>' + fmtG(arquivoLido.pesoG) + '</strong></div>' +
+      '<div class="file-summary__fils">' + linhas + '</div>';
+    resumoEl.style.display = '';
+  }
+
+  function limparArquivo() {
+    arquivoLido = null;
+    arquivoSelecionado = null;
+    arquivoStatus.textContent = STATUS_PADRAO;
+    arquivoStatus.style.color = '';
+    atualizarResumo();
+    atualizarSubmit();
+  }
+
+  arquivoInput.addEventListener('change', function () {
+    limparArquivo();
+    var file = arquivoInput.files && arquivoInput.files[0];
+    if (!file) return;
+
+    if (!/\.3mf$/i.test(file.name)) {
+      arquivoStatus.textContent = 'Envie um arquivo .3mf.';
+      arquivoStatus.style.color = 'var(--color-danger)';
+      arquivoInput.value = '';
+      return;
+    }
+    if (file.size > LIMITE_ARQUIVO) {
+      arquivoStatus.textContent = 'Arquivo grande demais. O limite é 50 MB.';
+      arquivoStatus.style.color = 'var(--color-danger)';
+      arquivoInput.value = '';
+      return;
+    }
+
+    arquivoStatus.textContent = 'Lendo arquivo...';
+    lerArquivo3mf(file).then(function (dados) {
+      if (arquivoInput.files[0] !== file) return; // o usuário trocou de arquivo no meio
+      arquivoLido = dados;
+      arquivoSelecionado = file;
+      arquivoStatus.textContent = file.name;
+      arquivoStatus.style.color = '';
+      atualizarResumo();
+      atualizarSubmit();
+    }).catch(function (erro) {
+      arquivoStatus.textContent = erro.message;
+      arquivoStatus.style.color = 'var(--color-danger)';
+      arquivoInput.value = '';
+    });
+  });
+
+  [1, 2, 3, 4].forEach(function (n) { filInput(n).addEventListener('input', atualizarResumo); });
 
   function abrirModal() {
     overlay.classList.add('is-open');
     document.getElementById('impTitulo').focus();
   }
   function fecharModal() {
+    if (enviando) return;
     overlay.classList.remove('is-open');
     document.getElementById('impressaoForm').reset();
+    limparArquivo();
   }
 
   novaBtn.addEventListener('click', abrirModal);
@@ -378,29 +514,61 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('impressaoCancelar').addEventListener('click', fecharModal);
   overlay.addEventListener('click', function (e) { if (e.target === overlay) fecharModal(); });
 
+  function novoNomeArquivo() {
+    var id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(16).slice(2));
+    return espacoId + '/' + id + '.3mf';
+  }
+
   document.getElementById('impressaoForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     var titulo = document.getElementById('impTitulo').value.trim();
     if (!titulo) return;
+    if (!arquivoLido || !arquivoSelecionado) {
+      showToast('Atenção', 'Selecione o arquivo .3mf.', 'error');
+      return;
+    }
 
-    var peso = document.getElementById('impPeso').value;
-    var tempo = (Number(document.getElementById('impHoras').value) || 0) * 60 +
-                (Number(document.getElementById('impMinutos').value) || 0);
+    enviando = true;
+    submitBtn.textContent = 'Enviando...';
+    atualizarSubmit();
 
-    var r = await supabaseClient.rpc('adicionar_impressao', {
-      p_espaco_id: espacoId,
-      p_titulo: titulo,
-      p_material: document.getElementById('impMaterial').value || null,
-      p_cor: document.getElementById('impCor').value.trim() || null,
-      p_peso: peso ? Number(peso) : null,
-      p_camada: Number(document.getElementById('impCamada').value),
-      p_tempo_min: tempo || null
+    var filamentos = arquivoLido.filamentos.map(function (f) {
+      return { slot: f.slot, tipo: f.tipo, cor_hex: f.hex, nome: filInput(f.slot).value.trim() || null, g: f.g };
     });
-    if (r.error) { showToast('Erro', esc(r.error.message), 'error'); return; }
 
-    showToast('Sucesso', 'Impressão adicionada à fila!', 'success');
-    fecharModal();
-    carregar();
+    var caminho = novoNomeArquivo();
+    var bucket = supabaseClient.storage.from('impressoes');
+    var up = await bucket.upload(caminho, arquivoSelecionado, { contentType: 'application/octet-stream', upsert: false });
+
+    if (up.error) {
+      showToast('Erro', 'Não foi possível enviar o arquivo.', 'error');
+    } else {
+      var r = await supabaseClient.rpc('adicionar_impressao', {
+        p_espaco_id: espacoId,
+        p_titulo: titulo,
+        p_descricao: document.getElementById('impDescricao').value.trim() || null,
+        p_arquivo_path: caminho,
+        p_arquivo_nome: arquivoSelecionado.name,
+        p_filamentos: filamentos,
+        p_peso: arquivoLido.pesoG,
+        p_camada: arquivoLido.camadaMm,
+        p_tempo_seg: arquivoLido.tempoSeg
+      });
+
+      if (r.error) {
+        await bucket.remove([caminho]); // não deixa arquivo órfão
+        showToast('Erro', esc(r.error.message), 'error');
+      } else {
+        enviando = false;
+        showToast('Sucesso', 'Impressão adicionada à fila!', 'success');
+        fecharModal();
+        carregar();
+      }
+    }
+
+    enviando = false;
+    submitBtn.textContent = 'Adicionar à fila';
+    atualizarSubmit();
   });
 
   /* ---------- Modal de confirmação ao concluir ---------- */

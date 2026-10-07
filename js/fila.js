@@ -1,13 +1,15 @@
 /* =========================================================================
    FILA DE IMPRESSÃO (fila.html)
-   Uma única fila geral por espaço (?espaco_id= da URL), com a impressora
-   indicada em cada linha. Carregar DEPOIS de js/script.js.
+   - Fila geral: impressões que ainda não foram para nenhuma impressora.
+   - Cards das impressoras (acima da fila): cada uma recebe uma impressão por vez.
+   Tudo filtrado pelo ?espaco_id= da URL. Carregar DEPOIS de js/script.js.
    RPCs usadas: listar_impressoras, listar_impressoes, adicionar_impressao,
-   atualizar_status_impressao, remover_impressao.
+   enviar_para_impressora, atualizar_status_impressao, remover_impressao.
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', function () {
   var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
   var container = document.getElementById('queueGroups');
+  var slotsEl = document.getElementById('printerSlots');
   var resumo = document.getElementById('queueSummary');
   var emptyState = document.getElementById('queueEmptyState');
   var searchInput = document.getElementById('queueSearch');
@@ -21,10 +23,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var ehGestor = false; // Dono ou Operador
   var impressoras = [];
+  var jobs = [];
   var permissoesProntas = obterPermissoes().then(function (d) {
     ehGestor = !!d && (d.cargo === 'Dono' || d.cargo === 'Operador');
   });
 
+  var TIPOS = ['PLA', 'PETG', 'ABS', 'ASA', 'TPU', 'Nylon', 'Outro'];
   var BADGES = {
     'imprimindo': ['badge-success', 'Imprimindo'],
     'na-fila': ['badge-info', 'Na fila'],
@@ -33,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'concluido': ['badge-success', 'Concluído']
   };
   var HANDLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>';
+  var PRINTER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>';
 
   function esc(t) {
     var d = document.createElement('div');
@@ -47,75 +52,100 @@ document.addEventListener('DOMContentLoaded', function () {
     return (h ? h + 'h ' : '') + (m || !h ? m + 'm' : '');
   }
 
-  function acoes(j) {
-    var btn = function (acao, icone, label, perigo) {
-      return '<button type="button" class="btn-icon btn-icon--sm' + (perigo ? ' btn-icon--danger' : '') +
-        '" data-acao="' + acao + '" data-id="' + j.id + '" aria-label="' + label + '"><i data-lucide="' + icone + '"></i></button>';
-    };
+  function btn(j, acao, icone, label, perigo) {
+    return '<button type="button" class="btn-icon btn-icon--sm' + (perigo ? ' btn-icon--danger' : '') +
+      '" data-acao="' + acao + '" data-id="' + j.id + '" aria-label="' + label + '" title="' + label + '"><i data-lucide="' + icone + '"></i></button>';
+  }
+
+  // Fila geral: só "enviar para impressora" e "excluir"
+  function acoesFila(j) {
+    if (ehGestor) return btn(j, 'enviar', 'arrow-up', 'Enviar para impressora') + btn(j, 'remover', 'trash-2', 'Excluir', true);
+    // Maker: só remove a própria impressão
+    return j.meu ? btn(j, 'remover', 'trash-2', 'Excluir', true) : '';
+  }
+
+  // Dentro da impressora: controles de impressão
+  function acoesImpressora(j) {
     if (ehGestor) {
-      if (j.status === 'imprimindo') return btn('pausado', 'pause', 'Pausar') + btn('concluido', 'check', 'Concluir') + btn('erro', 'alert-triangle', 'Marcar erro', true);
-      if (j.status === 'na-fila') return btn('imprimindo', 'play', 'Iniciar') + btn('remover', 'trash-2', 'Remover', true);
-      if (j.status === 'pausado') return btn('imprimindo', 'play', 'Retomar') + btn('remover', 'x', 'Cancelar', true);
-      if (j.status === 'erro') return btn('na-fila', 'refresh-cw', 'Reenviar') + btn('remover', 'trash-2', 'Remover', true);
-      return btn('remover', 'trash-2', 'Remover', true);
+      if (j.status === 'imprimindo') return btn(j, 'pausado', 'pause', 'Pausar') + btn(j, 'concluido', 'check', 'Concluir') + btn(j, 'erro', 'alert-triangle', 'Marcar erro', true);
+      if (j.status === 'na-fila') return btn(j, 'imprimindo', 'play', 'Iniciar') + btn(j, 'remover', 'trash-2', 'Remover', true);
+      if (j.status === 'pausado') return btn(j, 'imprimindo', 'play', 'Retomar') + btn(j, 'remover', 'x', 'Cancelar', true);
+      if (j.status === 'erro') return btn(j, 'devolver', 'refresh-cw', 'Devolver à fila') + btn(j, 'remover', 'trash-2', 'Remover', true);
+      return '';
     }
-    // Maker: só remove a própria impressão que ainda está na fila
-    return (j.meu && j.status === 'na-fila') ? btn('remover', 'trash-2', 'Remover', true) : '';
+    return (j.meu && j.status === 'na-fila') ? btn(j, 'remover', 'trash-2', 'Remover', true) : '';
   }
 
-  function nomeImpressora(id) {
-    var imp = impressoras.find(function (i) { return i.id === id; });
-    return imp ? imp.nome : null;
+  function subtitulo(j) {
+    return [j.autor || '—', j.peso_g ? j.peso_g + 'g' : null, j.camada_mm ? j.camada_mm + 'mm' : null]
+      .filter(Boolean).join(' · ');
   }
 
+  /* ---------- Fila geral (impressões sem impressora) ---------- */
   function linha(j, i) {
     var b = BADGES[j.status] || BADGES['na-fila'];
-    var sub = [j.autor || '—', nomeImpressora(j.impressora_id), j.peso_g ? j.peso_g + 'g' : null, j.camada_mm ? j.camada_mm + 'mm' : null]
-      .filter(Boolean).join(' · ');
-    var fill = j.status === 'erro'
-      ? ' style="width:' + j.progresso + '%; background:linear-gradient(90deg, var(--color-danger), #ff8a94);"'
-      : ' style="width:' + j.progresso + '%;"';
-    return '<div class="job-row" data-status="' + j.status + '" data-title="' + esc((j.titulo + ' ' + (j.autor || '') + ' ' + (nomeImpressora(j.impressora_id) || '')).toLowerCase()) + '">' +
+    return '<div class="job-row" data-status="' + j.status + '" data-title="' + esc((j.titulo + ' ' + (j.autor || '')).toLowerCase()) + '">' +
       '<span class="job-row__handle" aria-hidden="true">' + HANDLE + '</span>' +
       '<span class="job-row__index">' + String(i + 1).padStart(2, '0') + '</span>' +
       '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
       '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
-        '<div class="job-row__subtitle">' + esc(sub) + '</div></div>' +
+        '<div class="job-row__subtitle">' + esc(subtitulo(j)) + '</div></div>' +
       '<span class="job-row__color">' + esc(j.cor || '—') + '</span>' +
-      '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill"' + fill + '></div></div>' +
+      '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill" style="width:' + j.progresso + '%;"></div></div>' +
         '<span class="job-progress__pct">' + j.progresso + '%</span></div></div>' +
       '<span class="job-row__time">' + fmtTempo(j.tempo_min, j.status) + '</span>' +
       '<div style="display:flex; align-items:center; gap: var(--space-3);"><span class="badge ' + b[0] + '">' + b[1] + '</span>' +
-        '<div class="job-row__actions">' + acoes(j) + '</div></div></div>';
+        '<div class="job-row__actions">' + acoesFila(j) + '</div></div></div>';
   }
 
-  function render(jobs) {
-    var ativos = jobs.filter(function (j) { return j.status !== 'concluido'; }).length;
+  /* ---------- Cards das impressoras ---------- */
+  function jobDaImpressora(imp) {
+    return jobs.find(function (j) { return j.impressora_id === imp.id && j.status !== 'concluido'; }) || null;
+  }
+
+  function slotJob(j) {
+    var b = BADGES[j.status] || BADGES['na-fila'];
+    var fill = j.status === 'erro'
+      ? ' style="width:' + j.progresso + '%; background:linear-gradient(90deg, var(--color-danger), #ff8a94);"'
+      : ' style="width:' + j.progresso + '%;"';
+    return '<div class="slot-job" data-id="' + j.id + '">' +
+      '<div class="slot-job__top"><span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
+        '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
+        '<div class="job-row__subtitle">' + esc(subtitulo(j)) + '</div></div></div>' +
+      '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill"' + fill + '></div></div>' +
+        '<span class="job-progress__pct">' + j.progresso + '%</span></div></div>' +
+      '<div class="slot-job__foot"><div class="slot-job__meta"><span class="badge ' + b[0] + '">' + b[1] + '</span>' +
+        '<span class="job-row__time">' + fmtTempo(j.tempo_min, j.status) + '</span></div>' +
+        '<div class="job-row__actions">' + acoesImpressora(j) + '</div></div></div>';
+  }
+
+  function cardImpressora(imp) {
+    var j = jobDaImpressora(imp);
+    var dot = !j ? 'idle' : j.status === 'erro' ? 'danger' : j.status === 'pausado' ? 'warning' : j.status === 'na-fila' ? 'info' : '';
+    return '<article class="card card-printer slot-card">' +
+      '<div class="card-printer__head"><div class="card-printer__icon">' + PRINTER_ICON + '</div>' +
+        '<div><h3 class="card-printer__name">' + esc(imp.nome) + '</h3>' +
+        '<span class="card-printer__count"><span class="status-dot' + (dot ? ' status-dot--' + dot : '') + '" style="display:inline-block; margin-right:6px;"></span>' + (j ? 'Ocupada' : 'Livre') + '</span></div></div>' +
+      (j ? slotJob(j) : '<div class="slot-empty">Sem nenhuma impressão</div>') + '</article>';
+  }
+
+  function render() {
+    var fila = jobs.filter(function (j) { return !j.impressora_id; });
     var imprimindo = jobs.filter(function (j) { return j.status === 'imprimindo'; }).length;
-    resumo.textContent = jobs.length + ' trabalho(s) · ' + ativos + ' na fila · ' + imprimindo + ' imprimindo agora';
+    resumo.textContent = fila.length + ' na fila · ' + imprimindo + ' imprimindo agora';
 
-    if (!impressoras.length) {
-      container.innerHTML = '<p class="text-muted" style="text-align:center; padding: var(--space-8) 0;">Este espaço ainda não tem impressoras. Cadastre uma em "Impressoras" para criar a fila.</p>';
-      return;
-    }
+    // Impressoras
+    slotsEl.innerHTML = impressoras.length
+      ? impressoras.map(cardImpressora).join('')
+      : '<p class="text-muted" style="grid-column:1/-1; text-align:center; padding: var(--space-6) 0;">Este espaço ainda não tem impressoras. Cadastre uma em "Impressoras" para enviar impressões.</p>';
 
-    // Fila única: pendentes/em andamento primeiro (ordem de criação), concluídas no fim
-    var ordenados = jobs.slice().sort(function (a, b) {
-      var ca = a.status === 'concluido', cb = b.status === 'concluido';
-      if (ca !== cb) return ca ? 1 : -1;
-      return a.id - b.id;
-    });
-
-    var estado = jobs.some(function (j) { return j.status === 'erro'; }) ? 'danger'
-      : jobs.some(function (j) { return j.status === 'imprimindo'; }) ? ''
-      : jobs.some(function (j) { return j.status === 'pausado'; }) ? 'warning' : 'idle';
-
+    // Fila geral
     container.innerHTML = '<div class="printer-group"><div class="printer-group__header">' +
-      '<span class="status-dot' + (estado ? ' status-dot--' + estado : '') + '"></span>' +
+      '<span class="status-dot' + (fila.length ? ' status-dot--info' : ' status-dot--idle') + '"></span>' +
       '<span class="printer-group__name">Fila geral</span>' +
-      '<span class="printer-group__meta">' + ativos + ' na fila · ' + imprimindo + ' imprimindo</span></div>' +
-      (ordenados.length ? '<div class="printer-group__rows">' + ordenados.map(linha).join('') + '</div>'
-                        : '<div class="printer-group__empty">Fila vazia</div>') + '</div>';
+      '<span class="printer-group__meta">' + fila.length + ' aguardando</span></div>' +
+      (fila.length ? '<div class="printer-group__rows">' + fila.map(linha).join('') + '</div>'
+                   : '<div class="printer-group__empty">Fila vazia</div>') + '</div>';
 
     renderizarIconesLucide();
     aplicarFiltros();
@@ -134,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function carregar() {
-    Promise.all([
+    return Promise.all([
       permissoesProntas,
       supabaseClient.rpc('listar_impressoras', { p_espaco_id: espacoId }),
       supabaseClient.rpc('listar_impressoes', { p_espaco_id: espacoId })
@@ -144,44 +174,117 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
       impressoras = r[1].data || [];
-      render(r[2].data || []);
+      jobs = r[2].data || [];
+      render();
     });
   }
 
   searchInput.addEventListener('input', aplicarFiltros);
 
-  /* ---------- Ações nas linhas (delegado: as linhas são recriadas) ---------- */
-  container.addEventListener('click', async function (e) {
+  /* ---------- Ações (delegado: o conteúdo é recriado) ---------- */
+  async function tratarAcao(e) {
     var b = e.target.closest('[data-acao]');
     if (!b) return;
     var id = Number(b.getAttribute('data-id'));
     var acao = b.getAttribute('data-acao');
+    var job = jobs.find(function (j) { return j.id === id; });
+    var nome = job ? job.titulo : 'esta impressão';
     var r;
+
+    if (acao === 'enviar') { abrirSelecao(job); return; }
+
     if (acao === 'concluido') {
-      var linhaEl = b.closest('.job-row');
-      var nomeModelo = linhaEl ? linhaEl.querySelector('.job-row__title').textContent : 'esta impressão';
-      var ok = await confirmarConclusao(nomeModelo);
+      var ok = await confirmarConclusao(nome);
       if (!ok) return;
     }
+
     if (acao === 'remover') {
-      var linhaRemover = b.closest('.job-row');
-      var nomeRemover = linhaRemover ? linhaRemover.querySelector('.job-row__title').textContent : 'esta impressão';
       var confirmarRemocao = await confirmarAcao({
         titulo: 'Remover impressão',
-        mensagem: 'Remover "' + nomeRemover + '" da fila?',
+        mensagem: 'Remover "' + nome + '"?',
         textoConfirmar: 'Remover',
         perigo: true
       });
       if (!confirmarRemocao) return;
       r = await supabaseClient.rpc('remover_impressao', { p_impressao_id: id });
+    } else if (acao === 'devolver') {
+      r = await supabaseClient.rpc('enviar_para_impressora', { p_impressao_id: id, p_impressora_id: null });
     } else {
       r = await supabaseClient.rpc('atualizar_status_impressao', { p_impressao_id: id, p_status: acao });
     }
     if (r.error) { showToast('Erro', esc(r.error.message), 'error'); return; }
     carregar();
+  }
+  container.addEventListener('click', tratarAcao);
+  slotsEl.addEventListener('click', tratarAcao);
+
+  /* ---------- Modal "Enviar para impressora" ---------- */
+  var selecaoEl = document.createElement('div');
+  selecaoEl.innerHTML =
+    '<div class="modal-overlay" id="enviarOverlay"><div class="modal">' +
+      '<div class="modal__head"><h3 class="modal__title">Enviar para impressora</h3>' +
+      '<button class="modal__close" type="button" id="enviarClose" aria-label="Fechar"><i data-lucide="x"></i></button></div>' +
+      '<div class="modal__body"><p id="enviarMsg"></p><div class="pick-list" id="enviarLista" style="margin-top: var(--space-4);"></div></div>' +
+      '<div class="modal__actions"><button type="button" class="btn btn-outline" id="enviarCancelar">Cancelar</button></div>' +
+    '</div></div>';
+  document.body.appendChild(selecaoEl);
+  renderizarIconesLucide();
+
+  var enviarOverlay = document.getElementById('enviarOverlay');
+  var enviarLista = document.getElementById('enviarLista');
+  var enviarAlvoId = null;
+
+  function fecharSelecao() {
+    enviarOverlay.classList.remove('is-open');
+    enviarAlvoId = null;
+  }
+
+  function abrirSelecao(job) {
+    if (!job) return;
+    if (!impressoras.length) {
+      showToast('Atenção', 'Cadastre uma impressora antes de enviar uma impressão.', 'error');
+      return;
+    }
+    enviarAlvoId = job.id;
+    document.getElementById('enviarMsg').textContent = 'Escolha a impressora para "' + job.titulo + '".';
+    enviarLista.innerHTML = impressoras.map(function (imp) {
+      var ocupada = jobDaImpressora(imp);
+      return '<button type="button" class="pick-item" data-imp-id="' + imp.id + '"' + (ocupada ? ' disabled' : '') + '>' +
+        '<span class="pick-item__name">' + esc(imp.nome) + '</span>' +
+        '<span class="pick-item__state">' + (ocupada ? 'Ocupada' : 'Livre') + '</span></button>';
+    }).join('');
+    enviarOverlay.classList.add('is-open');
+  }
+
+  enviarLista.addEventListener('click', async function (e) {
+    var item = e.target.closest('[data-imp-id]');
+    if (!item || item.disabled || enviarAlvoId == null) return;
+
+    var impId = Number(item.getAttribute('data-imp-id'));
+    var imp = impressoras.find(function (i) { return i.id === impId; });
+    var alvo = enviarAlvoId;
+    enviarLista.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+
+    var r = await supabaseClient.rpc('enviar_para_impressora', { p_impressao_id: alvo, p_impressora_id: impId });
+    if (r.error) {
+      showToast('Erro', esc(r.error.message), 'error');
+      fecharSelecao();
+      carregar();
+      return;
+    }
+    showToast('Sucesso', 'Impressão enviada para ' + esc(imp ? imp.nome : 'a impressora') + '!', 'success');
+    fecharSelecao();
+    carregar();
   });
 
-  /* ---------- Modal "Nova impressão" ---------- */
+  document.getElementById('enviarClose').addEventListener('click', fecharSelecao);
+  document.getElementById('enviarCancelar').addEventListener('click', fecharSelecao);
+  enviarOverlay.addEventListener('click', function (e) { if (e.target === enviarOverlay) fecharSelecao(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && enviarOverlay.classList.contains('is-open')) fecharSelecao();
+  });
+
+  /* ---------- Modal "Nova impressão" (sem escolher impressora) ---------- */
   var modal = document.createElement('div');
   modal.innerHTML =
     '<div class="modal-overlay" id="impressaoOverlay"><div class="modal">' +
@@ -190,10 +293,13 @@ document.addEventListener('DOMContentLoaded', function () {
       '<div class="modal__body"><form id="impressaoForm">' +
         '<div class="form-group"><label class="form-label" for="impTitulo">Modelo</label>' +
           '<input class="form-input" type="text" id="impTitulo" placeholder="Ex: Suporte de câmera" maxlength="80" required></div>' +
-        '<div class="form-group"><label class="form-label" for="impImpressora">Impressora</label>' +
-          '<select class="form-select" id="impImpressora" required></select></div>' +
-        '<div class="form-group"><label class="form-label" for="impFilamento">Filamento</label>' +
-          '<select class="form-select" id="impFilamento"></select></div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label" for="impMaterial">Material</label>' +
+            '<select class="form-select" id="impMaterial"><option value="">Não informado</option>' +
+              TIPOS.map(function (t) { return '<option>' + t + '</option>'; }).join('') + '</select></div>' +
+          '<div class="form-group"><label class="form-label" for="impCor">Cor</label>' +
+            '<input class="form-input" type="text" id="impCor" placeholder="Ex: Branco" maxlength="40"></div>' +
+        '</div>' +
         '<div class="form-row">' +
           '<div class="form-group"><label class="form-label" for="impPeso">Peso (g)</label>' +
             '<input class="form-input" type="number" id="impPeso" min="0" step="0.1" placeholder="38"></div>' +
@@ -213,27 +319,8 @@ document.addEventListener('DOMContentLoaded', function () {
   renderizarIconesLucide();
 
   var overlay = document.getElementById('impressaoOverlay');
-  var selImp = document.getElementById('impImpressora');
-  var selFil = document.getElementById('impFilamento');
-
-  function preencherFilamentos() {
-    var imp = impressoras.find(function (i) { return String(i.id) === selImp.value; });
-    var fils = (imp && imp.filamentos) || [];
-    selFil.innerHTML = '<option value="">Sem filamento definido</option>' + fils.map(function (f, i) {
-      return '<option value="' + i + '">' + esc(f.tipo + ' — ' + f.nome) + '</option>';
-    }).join('');
-  }
-  selImp.addEventListener('change', preencherFilamentos);
 
   function abrirModal() {
-    if (!impressoras.length) {
-      showToast('Atenção', 'Cadastre uma impressora antes de criar uma impressão.', 'error');
-      return;
-    }
-    selImp.innerHTML = impressoras.map(function (i) {
-      return '<option value="' + i.id + '">' + esc(i.nome) + '</option>';
-    }).join('');
-    preencherFilamentos();
     overlay.classList.add('is-open');
     document.getElementById('impTitulo').focus();
   }
@@ -252,18 +339,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var titulo = document.getElementById('impTitulo').value.trim();
     if (!titulo) return;
 
-    var imp = impressoras.find(function (i) { return String(i.id) === selImp.value; });
-    var fil = selFil.value !== '' && imp ? imp.filamentos[Number(selFil.value)] : null;
     var peso = document.getElementById('impPeso').value;
     var tempo = (Number(document.getElementById('impHoras').value) || 0) * 60 +
                 (Number(document.getElementById('impMinutos').value) || 0);
 
     var r = await supabaseClient.rpc('adicionar_impressao', {
       p_espaco_id: espacoId,
-      p_impressora_id: imp.id,
       p_titulo: titulo,
-      p_material: fil ? fil.tipo : null,
-      p_cor: fil ? fil.nome : null,
+      p_material: document.getElementById('impMaterial').value || null,
+      p_cor: document.getElementById('impCor').value.trim() || null,
       p_peso: peso ? Number(peso) : null,
       p_camada: Number(document.getElementById('impCamada').value),
       p_tempo_min: tempo || null
@@ -303,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Devolve uma Promise<boolean>: true = Confirmar, false = Cancelar/fechar
   function confirmarConclusao(nomeModelo) {
     document.getElementById('concluirMsg').textContent =
-      'Marcar "' + nomeModelo + '" como concluída? O progresso vai para 100%.';
+      'Marcar "' + nomeModelo + '" como concluída? O progresso vai para 100% e a impressora fica livre.';
     concluirOverlay.classList.add('is-open');
     document.getElementById('concluirConfirmar').focus();
     return new Promise(function (resolve) { concluirResolver = resolve; });

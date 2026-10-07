@@ -6,6 +6,115 @@
   <title>Fila de Impressão — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:,">
+  <style>
+    /* Cards das impressoras (acima da fila geral). Pode ser movido para css/style.css. */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+
+    .slot-card .card-printer__head {
+      margin-bottom: var(--space-4);
+    }
+
+    .slot-empty {
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-4);
+      border: 1px dashed var(--color-border-strong);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-elevated);
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+    }
+
+    .slot-job {
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-elevated);
+    }
+
+    .slot-job__top {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .slot-job__top .job-row__info {
+      flex: 1;
+    }
+
+    .slot-job__foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .slot-job__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    /* Lista de escolha de impressora (modal "Enviar para impressora") */
+    .pick-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .pick-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      width: 100%;
+      padding: .85rem 1rem;
+      text-align: left;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-elevated);
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .pick-item:hover:not(:disabled) {
+      border-color: var(--color-accent-border);
+      background: var(--color-accent-dim);
+    }
+
+    .pick-item:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .pick-item__name {
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .pick-item__state {
+      font-family: var(--font-mono);
+      font-size: .6875rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+    }
+  </style>
 </head>
 <body>
 
@@ -126,18 +235,21 @@
           </div>
         </div>
 
-        <!-- Barra de ferramentas: apenas a busca (a fila agora é única) -->
+        <!-- Cards das impressoras: cada uma recebe uma impressão por vez.
+             Renderizado por js/fila.js. -->
+        <div class="slots-grid" id="printerSlots"></div>
+
+        <!-- Barra de ferramentas: apenas a busca (a fila é única) -->
         <div class="queue-toolbar" style="justify-content: flex-end;">
           <div class="queue-toolbar__search">
             <div class="search-field">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-              <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo, maker ou impressora...">
+              <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo ou maker...">
             </div>
           </div>
         </div>
 
-        <!-- Fila geral: renderizada por js/fila.js a partir das RPCs
-             listar_impressoras() e listar_impressoes(). -->
+        <!-- Fila geral: impressões que ainda não foram para uma impressora -->
         <div id="queueGroups"></div>
 
         <p class="text-muted" id="queueEmptyState" style="text-align:center; padding: var(--space-6) 0; display:none;">

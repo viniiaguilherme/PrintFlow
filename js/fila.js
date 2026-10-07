@@ -1,6 +1,7 @@
 /* =========================================================================
    FILA DE IMPRESSÃO (fila.html)
-   Tudo filtrado pelo ?espaco_id= da URL. Carregar DEPOIS de js/script.js.
+   Uma única fila geral por espaço (?espaco_id= da URL), com a impressora
+   indicada em cada linha. Carregar DEPOIS de js/script.js.
    RPCs usadas: listar_impressoras, listar_impressoes, adicionar_impressao,
    atualizar_status_impressao, remover_impressao.
    ========================================================================= */
@@ -10,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var resumo = document.getElementById('queueSummary');
   var emptyState = document.getElementById('queueEmptyState');
   var searchInput = document.getElementById('queueSearch');
-  var tabs = document.querySelectorAll('#queueTabs .filter-tabs__btn');
   var novaBtn = document.getElementById('novaImpressaoBtn');
 
   if (!espacoId) {
@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var ehGestor = false; // Dono ou Operador
   var impressoras = [];
-  var filtroAtivo = 'todos';
   var permissoesProntas = obterPermissoes().then(function (d) {
     ehGestor = !!d && (d.cargo === 'Dono' || d.cargo === 'Operador');
   });
@@ -64,14 +63,19 @@ document.addEventListener('DOMContentLoaded', function () {
     return (j.meu && j.status === 'na-fila') ? btn('remover', 'trash-2', 'Remover', true) : '';
   }
 
+  function nomeImpressora(id) {
+    var imp = impressoras.find(function (i) { return i.id === id; });
+    return imp ? imp.nome : null;
+  }
+
   function linha(j, i) {
     var b = BADGES[j.status] || BADGES['na-fila'];
-    var sub = [j.autor || '—', j.peso_g ? j.peso_g + 'g' : null, j.camada_mm ? j.camada_mm + 'mm' : null]
+    var sub = [j.autor || '—', nomeImpressora(j.impressora_id), j.peso_g ? j.peso_g + 'g' : null, j.camada_mm ? j.camada_mm + 'mm' : null]
       .filter(Boolean).join(' · ');
     var fill = j.status === 'erro'
       ? ' style="width:' + j.progresso + '%; background:linear-gradient(90deg, var(--color-danger), #ff8a94);"'
       : ' style="width:' + j.progresso + '%;"';
-    return '<div class="job-row" data-status="' + j.status + '" data-title="' + esc((j.titulo + ' ' + (j.autor || '')).toLowerCase()) + '">' +
+    return '<div class="job-row" data-status="' + j.status + '" data-title="' + esc((j.titulo + ' ' + (j.autor || '') + ' ' + (nomeImpressora(j.impressora_id) || '')).toLowerCase()) + '">' +
       '<span class="job-row__handle" aria-hidden="true">' + HANDLE + '</span>' +
       '<span class="job-row__index">' + String(i + 1).padStart(2, '0') + '</span>' +
       '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
@@ -86,26 +90,32 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function render(jobs) {
-    resumo.textContent = jobs.length + ' trabalho(s) · cada impressora tem sua própria fila';
+    var ativos = jobs.filter(function (j) { return j.status !== 'concluido'; }).length;
+    var imprimindo = jobs.filter(function (j) { return j.status === 'imprimindo'; }).length;
+    resumo.textContent = jobs.length + ' trabalho(s) · ' + ativos + ' na fila · ' + imprimindo + ' imprimindo agora';
 
     if (!impressoras.length) {
       container.innerHTML = '<p class="text-muted" style="text-align:center; padding: var(--space-8) 0;">Este espaço ainda não tem impressoras. Cadastre uma em "Impressoras" para criar a fila.</p>';
       return;
     }
 
-    container.innerHTML = impressoras.map(function (imp) {
-      var seus = jobs.filter(function (j) { return j.impressora_id === imp.id; });
-      var ativos = seus.filter(function (j) { return j.status !== 'concluido'; }).length;
-      var estado = seus.some(function (j) { return j.status === 'erro'; }) ? ['danger', 'erro reportado']
-        : seus.some(function (j) { return j.status === 'imprimindo'; }) ? ['', 'ocupada']
-        : seus.some(function (j) { return j.status === 'pausado'; }) ? ['warning', 'pausada'] : ['idle', 'livre'];
-      return '<div class="printer-group"><div class="printer-group__header">' +
-        '<span class="status-dot' + (estado[0] ? ' status-dot--' + estado[0] : '') + '"></span>' +
-        '<span class="printer-group__name">' + esc(imp.nome) + '</span>' +
-        '<span class="printer-group__meta">' + ativos + ' na fila · ' + estado[1] + '</span></div>' +
-        (seus.length ? '<div class="printer-group__rows">' + seus.map(linha).join('') + '</div>'
-                     : '<div class="printer-group__empty">Fila vazia</div>') + '</div>';
-    }).join('');
+    // Fila única: pendentes/em andamento primeiro (ordem de criação), concluídas no fim
+    var ordenados = jobs.slice().sort(function (a, b) {
+      var ca = a.status === 'concluido', cb = b.status === 'concluido';
+      if (ca !== cb) return ca ? 1 : -1;
+      return a.id - b.id;
+    });
+
+    var estado = jobs.some(function (j) { return j.status === 'erro'; }) ? 'danger'
+      : jobs.some(function (j) { return j.status === 'imprimindo'; }) ? ''
+      : jobs.some(function (j) { return j.status === 'pausado'; }) ? 'warning' : 'idle';
+
+    container.innerHTML = '<div class="printer-group"><div class="printer-group__header">' +
+      '<span class="status-dot' + (estado ? ' status-dot--' + estado : '') + '"></span>' +
+      '<span class="printer-group__name">Fila geral</span>' +
+      '<span class="printer-group__meta">' + ativos + ' na fila · ' + imprimindo + ' imprimindo</span></div>' +
+      (ordenados.length ? '<div class="printer-group__rows">' + ordenados.map(linha).join('') + '</div>'
+                        : '<div class="printer-group__empty">Fila vazia</div>') + '</div>';
 
     renderizarIconesLucide();
     aplicarFiltros();
@@ -113,21 +123,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function aplicarFiltros() {
     var termo = (searchInput.value || '').trim().toLowerCase();
+    var rows = container.querySelectorAll('.job-row');
     var algum = false;
-    container.querySelectorAll('.printer-group').forEach(function (g) {
-      var rows = g.querySelectorAll('.job-row');
-      var visivel = false;
-      rows.forEach(function (r) {
-        var ok = (filtroAtivo === 'todos' || r.dataset.status === filtroAtivo) &&
-                 (!termo || r.dataset.title.indexOf(termo) !== -1);
-        r.style.display = ok ? '' : 'none';
-        if (ok) visivel = true;
-      });
-      if (!rows.length) visivel = filtroAtivo === 'todos' && !termo;
-      g.style.display = visivel ? '' : 'none';
-      if (visivel) algum = true;
+    rows.forEach(function (r) {
+      var ok = !termo || r.dataset.title.indexOf(termo) !== -1;
+      r.style.display = ok ? '' : 'none';
+      if (ok) algum = true;
     });
-    emptyState.style.display = (algum || !impressoras.length) ? 'none' : '';
+    emptyState.style.display = (!rows.length || algum) ? 'none' : '';
   }
 
   function carregar() {
@@ -145,14 +148,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      tabs.forEach(function (x) { x.classList.remove('is-active'); });
-      t.classList.add('is-active');
-      filtroAtivo = t.dataset.filter;
-      aplicarFiltros();
-    });
-  });
   searchInput.addEventListener('input', aplicarFiltros);
 
   /* ---------- Ações nas linhas (delegado: as linhas são recriadas) ---------- */

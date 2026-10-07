@@ -126,31 +126,22 @@
           </div>
         </div>
 
-        <!-- Barra de ferramentas: abas de filtro por status + busca -->
-        <div class="queue-toolbar">
-          <div class="filter-tabs" id="queueTabs">
-            <button type="button" class="filter-tabs__btn is-active" data-filter="todos">Todos</button>
-            <button type="button" class="filter-tabs__btn" data-filter="imprimindo">Imprimindo</button>
-            <button type="button" class="filter-tabs__btn" data-filter="na-fila">Na fila</button>
-            <button type="button" class="filter-tabs__btn" data-filter="pausado">Pausado</button>
-            <button type="button" class="filter-tabs__btn" data-filter="erro">Erro</button>
-            <button type="button" class="filter-tabs__btn" data-filter="concluido">Concluído</button>
-          </div>
-
+        <!-- Barra de ferramentas: apenas a busca (a fila agora é única) -->
+        <div class="queue-toolbar" style="justify-content: flex-end;">
           <div class="queue-toolbar__search">
             <div class="search-field">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-              <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo ou maker...">
+              <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo, maker ou impressora...">
             </div>
           </div>
         </div>
 
-        <!-- Grupos por impressora: renderizados por js/fila.js a partir
-             das RPCs listar_impressoras() e listar_impressoes(). -->
+        <!-- Fila geral: renderizada por js/fila.js a partir das RPCs
+             listar_impressoras() e listar_impressoes(). -->
         <div id="queueGroups"></div>
 
         <p class="text-muted" id="queueEmptyState" style="text-align:center; padding: var(--space-6) 0; display:none;">
-          Nenhum trabalho encontrado para esse filtro/busca.
+          Nenhum trabalho encontrado para essa busca.
         </p>
       </main>
     </div>

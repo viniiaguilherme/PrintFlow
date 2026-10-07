@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configurações — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
-   <link rel="icon" type="image/png" href="assets/logo-icon.png">
+  <link rel="icon" type="image/png" href="assets/logo-icon.png">
 </head>
 <body>
 
@@ -417,12 +417,29 @@
         if (!ehPrincipal || !nomeConfere()) return;
 
         excluirConfirmar.disabled = true;
-        var resultado = await supabaseClient.rpc('excluir_espaco', { p_espaco_id: espacoId });
+
+        // Guarda os caminhos dos arquivos .3mf antes de apagar o espaço (depois não dá mais pra listar)
+        var arquivos = [];
+        var lista = await supabaseClient.rpc('listar_impressoes', { p_espaco_id: espacoId });
+        if (!lista.error && Array.isArray(lista.data)) {
+          arquivos = lista.data.map(function (i) { return i.arquivo_path; }).filter(Boolean);
+        }
+
+        // O banco confere de novo o nome digitado e se você é o dono principal
+        var resultado = await supabaseClient.rpc('excluir_espaco', {
+          p_espaco_id: espacoId,
+          p_nome: excluirInput.value
+        });
 
         if (resultado.error) {
           showToast('Erro', resultado.error.message, 'error');
           atualizarBotaoExcluir();
           return;
+        }
+
+        // Limpa os arquivos do Storage (se falhar, não impede a exclusão do espaço)
+        if (arquivos.length) {
+          try { await supabaseClient.storage.from('impressoes').remove(arquivos); } catch (e) {}
         }
 
         showToast('Espaço excluído', 'O espaço foi excluído com sucesso.', 'success');

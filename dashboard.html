@@ -42,6 +42,59 @@
       opacity: .85;
     }
 
+    /* Status das impressoras (usa a mesma área com rolagem própria) */
+    .status-row {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .status-row + .status-row {
+      border-top: 1px solid var(--color-border);
+    }
+
+    .status-row:hover {
+      background: var(--color-surface-hover);
+    }
+
+    .status-row__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--color-accent-dim);
+      color: var(--color-accent-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-row__icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .status-row__icon--idle {
+      background: rgba(255, 255, 255, .06);
+      color: var(--color-text-tertiary);
+    }
+
+    .status-row__icon--info {
+      background: var(--color-info-dim);
+      color: var(--color-info);
+    }
+
+    .status-row__icon--warning {
+      background: var(--color-warning-dim);
+      color: var(--color-warning);
+    }
+
+    .status-row__icon--danger {
+      background: var(--color-danger-dim);
+      color: var(--color-danger);
+    }
+
     .hist-empty {
       height: 100%;
       display: flex;
@@ -285,11 +338,10 @@
                 <div class="chart-card__title">Status das impressoras</div>
                 <div class="chart-card__subtitle">Por equipamento</div>
               </div>
-              <span class="badge badge-neutral">Sem dados</span>
+              <span class="badge badge-neutral" id="statusBadge">Carregando</span>
             </div>
-            <div class="chart-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
-              <span>Cadastre sua primeira impressora para ver o status aqui.</span>
+            <div class="hist-scroll" id="statusLista">
+              <div class="hist-empty">Carregando impressoras...</div>
             </div>
           </div>
         </div>
@@ -467,6 +519,35 @@
           '<span class="badge badge-success">Concluído</span></div>';
       }
 
+      var statusLista = document.getElementById('statusLista');
+      var statusBadge = document.getElementById('statusBadge');
+
+      var ICONE_IMPRESSORA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>';
+
+      // status da impressora = status da impressão que está nela (ou "Livre")
+      var STATUS = {
+        'livre':      { badge: 'badge-neutral', texto: 'Livre',      icone: 'idle' },
+        'imprimindo': { badge: 'badge-success', texto: 'Imprimindo', icone: '' },
+        'na-fila':    { badge: 'badge-info',    texto: 'Na fila',    icone: 'info' },
+        'pausado':    { badge: 'badge-warning', texto: 'Pausada',    icone: 'warning' },
+        'erro':       { badge: 'badge-danger',  texto: 'Erro',       icone: 'danger' },
+        'concluido':  { badge: 'badge-success', texto: 'Concluída',  icone: '' }
+      };
+
+      function linhaImpressora(imp, jobs) {
+        var job = jobs.find(function (j) { return j.impressora_id === imp.id && !j.arquivado_em; }) || null;
+        var st = STATUS[job ? job.status : 'livre'] || STATUS['livre'];
+        var sub = !job
+          ? 'Nenhuma impressão no momento'
+          : job.titulo + ((job.status === 'imprimindo' || job.status === 'pausado') ? ' · ' + job.progresso + '%' : '');
+
+        return '<div class="status-row">' +
+          '<span class="status-row__icon' + (st.icone ? ' status-row__icon--' + st.icone : '') + '">' + ICONE_IMPRESSORA + '</span>' +
+          '<div class="job-row__info"><div class="job-row__title">' + esc(imp.nome) + '</div>' +
+            '<div class="job-row__subtitle">' + esc(sub) + '</div></div>' +
+          '<span class="badge ' + st.badge + '">' + st.texto + '</span></div>';
+      }
+
       Promise.all([
         supabaseClient.rpc('listar_impressoras', { p_espaco_id: espacoId }),
         supabaseClient.rpc('listar_impressoes', { p_espaco_id: espacoId })
@@ -474,13 +555,23 @@
         if (r[0].error || r[1].error) {
           lista.innerHTML = '<div class="hist-empty">Não foi possível carregar o histórico.</div>';
           badge.textContent = 'Erro';
+          statusLista.innerHTML = '<div class="hist-empty">Não foi possível carregar as impressoras.</div>';
+          statusBadge.textContent = 'Erro';
           return;
         }
 
-        var nomes = {};
-        (r[0].data || []).forEach(function (imp) { nomes[imp.id] = imp.nome; });
+        // Status das impressoras
+        var impressoras = r[0].data || [];
+        var todas = r[1].data || [];
+        statusBadge.textContent = impressoras.length ? impressoras.length + ' impressora(s)' : 'Sem dados';
+        statusLista.innerHTML = impressoras.length
+          ? impressoras.map(function (imp) { return linhaImpressora(imp, todas); }).join('')
+          : '<div class="hist-empty">Cadastre sua primeira impressora para ver o status aqui.</div>';
 
-        var historico = (r[1].data || []).filter(function (j) { return !!j.arquivado_em; }).sort(function (a, b) {
+        var nomes = {};
+        impressoras.forEach(function (imp) { nomes[imp.id] = imp.nome; });
+
+        var historico = todas.filter(function (j) { return !!j.arquivado_em; }).sort(function (a, b) {
           return new Date(b.concluido_em || 0) - new Date(a.concluido_em || 0);
         });
 

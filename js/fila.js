@@ -31,12 +31,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   var ehGestor = false; // Dono ou Operador
+  var ehDono = false;   // só Dono reordena a fila
+  var arrastandoId = null; // id da impressão sendo arrastada na fila
   var impressoras = [];
   var jobs = [];
   var assinaturaAtual = null; // detecta mudanças vindas de outros usuários
   var permissoesProntas = obterPermissoes().then(function (d) {
     ehGestor = !!d && (d.cargo === 'Dono' || d.cargo === 'Operador');
+    ehDono = !!d && d.cargo === 'Dono';
   });
+
+  // Estilo do arrastar e soltar (injetado aqui para não depender de mexer no fila.html)
+  var estiloDnd = document.createElement('style');
+  estiloDnd.textContent =
+    '.job-row[draggable="true"] .job-row__handle { cursor: grab; }' +
+    '.job-row.is-dragging { opacity: .35; }' +
+    '.job-row.drop-before { box-shadow: inset 0 2px 0 var(--color-accent); }' +
+    '.job-row.drop-after { box-shadow: inset 0 -2px 0 var(--color-accent); }';
+  document.head.appendChild(estiloDnd);
 
   var LIMITE_ARQUIVO = 50 * 1024 * 1024; // 50 MB (limite do bucket)
   var INTERVALO_SYNC_MS = 10000;         // de quanto em quanto tempo busca mudanças dos outros usuários
@@ -173,8 +185,9 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---------- Fila geral (impressões sem impressora) ---------- */
   function linha(j, i) {
     var b = BADGES[j.status] || BADGES['na-fila'];
-    return '<div class="job-row" data-status="' + j.status + '" data-title="' + esc((j.titulo + ' ' + (j.autor || '')).toLowerCase()) + '">' +
-      '<span class="job-row__handle" aria-hidden="true">' + HANDLE + '</span>' +
+    return '<div class="job-row" data-id="' + j.id + '"' + (ehDono ? ' draggable="true"' : '') +
+      ' data-status="' + j.status + '" data-title="' + esc((j.titulo + ' ' + (j.autor || '')).toLowerCase()) + '">' +
+      '<span class="job-row__handle" aria-hidden="true"' + (ehDono ? ' title="Arraste para reordenar"' : ' style="visibility:hidden;"') + '>' + HANDLE + '</span>' +
       '<span class="job-row__index">' + String(i + 1).padStart(2, '0') + '</span>' +
       '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
       '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
@@ -348,11 +361,70 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Sincronização: pega mudanças feitas por outros usuários (play, pausa, nova impressão...)
   setInterval(function () {
-    if (document.hidden || enviando) return;
+    if (document.hidden || enviando || arrastandoId) return;
     carregar(true);
   }, INTERVALO_SYNC_MS);
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) carregar(true);
+  });
+
+  /* ---------- Reordenar a fila geral (só Dono): arrastar e soltar ---------- */
+  function limparIndicadores() {
+    container.querySelectorAll('.drop-before, .drop-after').forEach(function (r) {
+      r.classList.remove('drop-before', 'drop-after');
+    });
+  }
+
+  function fimArrasto() {
+    arrastandoId = null;
+    limparIndicadores();
+    container.querySelectorAll('.is-dragging').forEach(function (r) { r.classList.remove('is-dragging'); });
+  }
+
+  container.addEventListener('dragstart', function (e) {
+    var row = e.target.closest ? e.target.closest('.job-row[data-id]') : null;
+    if (!row || !ehDono) return;
+    arrastandoId = row.getAttribute('data-id');
+    row.classList.add('is-dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', arrastandoId);
+  });
+
+  container.addEventListener('dragover', function (e) {
+    if (!arrastandoId) return;
+    e.preventDefault();
+    limparIndicadores();
+    var row = e.target.closest('.job-row[data-id]');
+    if (!row || row.getAttribute('data-id') === arrastandoId) return;
+    var r = row.getBoundingClientRect();
+    row.classList.add(e.clientY > r.top + r.height / 2 ? 'drop-after' : 'drop-before');
+  });
+
+  container.addEventListener('dragend', fimArrasto);
+
+  container.addEventListener('drop', async function (e) {
+    if (!arrastandoId) return;
+    e.preventDefault();
+
+    var origem = arrastandoId;
+    var alvo = e.target.closest('.job-row[data-id]');
+    var depois = alvo && alvo.classList.contains('drop-after');
+    fimArrasto();
+    if (!alvo || alvo.getAttribute('data-id') === origem) return;
+
+    // Nova ordem: tira a linha arrastada e coloca antes/depois da linha alvo
+    var ids = Array.prototype.map.call(container.querySelectorAll('.job-row[data-id]'), function (r) {
+      return r.getAttribute('data-id');
+    }).filter(function (id) { return id !== origem; });
+    var pos = ids.indexOf(alvo.getAttribute('data-id')) + (depois ? 1 : 0);
+    ids.splice(pos, 0, origem);
+
+    var r = await supabaseClient.rpc('reordenar_fila', {
+      p_espaco_id: espacoId,
+      p_ids: ids.map(Number)
+    });
+    if (r.error) showToast('Erro', esc(r.error.message), 'error');
+    carregar();
   });
 
   /* ---------- Ações (delegado: o conteúdo é recriado) ---------- */

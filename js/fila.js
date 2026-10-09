@@ -7,6 +7,12 @@
    enviar_para_impressora, atualizar_status_impressao, remover_impressao.
    Nova impressão: o .3mf é lido no navegador (js/leitor-3mf.js, precisa do
    JSZip) e enviado ao bucket privado "impressoes" do Supabase Storage.
+
+   TIMER: vive no banco (colunas timer_* de "impressoes"), então todo mundo do
+   espaço vê o mesmo contador. Aqui só desenhamos: o servidor manda quantos
+   segundos já foram contados (timer_decorrido_seg) e o navegador soma o tempo
+   local desde que recebeu. O e-mail de "impressão finalizada" é enviado pelo
+   servidor (pg_cron), não por esta página.
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', function () {
   var espacoId = new URLSearchParams(window.location.search).get('espaco_id');
@@ -27,11 +33,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var ehGestor = false; // Dono ou Operador
   var impressoras = [];
   var jobs = [];
+  var assinaturaAtual = null; // detecta mudanças vindas de outros usuários
   var permissoesProntas = obterPermissoes().then(function (d) {
     ehGestor = !!d && (d.cargo === 'Dono' || d.cargo === 'Operador');
   });
 
   var LIMITE_ARQUIVO = 50 * 1024 * 1024; // 50 MB (limite do bucket)
+  var INTERVALO_SYNC_MS = 10000;         // de quanto em quanto tempo busca mudanças dos outros usuários
   var BADGES = {
     'imprimindo': ['badge-success', 'Imprimindo'],
     'na-fila': ['badge-info', 'Na fila'],
@@ -62,7 +70,31 @@ document.addEventListener('DOMContentLoaded', function () {
     return partes.join(' ') || '0s';
   }
 
+  /* ---------- Timer (estado vem do banco) ---------- */
+
+  // A impressão está numa impressora, em andamento (não na fila, não concluída) e tem tempo do .3mf
+  function temTimer(j) {
+    return !!j.tempo_seg && !!j.impressora_id && !j.arquivado_em &&
+      j.status !== 'na-fila' && j.status !== 'concluido';
+  }
+
+  // Segundos contados até agora: base do servidor + tempo local desde que a base chegou
+  function decorridoSeg(j) {
+    var base = Number(j.timer_decorrido_seg) || 0;
+    var extra = j.timer_rodando ? (performance.now() - j._t0) / 1000 : 0;
+    return Math.min(j.tempo_seg, base + extra);
+  }
+
+  function pctJob(j) {
+    if (!temTimer(j)) return j.progresso;
+    return Math.min(100, Math.floor(decorridoSeg(j) / j.tempo_seg * 100));
+  }
+
   function tempoJob(j) {
+    if (temTimer(j)) {
+      var restante = j.tempo_seg - decorridoSeg(j);
+      return restante <= 0 ? 'Finalizada' : fmtSeg(Math.ceil(restante));
+    }
     if (j.status !== 'concluido' && j.tempo_seg) return fmtSeg(j.tempo_seg);
     return fmtTempo(j.tempo_min, j.status);
   }
@@ -72,6 +104,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!min) return '—';
     var h = Math.floor(min / 60), m = min % 60;
     return (h ? h + 'h ' : '') + (m || !h ? m + 'm' : '');
+  }
+
+  // Atualiza só os números/barra dos cards das impressoras (roda a cada segundo)
+  function atualizarTimers() {
+    jobs.forEach(function (j) {
+      if (!j.timer_rodando || !temTimer(j)) return;
+      var card = slotsEl.querySelector('.slot-job[data-id="' + j.id + '"]');
+      if (!card) return;
+
+      var pct = pctJob(j);
+      var tempoEl = card.querySelector('.job-row__time');
+      var fillEl = card.querySelector('.progress-bar__fill');
+      var pctEl = card.querySelector('.job-progress__pct');
+      if (tempoEl) tempoEl.textContent = tempoJob(j);
+      if (fillEl) fillEl.style.width = pct + '%';
+      if (pctEl) pctEl.textContent = pct + '%';
+    });
   }
 
   function btn(j, acao, icone, label, perigo) {
@@ -183,15 +232,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function slotJob(j) {
     var b = BADGES[j.status] || BADGES['na-fila'];
+    var pct = pctJob(j);
     var fill = j.status === 'erro'
-      ? ' style="width:' + j.progresso + '%; background:linear-gradient(90deg, var(--color-danger), #ff8a94);"'
-      : ' style="width:' + j.progresso + '%;"';
+      ? ' style="width:' + pct + '%; background:linear-gradient(90deg, var(--color-danger), #ff8a94);"'
+      : ' style="width:' + pct + '%;"';
     return '<div class="slot-job" data-id="' + j.id + '">' +
       '<div class="slot-job__top"><span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
         '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
         '<div class="job-row__subtitle">' + esc(subtitulo(j)) + '</div>' + detalhesHtml(j) + '</div></div>' +
       '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill"' + fill + '></div></div>' +
-        '<span class="job-progress__pct">' + j.progresso + '%</span></div></div>' +
+        '<span class="job-progress__pct">' + pct + '%</span></div></div>' +
       '<div class="slot-job__foot"><div class="slot-job__meta"><span class="badge ' + b[0] + '">' + b[1] + '</span>' +
         '<span class="job-row__time">' + tempoJob(j) + '</span></div>' +
         '<div class="job-row__actions">' + acoesImpressora(j) + '</div></div></div>';
@@ -252,23 +302,58 @@ document.addEventListener('DOMContentLoaded', function () {
     emptyState.style.display = (!rows.length || algum) ? 'none' : '';
   }
 
-  function carregar() {
+  // Assinatura dos dados sem os campos que mudam sozinhos (o relógio do timer)
+  function assinatura(listaJobs, listaImpressoras) {
+    return JSON.stringify([
+      listaImpressoras,
+      listaJobs.map(function (j) {
+        var c = Object.assign({}, j);
+        delete c.timer_decorrido_seg;
+        delete c._t0;
+        return c;
+      })
+    ]);
+  }
+
+  // silencioso = true: chamada automática de sincronização (não mostra erro nem redesenha sem necessidade)
+  function carregar(silencioso) {
     return Promise.all([
       permissoesProntas,
       supabaseClient.rpc('listar_impressoras', { p_espaco_id: espacoId }),
       supabaseClient.rpc('listar_impressoes', { p_espaco_id: espacoId })
     ]).then(function (r) {
       if (r[1].error || r[2].error) {
-        showToast('Erro', 'Não foi possível carregar a fila.', 'error');
+        if (!silencioso) showToast('Erro', 'Não foi possível carregar a fila.', 'error');
         return;
       }
-      impressoras = r[1].data || [];
-      jobs = r[2].data || [];
-      render();
+      var agora = performance.now();
+      var novasImpressoras = r[1].data || [];
+      var novosJobs = (r[2].data || []).map(function (j) { j._t0 = agora; return j; });
+      var nova = assinatura(novosJobs, novasImpressoras);
+
+      impressoras = novasImpressoras;
+      jobs = novosJobs; // sempre troca: renova a base do relógio de cada timer
+
+      if (!silencioso || nova !== assinaturaAtual) {
+        assinaturaAtual = nova;
+        render();
+      }
     });
   }
 
   searchInput.addEventListener('input', aplicarFiltros);
+
+  // Relógio da tela: a cada segundo atualiza só os contadores
+  setInterval(atualizarTimers, 1000);
+
+  // Sincronização: pega mudanças feitas por outros usuários (play, pausa, nova impressão...)
+  setInterval(function () {
+    if (document.hidden || enviando) return;
+    carregar(true);
+  }, INTERVALO_SYNC_MS);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) carregar(true);
+  });
 
   /* ---------- Ações (delegado: o conteúdo é recriado) ---------- */
   async function tratarAcao(e) {
@@ -311,6 +396,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (acao === 'devolver') {
       r = await supabaseClient.rpc('enviar_para_impressora', { p_impressao_id: id, p_impressora_id: null });
     } else {
+      // O timer é controlado pelo banco: 'imprimindo' inicia/retoma; pausado/erro/concluido congelam
       r = await supabaseClient.rpc('atualizar_status_impressao', { p_impressao_id: id, p_status: acao });
     }
     if (r.error) { showToast('Erro', esc(r.error.message), 'error'); return; }

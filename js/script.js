@@ -596,7 +596,6 @@ document.addEventListener('DOMContentLoaded', function () {
         var dados = resultado.data;
 
         document.getElementById("estatisticaMembros").textContent = dados.total_membros;
-        document.getElementById("estatisticaAtivos").textContent = dados.ativos_agora;
       });
     }
   }

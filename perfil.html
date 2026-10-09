@@ -63,10 +63,6 @@
             <span class="avatar" id="perfilAvatar" style="width:64px; height:64px; font-size:1.25rem;">--</span>
             <div>
               <div style="color: var(--color-text-primary); font-weight: 600; font-size: 1.0625rem;" id="perfilNomeExibido">Carregando...</div>
-              <div class="status-inline" style="margin-top: 4px;">
-                <span class="status-dot"></span>
-                <span id="perfilStatus">Ativo</span>
-              </div>
             </div>
           </div>
 
@@ -146,7 +142,6 @@
       var nomeExibido = document.getElementById('perfilNomeExibido');
       var nomeInput = document.getElementById('perfilNome');
       var emailInput = document.getElementById('perfilEmail');
-      var statusSpan = document.getElementById('perfilStatus');
       var membroDesdeInput = document.getElementById('perfilMembroDesde');
 
       var usuarioId = null;
@@ -159,7 +154,7 @@
 
           supabaseClient
             .from('usuarios')
-            .select('nome, status, criado_em')
+            .select('nome, criado_em')
             .eq('id', usuarioId)
             .single()
             .then(function (resultado2) {
@@ -172,7 +167,6 @@
               nomeInput.value = dados.nome || '';
               nomeExibido.textContent = dados.nome || usuarioAuth.email;
               emailInput.value = usuarioAuth.email || '';
-              statusSpan.textContent = dados.status || 'Ativo';
 
               if (dados.criado_em) {
                 var data = new Date(dados.criado_em);

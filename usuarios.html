@@ -135,10 +135,6 @@
             <div class="stat-simple__label">Total de membros</div>
             <div class="stat-simple__value" id="estatisticaMembros">0</div>
           </div>
-          <div class="stat-simple">
-            <div class="stat-simple__label">Ativos agora</div>
-            <div class="stat-simple__value" id="estatisticaAtivos">0</div>
-          </div>
         </div>
 
         <!-- Busca -->
@@ -158,13 +154,12 @@
                 <th>Cargo</th>
                 <th>Impressões</th>
                 <th>Filamento</th>
-                <th>Status</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody id="userTableBody">
               <tr>
-                <td colspan="6" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Carregando membros...</td>
+                <td colspan="5" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Carregando membros...</td>
               </tr>
             </tbody>
           </table>
@@ -223,7 +218,7 @@
         tbody.innerHTML = '';
 
         if (!membros || membros.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Nenhum membro encontrado.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Nenhum membro encontrado.</td></tr>';
           return;
         }
 
@@ -239,7 +234,6 @@
           tr.dataset.name = (membro.nome + ' ' + membro.email).toLowerCase();
 
           var iniciais = calcularIniciais(membro.nome);
-          var ativo = membro.status === 'Ativo';
           // Dono edita cargo e remove outros membros — nunca a si mesmo e nunca o dono principal
           var podeGerenciar = souDono && membro.usuario_id !== meuUsuarioId && !membro.principal;
           // Só o dono principal passa a coroa, e só para outro Dono
@@ -261,7 +255,6 @@
               : badgeCargo(membro)) + '</td>' +
             '<td>—</td>' +
             '<td>—</td>' +
-            '<td><span class="status-inline"><span class="status-dot' + (ativo ? '' : ' status-dot--idle') + '"></span>' + escapeHtml(membro.status || 'Ativo') + '</span></td>' +
             '<td>' +
               (podePassarCoroa
                 ? '<button type="button" class="btn-icon btn-icon--sm passar-coroa-btn" aria-label="Passar a coroa" title="Passar a coroa" style="margin-right:6px;">' +

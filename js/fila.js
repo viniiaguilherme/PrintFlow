@@ -364,6 +364,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if (document.hidden || enviando || arrastandoId) return;
     carregar(true);
   }, INTERVALO_SYNC_MS);
+  // Timer chegou a zero: o servidor conclui a impressão em até ~15 s. Enquanto isso, busca a cada 3 s.
+  setInterval(function () {
+    if (document.hidden || enviando || arrastandoId) return;
+    var aguardando = jobs.some(function (j) {
+      return j.timer_rodando && temTimer(j) && decorridoSeg(j) >= j.tempo_seg;
+    });
+    if (aguardando) carregar(true);
+  }, 3000);
+
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) carregar(true);
   });

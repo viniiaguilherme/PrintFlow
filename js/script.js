@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById("estatisticaImpressoras").textContent = dados.impressoras;
         document.getElementById("estatisticaFilas").textContent = dados.filas;
-        document.getElementById("estatisticaAlertas").textContent = dados.alertas;
+        document.getElementById("estatisticaConcluidas").textContent = dados.concluidas;
         document.getElementById("estatisticaUsuarios").textContent = dados.usuarios;
       });
     }

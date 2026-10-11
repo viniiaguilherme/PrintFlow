@@ -154,7 +154,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Dentro da impressora: controles de impressão
   function acoesImpressora(j) {
-    return baixarBtn(j) + controlesImpressora(j);
+    // Download sempre por último (mais à direita), depois dos controles
+    return controlesImpressora(j) + baixarBtn(j);
   }
 
   function controlesImpressora(j) {

@@ -223,11 +223,6 @@
           </div>
           <div class="dashboard-head__actions">
             <span class="dashboard-head__meta">ATUALIZADO · <span id="updatedTime">--:--</span></span>
-            <!-- Botão de teste da integração com EmailJS: dispara simularAlerta() (ver js/script.js) -->
-            <button type="button" class="btn btn-outline btn-sm" onclick="simularAlerta()">
-              <i data-lucide="mail"></i>
-              Simular Alerta
-            </button>
           </div>
         </div>
 
@@ -277,20 +272,19 @@
 
   <div class="card card-stat">
     <div class="card-stat__head">
-      <span class="card-stat__label">Alertas</span>
-      <span class="card-stat__icon card-stat__icon--warning">
+      <span class="card-stat__label">Concluídas</span>
+      <span class="card-stat__icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/>
-          <line x1="12" y1="17" x2="12.01" y2="17"/>
+          <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+          <path d="M22 4L12 14.01l-3-3"/>
         </svg>
       </span>
     </div>
 
     <div class="card-stat__body">
-      <span class="card-stat__value" id="estatisticaAlertas">0</span>
-      <span class="card-stat__hint">alertas ativos</span>
+      <span class="card-stat__value" id="estatisticaConcluidas">0</span>
+      <span class="card-stat__hint">impressões concluídas</span>
     </div>
   </div>
 
@@ -387,8 +381,6 @@
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>
 
-  <!-- EmailJS: biblioteca usada pelo botão "Simular Alerta" (ver configuração no início de js/script.js) -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -503,7 +495,6 @@
         var linha1 = [
           impressora ? 'Impressora ' + impressora : null,
           j.peso_g ? fmtG(j.peso_g) : null,
-          j.camada_mm ? j.camada_mm + 'mm' : null,
           quando ? 'concluída em ' + quando : null
         ].filter(Boolean).join(' · ');
         var linha2 = 'Na fila: ' + (j.autor || '—') +

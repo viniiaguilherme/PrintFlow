@@ -140,15 +140,24 @@ document.addEventListener('DOMContentLoaded', function () {
       '" data-acao="' + acao + '" data-id="' + j.id + '" aria-label="' + label + '" title="' + label + '"><i data-lucide="' + icone + '"></i></button>';
   }
 
-  // Fila geral: só "enviar para impressora" e "excluir"
+  // Baixar o .3mf: todos os membros do espaço podem (fila, impressoras e histórico)
+  function baixarBtn(j) {
+    return j.arquivo_path ? btn(j, 'baixar', 'download', 'Baixar arquivo .3mf') : '';
+  }
+
+  // Fila geral: "baixar", "enviar para impressora" e "excluir"
   function acoesFila(j) {
-    if (ehGestor) return btn(j, 'enviar', 'arrow-up', 'Enviar para impressora') + btn(j, 'remover', 'trash-2', 'Excluir', true);
-    // Maker: só remove a própria impressão
-    return j.meu ? btn(j, 'remover', 'trash-2', 'Excluir', true) : '';
+    if (ehGestor) return baixarBtn(j) + btn(j, 'enviar', 'arrow-up', 'Enviar para impressora') + btn(j, 'remover', 'trash-2', 'Excluir', true);
+    // Maker: baixa qualquer arquivo, mas só remove a própria impressão
+    return baixarBtn(j) + (j.meu ? btn(j, 'remover', 'trash-2', 'Excluir', true) : '');
   }
 
   // Dentro da impressora: controles de impressão
   function acoesImpressora(j) {
+    return baixarBtn(j) + controlesImpressora(j);
+  }
+
+  function controlesImpressora(j) {
     if (ehGestor) {
       if (j.status === 'imprimindo') return btn(j, 'pausado', 'pause', 'Pausar') + btn(j, 'concluido', 'check', 'Concluir') + btn(j, 'erro', 'alert-triangle', 'Marcar erro', true);
       if (j.status === 'na-fila') return btn(j, 'imprimindo', 'play', 'Iniciar') + btn(j, 'remover', 'trash-2', 'Remover', true);
@@ -249,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '<span class="job-progress__pct">100%</span></div></div>' +
       '<span class="job-row__time">' + fmtTempo(j.tempo_min, 'concluido') + '</span>' +
       '<div style="display:flex; align-items:center; gap: var(--space-3);"><span class="badge badge-success">Concluído</span>' +
-        '<div class="job-row__actions"></div></div></div>';
+        '<div class="job-row__actions">' + baixarBtn(j) + '</div></div></div>';
   }
 
   /* ---------- Cards das impressoras ---------- */
@@ -462,6 +471,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (acao === 'enviar') { abrirSelecao(job); return; }
 
+    if (acao === 'baixar') {
+      if (!job || !job.arquivo_path) {
+        showToast('Atenção', 'Esta impressão não tem arquivo para baixar.', 'error');
+        return;
+      }
+      var dl = await supabaseClient.storage.from('impressoes').download(job.arquivo_path);
+      if (dl.error || !dl.data) {
+        showToast('Erro', 'Não foi possível baixar o arquivo.', 'error');
+        return;
+      }
+      var urlArquivo = URL.createObjectURL(dl.data);
+      var link = document.createElement('a');
+      link.href = urlArquivo;
+      link.download = job.arquivo_nome || (job.titulo + '.3mf');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(function () { URL.revokeObjectURL(urlArquivo); }, 1000);
+      return;
+    }
+
     if (acao === 'arquivar') {
       r = await supabaseClient.rpc('arquivar_impressao', { p_impressao_id: id });
       if (r.error) { showToast('Erro', esc(r.error.message), 'error'); return; }
@@ -499,6 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   container.addEventListener('click', tratarAcao);
   slotsEl.addEventListener('click', tratarAcao);
+  historicoEl.addEventListener('click', tratarAcao);
 
   /* ---------- Modal "Enviar para impressora" ---------- */
   var selecaoEl = document.createElement('div');

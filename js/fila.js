@@ -161,13 +161,23 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function subtitulo(j) {
-    return [j.autor || '—', j.peso_g ? fmtG(j.peso_g) : null, j.camada_mm ? j.camada_mm + 'mm' : null]
+    return [j.autor || '—', j.peso_g ? fmtG(j.peso_g) : null]
       .filter(Boolean).join(' · ');
   }
 
   // Descrição e filamentos (ex.: "PLA branco: 2,89 g"), exibidos abaixo do nome
   function detalhesHtml(j) {
     var html = '';
+
+    // Nome do arquivo .3mf e tempo total de impressão (fila geral e impressoras)
+    var arquivoTempo = [];
+    if (j.arquivo_nome) arquivoTempo.push('Arquivo: ' + j.arquivo_nome);
+    if (j.tempo_seg) arquivoTempo.push('Tempo de impressão: ' + fmtSeg(j.tempo_seg));
+    if (arquivoTempo.length) {
+      var txtArquivo = arquivoTempo.join(' · ');
+      html += '<div class="job-row__subtitle" title="' + esc(txtArquivo) + '">' + esc(txtArquivo) + '</div>';
+    }
+
     if (j.descricao) {
       html += '<div class="job-row__subtitle" title="' + esc(j.descricao) + '">' + esc(j.descricao) + '</div>';
     }
@@ -216,12 +226,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var linha1 = [
       nomeImpressora(j.impressora_id) ? 'Impressora ' + nomeImpressora(j.impressora_id) : null,
       j.peso_g ? fmtG(j.peso_g) : null,
-      j.camada_mm ? j.camada_mm + 'mm' : null,
       quando ? 'concluída em ' + quando : null
     ].filter(Boolean).join(' · ');
     var linha2 = 'Na fila: ' + (j.autor || '—') +
       ' · Enviou: ' + (j.enviado_por_nome || '—') +
       ' · Retirou: ' + (j.arquivado_por_nome || '—');
+    var linha3 = [
+      j.arquivo_nome ? 'Arquivo: ' + j.arquivo_nome : null,
+      j.tempo_seg ? 'Tempo de impressão: ' + fmtSeg(j.tempo_seg) : null
+    ].filter(Boolean).join(' · ');
     return '<div class="job-row job-row--history" data-status="concluido" data-title="' +
       esc((j.titulo + ' ' + (j.autor || '') + ' ' + (j.enviado_por_nome || '') + ' ' + (j.arquivado_por_nome || '') + ' ' + (nomeImpressora(j.impressora_id) || '')).toLowerCase()) + '">' +
       '<span class="job-row__handle" aria-hidden="true" style="visibility:hidden;">' + HANDLE + '</span>' +
@@ -229,7 +242,8 @@ document.addEventListener('DOMContentLoaded', function () {
       '<span class="job-material-chip">' + esc(j.material || '—') + '</span>' +
       '<div class="job-row__info"><div class="job-row__title">' + esc(j.titulo) + '</div>' +
         '<div class="job-row__subtitle" title="' + esc(linha1) + '">' + esc(linha1) + '</div>' +
-        '<div class="job-row__subtitle" title="' + esc(linha2) + '">' + esc(linha2) + '</div></div>' +
+        '<div class="job-row__subtitle" title="' + esc(linha2) + '">' + esc(linha2) + '</div>' +
+        (linha3 ? '<div class="job-row__subtitle" title="' + esc(linha3) + '">' + esc(linha3) + '</div>' : '') + '</div>' +
       '<span class="job-row__color">' + esc(j.cor || '—') + '</span>' +
       '<div class="job-progress"><div class="job-progress__row"><div class="progress-bar"><div class="progress-bar__fill" style="width:100%;"></div></div>' +
         '<span class="job-progress__pct">100%</span></div></div>' +

@@ -152,14 +152,12 @@
               <tr>
                 <th>Membro</th>
                 <th>Cargo</th>
-                <th>Impressões</th>
-                <th>Filamento</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody id="userTableBody">
               <tr>
-                <td colspan="5" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Carregando membros...</td>
+                <td colspan="3" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Carregando membros...</td>
               </tr>
             </tbody>
           </table>
@@ -218,7 +216,7 @@
         tbody.innerHTML = '';
 
         if (!membros || membros.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Nenhum membro encontrado.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="3" class="text-muted" style="text-align:center; padding: var(--space-6) 0;">Nenhum membro encontrado.</td></tr>';
           return;
         }
 
@@ -253,8 +251,6 @@
                   '<i data-lucide="chevron-down" width="14" height="14" style="width:14px; height:14px; color: var(--color-text-tertiary);"></i>' +
                 '</button>'
               : badgeCargo(membro)) + '</td>' +
-            '<td>—</td>' +
-            '<td>—</td>' +
             '<td>' +
               (podePassarCoroa
                 ? '<button type="button" class="btn-icon btn-icon--sm passar-coroa-btn" aria-label="Passar a coroa" title="Passar a coroa" style="margin-right:6px;">' +

@@ -163,7 +163,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (j.status === 'imprimindo') return btn(j, 'pausado', 'pause', 'Pausar') + btn(j, 'concluido', 'check', 'Concluir') + btn(j, 'erro', 'alert-triangle', 'Marcar erro', true);
       if (j.status === 'na-fila') return btn(j, 'imprimindo', 'play', 'Iniciar') + btn(j, 'remover', 'trash-2', 'Remover', true);
       if (j.status === 'pausado') return btn(j, 'imprimindo', 'play', 'Retomar') + btn(j, 'remover', 'x', 'Cancelar', true);
-      if (j.status === 'erro') return btn(j, 'devolver', 'refresh-cw', 'Devolver à fila') + btn(j, 'remover', 'trash-2', 'Remover', true);
+      // Erro: Retomar continua a mesma impressão (o timer volta de onde parou); Devolver à fila é a opção separada
+      if (j.status === 'erro') return btn(j, 'imprimindo', 'play', 'Retomar') + btn(j, 'devolver', 'undo-2', 'Devolver à fila') + btn(j, 'remover', 'trash-2', 'Remover', true);
       if (j.status === 'concluido') return btn(j, 'arquivar', 'arrow-down', 'Enviar para o histórico');
       return '';
     }

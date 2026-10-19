@@ -35,6 +35,12 @@ public class EspacoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<EspacoResponseDTO> atualizar(@PathVariable Long id, @RequestBody EspacoRequestDTO dto) {
+        EspacoResponseDTO atualizado = espacoService.atualizar(id, dto);
+        return ResponseEntity.ok(atualizado);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         espacoService.deletarPorId(id);

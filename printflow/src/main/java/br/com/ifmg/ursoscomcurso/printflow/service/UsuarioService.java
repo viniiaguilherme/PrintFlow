@@ -70,6 +70,28 @@ public class UsuarioService {
         return UsuarioResponseDTO.fromEntity(salvo);
     }
 
+    public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com o ID: " + id));
+
+        java.util.Optional<Usuario> outroComEmail = usuarioRepository.findByEmail(dto.email());
+        if (outroComEmail.isPresent() && !outroComEmail.get().getId().equals(id)) {
+            throw new RegraNegocioException("E-mail já cadastrado por outro usuário!");
+        }
+
+        usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
+        if (dto.role() != null) {
+            usuario.setRole(dto.role());
+        }
+        if (dto.senha() != null && !dto.senha().trim().isEmpty()) {
+            usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        }
+
+        Usuario atualizado = usuarioRepository.save(usuario);
+        return UsuarioResponseDTO.fromEntity(atualizado);
+    }
+
     public void deletarPorId(Long id) {
         if (!usuarioRepository.existsById(id)) {
             throw new RecursoNaoEncontradoException("Usuário não encontrado com o ID: " + id);

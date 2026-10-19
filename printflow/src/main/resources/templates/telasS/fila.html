@@ -2,7 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Fila de Impressão — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,14 +20,22 @@
          SIDEBAR
     ====================================================== -->
     <aside class="sidebar" id="sidebar">
-      <a href="dashboard.html" class="sidebar__brand">
-        <span class="brand__mark">
+      <div class="sidebar__head">
+        <a href="dashboard.html" class="sidebar__brand">
+          <span class="brand__mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+            </svg>
+          </span>
+          PrintFlow
+        </a>
+        <button type="button" class="btn-icon sidebar__close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
-        </span>
-        PrintFlow
-      </a>
+        </button>
+      </div>
 
       <div class="sidebar__section-label">Controle</div>
       <nav class="sidebar__nav">
@@ -35,6 +46,13 @@
         <a href="fila.html" class="sidebar__link is-active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
           Fila de Impressão
+        </a>
+        <a href="historico.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <polyline points="12 7 12 12 15 15"/>
+          </svg>
+          Histórico
         </a>
         <a href="impressoras.html" class="sidebar__link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
@@ -78,6 +96,17 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
 
+          <a href="dashboard.html" class="brand brand--pill">
+            <span class="brand__mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+                <path d="M4 12l8-4 8 4"/>
+                <path d="M4 7l8-4 8 4"/>
+              </svg>
+            </span>
+            PrintFlow
+          </a>
+
           <div class="topbar__search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
@@ -86,22 +115,20 @@
 
         <div class="topbar__actions">
           <div class="dropdown">
-            <div class="dropdown__menu" id="notifMenu">
-              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
-            </div>
-          </div>
-
-          <div class="dropdown">
             <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
             <div class="dropdown__menu" id="avatarMenu">
-              <button class="dropdown__item" type="button">
+              <a href="perfil.html" class="dropdown__item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
                 Perfil
-              </button>
-              <button class="dropdown__item" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              </a>
+              <a href="configuracoes.html" class="dropdown__item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 112.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06-.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
                 Configurações
-              </button>
+              </a>
+              <a href="espacos.html" class="dropdown__item" id="linkMeusEspacosMenu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Meus espaços
+              </a>
               <div class="dropdown__divider"></div>
               <button class="dropdown__item" type="button" id="logoutButton">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
@@ -121,9 +148,7 @@
             <p id="queueSummary">5 trabalhos · cada impressora tem sua própria fila</p>
           </div>
           <div class="dashboard-head__actions">
-            <!-- Funcionalidade ainda não implementada: por enquanto apenas
-                 exibe um aviso (mesmo padrão usado nos links da sidebar). -->
-            <button type="button" class="btn btn-primary" data-feature-toast>
+            <button type="button" class="btn btn-primary" id="btnAbrirModalImpressao">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Nova impressão
             </button>
@@ -146,9 +171,31 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
               <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo ou maker...">
             </div>
-            <button type="button" class="btn-icon" data-feature-toast aria-label="Mais filtros">
+            <button type="button" class="btn-icon" id="btnMaisFiltros" aria-label="Mais filtros">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             </button>
+
+            <!-- Painel de Filtros Adicionais -->
+            <div class="extra-filters-panel" id="extraFiltersPanel">
+              <div class="form-group" style="margin-bottom: var(--space-2);">
+                <label class="form-label" style="font-size: .8125rem;">Filtrar por Material</label>
+                <select class="form-select" id="filtroMaterial" style="font-size: .8125rem; padding: 6px 10px;">
+                  <option value="todos">Todos os materiais</option>
+                  <option value="PLA">PLA</option>
+                  <option value="PETG">PETG</option>
+                  <option value="ABS">ABS</option>
+                  <option value="TPU">TPU</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: .8125rem;">Ordenar por Tempo</label>
+                <select class="form-select" id="ordemTempo" style="font-size: .8125rem; padding: 6px 10px;">
+                  <option value="padrao">Ordem da fila</option>
+                  <option value="rapido">Mais rápidos primeiro</option>
+                  <option value="longo">Mais longos primeiro</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -184,10 +231,10 @@
               <div style="display:flex; align-items:center; gap: var(--space-3);">
                 <span class="badge badge-success">Imprimindo</span>
                 <div class="job-row__actions">
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Pausar">
+                  <button type="button" class="btn-icon btn-icon--sm btn-job-pause" aria-label="Pausar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
                   </button>
-                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Cancelar">
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger btn-job-cancel" aria-label="Cancelar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                   </button>
                 </div>
@@ -233,10 +280,10 @@
               <div style="display:flex; align-items:center; gap: var(--space-3);">
                 <span class="badge badge-info">Na fila</span>
                 <div class="job-row__actions">
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Iniciar">
+                  <button type="button" class="btn-icon btn-icon--sm btn-job-start" aria-label="Iniciar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                   </button>
-                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Remover">
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger btn-job-remove" aria-label="Remover">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                   </button>
                 </div>
@@ -273,10 +320,10 @@
               <div style="display:flex; align-items:center; gap: var(--space-3);">
                 <span class="badge badge-neutral">Pausado</span>
                 <div class="job-row__actions">
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Retomar">
+                  <button type="button" class="btn-icon btn-icon--sm btn-job-resume" aria-label="Retomar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                   </button>
-                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Cancelar">
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger btn-job-cancel" aria-label="Cancelar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                   </button>
                 </div>
@@ -313,10 +360,10 @@
               <div style="display:flex; align-items:center; gap: var(--space-3);">
                 <span class="badge badge-danger">Erro</span>
                 <div class="job-row__actions">
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Reenviar">
+                  <button type="button" class="btn-icon btn-icon--sm btn-job-retry" aria-label="Reenviar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
                   </button>
-                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger" data-feature-toast aria-label="Remover">
+                  <button type="button" class="btn-icon btn-icon--sm btn-icon--danger btn-job-remove" aria-label="Remover">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
                   </button>
                 </div>
@@ -343,7 +390,7 @@
               <div style="display:flex; align-items:center; gap: var(--space-3);">
                 <span class="badge badge-success">Concluído</span>
                 <div class="job-row__actions">
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Ver detalhes">
+                  <button type="button" class="btn-icon btn-icon--sm btn-job-details" aria-label="Ver detalhes">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   </button>
                 </div>
@@ -355,10 +402,117 @@
         <p class="text-muted" id="queueEmptyState" style="text-align:center; padding: var(--space-6) 0; display:none;">
           Nenhum trabalho encontrado para esse filtro/busca.
         </p>
+      </main>
+    </div>
+  </div>
 
-        <p class="text-muted" style="margin-top: var(--space-4); font-size: .8125rem;">
-          Esta tela é apenas ilustrativa. A listagem real será conectada à fila de impressão do banco de dados em uma próxima entrega.
-        </p>
+  <!-- Modal Nova Impressão -->
+  <div class="modal-overlay" id="modalNovaImpressao">
+    <div class="modal modal--lg">
+      <div class="modal__head">
+        <h2 class="modal__title">Nova Impressão</h2>
+        <button class="modal__close" type="button" id="btnFecharModalImpressao" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="formNovaImpressao">
+        <div class="modal__body">
+          <div class="form-group">
+            <label class="form-label" for="jobNome">Nome do Modelo / Arquivo</label>
+            <input class="form-input" type="text" id="jobNome" placeholder="Ex: Suporte_Motor_Nema17.gcode" required>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label" for="jobImpressora">Impressora de Destino</label>
+              <select class="form-select" id="jobImpressora" required>
+                <option value="bambu-x1">Bambu-X1</option>
+                <option value="ender-v3">Ender-V3</option>
+                <option value="prusa-mk4">Prusa-MK4</option>
+                <option value="prusa-mk3">Prusa MK3</option>
+                <option value="ender-3">Ender 3</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="jobMaker">Maker / Solicitante</label>
+              <input class="form-input" type="text" id="jobMaker" placeholder="Ex: Prof. Silva" value="Conta Atual">
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label" for="jobMaterial">Material</label>
+              <select class="form-select" id="jobMaterial" required>
+                <option value="PLA" selected>PLA</option>
+                <option value="PETG">PETG</option>
+                <option value="ABS">ABS</option>
+                <option value="TPU">TPU</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="jobCor">Cor</label>
+              <input class="form-input" type="text" id="jobCor" placeholder="Ex: Branco, Preto, Laranja" value="Preto" required>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label" for="jobTempo">Tempo Estimado</label>
+              <input class="form-input" type="text" id="jobTempo" placeholder="Ex: 1h 30m" value="1h 15m" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="jobDetalhes">Peso & Resolução</label>
+              <input class="form-input" type="text" id="jobDetalhes" placeholder="Ex: 35g · 0.2mm" value="45g · 0.2mm">
+            </div>
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" id="btnCancelarModalImpressao">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Adicionar à Fila</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Detalhes do Trabalho -->
+  <div class="modal-overlay" id="modalDetalhesJob">
+    <div class="modal">
+      <div class="modal__head">
+        <h2 class="modal__title">Detalhes da Impressão</h2>
+        <button class="modal__close" type="button" id="btnFecharModalDetalhes" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body" id="detalhesJobBody">
+        <div style="display:flex; flex-direction:column; gap: var(--space-3); font-size: .875rem;">
+          <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
+            <span class="text-muted">Modelo</span>
+            <strong id="detalhesNome">—</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
+            <span class="text-muted">Impressora</span>
+            <span id="detalhesImpressora">—</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
+            <span class="text-muted">Maker</span>
+            <span id="detalhesMaker">—</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
+            <span class="text-muted">Material / Cor</span>
+            <span id="detalhesMaterialCor">—</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
+            <span class="text-muted">Tempo Estimado</span>
+            <span id="detalhesTempo">—</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
+            <span class="text-muted">Status Atual</span>
+            <span id="detalhesStatus">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn-primary" id="btnFecharDetalhes">Fechar</button>
+      </div>
+    </div>
+  </div>
       </main>
     </div>
   </div>
@@ -424,5 +578,59 @@
       }
     });
   </script>
+  <!-- =====================================================
+       BARRA DE NAVEGAÇÃO INFERIOR MOBILE
+  ====================================================== -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação mobile">
+    <a href="dashboard.html" class="mobile-nav-item" data-nav="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+      <span>Painel</span>
+    </a>
+    <a href="fila.html" class="mobile-nav-item is-active" data-nav="fila">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="14" y2="18"/>
+      </svg>
+      <span>Fila</span>
+    </a>
+    <a href="historico.html" class="mobile-nav-item" data-nav="historico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <polyline points="12 7 12 12 15 15"/>
+      </svg>
+      <span>Histórico</span>
+    </a>
+    <a href="impressoras.html" class="mobile-nav-item" data-nav="impressoras">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="9" width="16" height="7" rx="1.5"/>
+        <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/>
+        <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+      </svg>
+      <span>Frota</span>
+    </a>
+    <a href="espacos.html" class="mobile-nav-item" data-nav="espacos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+        <path d="M4 12l8-4 8 4"/>
+        <path d="M4 7l8-4 8 4"/>
+      </svg>
+      <span>Espaços</span>
+    </a>
+    <button type="button" class="mobile-nav-item" id="mobileMenuBtn" aria-label="Mais opções">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <span>Menu</span>
+    </button>
+  </nav>
+
 </body>
 </html>

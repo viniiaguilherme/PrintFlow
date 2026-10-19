@@ -82,6 +82,36 @@ public class AuthController {
         }
     }
 
+    @PutMapping("/me")
+    public ResponseEntity<UsuarioResponseDTO> updateAuthenticatedUser(
+            @RequestHeader(value = "Authorization", required = false) String tokenBearer,
+            @RequestBody UsuarioRequestDTO req) {
+        if (tokenBearer == null || !tokenBearer.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String token = tokenBearer.substring(7);
+        if (blacklistService.isInvalidado(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String email = tokenService.validateToken(token);
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        try {
+            Usuario user = usuarioService.buscarEntityPorEmail(email);
+            if (req.nome() != null && !req.nome().isBlank()) {
+                user.setNome(req.nome().trim());
+            }
+            if (req.senha() != null && !req.senha().isBlank()) {
+                user.setSenha(passwordEncoder.encode(req.senha().trim()));
+            }
+            Usuario salvo = usuarioService.save(user);
+            return ResponseEntity.ok(UsuarioResponseDTO.fromEntity(salvo));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestHeader(value = "Authorization", required = false) String tokenBearer) {
         if (tokenBearer != null && tokenBearer.startsWith("Bearer ")) {

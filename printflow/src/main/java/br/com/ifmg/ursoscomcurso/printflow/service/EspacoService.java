@@ -43,7 +43,38 @@ public class EspacoService {
         Espaco espaco = new Espaco();
         espaco.setNome(dto.nome());
         espaco.setResponsavel(dto.responsavel());
-        espaco.setStatus(dto.status());
+        espaco.setStatus(dto.status() != null ? dto.status() : "Ativo");
+        espaco.setCodigo(dto.codigo() != null && !dto.codigo().isBlank() ? dto.codigo() : "4429AD");
+        espaco.setDescricao(dto.descricao());
+        espaco.setSenha(dto.senha());
+
+        Espaco salvo = espacoRepository.save(espaco);
+        return EspacoResponseDTO.fromEntity(salvo);
+    }
+
+    @Transactional
+    public EspacoResponseDTO atualizar(Long id, EspacoRequestDTO dto) {
+        Espaco espaco = espacoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Espaço não encontrado com o ID: " + id));
+
+        if (dto.nome() != null && !dto.nome().isBlank()) {
+            espaco.setNome(dto.nome());
+        }
+        if (dto.responsavel() != null) {
+            espaco.setResponsavel(dto.responsavel());
+        }
+        if (dto.status() != null) {
+            espaco.setStatus(dto.status());
+        }
+        if (dto.codigo() != null && !dto.codigo().isBlank()) {
+            espaco.setCodigo(dto.codigo());
+        }
+        if (dto.descricao() != null) {
+            espaco.setDescricao(dto.descricao());
+        }
+        if (dto.senha() != null && !dto.senha().isBlank()) {
+            espaco.setSenha(dto.senha());
+        }
 
         Espaco salvo = espacoRepository.save(espaco);
         return EspacoResponseDTO.fromEntity(salvo);

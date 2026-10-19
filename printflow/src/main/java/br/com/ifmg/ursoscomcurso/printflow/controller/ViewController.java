@@ -60,4 +60,9 @@ public class ViewController {
     public String alerta() {
         return "telasS/alerta";
     }
+
+    @GetMapping({"/historico", "/historico.html"})
+    public String historico() {
+        return "telasS/historico";
+    }
 }

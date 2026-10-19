@@ -17,6 +17,9 @@ public class Espaco {
     private String nome;
     private String responsavel;
     private String status;
+    private String codigo;
+    private String descricao;
+    private String senha;
 
     public Espaco() {}
 
@@ -25,6 +28,16 @@ public class Espaco {
         this.nome = nome;
         this.responsavel = responsavel;
         this.status = status;
+    }
+
+    public Espaco(Long id, String nome, String responsavel, String status, String codigo, String descricao, String senha) {
+        this.id = id;
+        this.nome = nome;
+        this.responsavel = responsavel;
+        this.status = status;
+        this.codigo = codigo;
+        this.descricao = descricao;
+        this.senha = senha;
     }
 
     public Long getId() {
@@ -57,5 +70,29 @@ public class Espaco {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }

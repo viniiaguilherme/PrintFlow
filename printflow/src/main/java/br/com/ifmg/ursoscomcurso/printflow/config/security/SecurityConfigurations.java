@@ -32,7 +32,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/printflow/auth/login", "/printflow/auth/register", "/auth/login", "/auth/register").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/web/**", "/style.css", "/script.js", "/*.html", "/*.css", "/*.js", "/telasS/**").permitAll()
                         // Views HTML permitidas para que o JS da página possa ler o token do localStorage e redirecionar se não autenticado
-                        .requestMatchers("/dashboard", "/dashboard.html", "/impressoras", "/impressoras.html", "/usuarios", "/usuarios.html", "/espacos", "/espacos.html", "/fila", "/fila.html", "/configuracoes", "/configuracoes.html", "/perfil", "/perfil.html", "/alerta", "/alerta.html").permitAll()
+                        .requestMatchers("/dashboard", "/dashboard.html", "/impressoras", "/impressoras.html", "/usuarios", "/usuarios.html", "/espacos", "/espacos.html", "/fila", "/fila.html", "/configuracoes", "/configuracoes.html", "/perfil", "/perfil.html", "/alerta", "/alerta.html", "/historico", "/historico.html").permitAll()
 
                         // 2. Permissões de APIs REST autenticadas
                         .requestMatchers(HttpMethod.GET, "/espaco", "/espaco/**").hasAnyRole("MAKER", "OPERADOR", "ADMINISTRADOR", "ADMIN")
@@ -42,11 +42,12 @@ public class SecurityConfigurations {
 
                         .requestMatchers(HttpMethod.GET, "/impressora", "/impressora/**").hasAnyRole("MAKER", "OPERADOR", "ADMINISTRADOR", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/impressora", "/impressora/**").hasAnyRole("OPERADOR", "ADMINISTRADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/impressora", "/impressora/**").hasAnyRole("OPERADOR", "ADMINISTRADOR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/impressora", "/impressora/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
 
                         .requestMatchers("/usuario", "/usuario/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
 
-                        .requestMatchers("/api/estatisticas/**").hasAnyRole("MAKER", "OPERADOR", "ADMINISTRADOR", "ADMIN")
+                        .requestMatchers("/api/estatisticas/**", "/api/alertas/**", "/api/historico/**").hasAnyRole("MAKER", "OPERADOR", "ADMINISTRADOR", "ADMIN")
 
                         // Qualquer outra requisição de API exige autenticação
                         .anyRequest().authenticated()

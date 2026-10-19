@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Configurações — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <div class="dashboard-layout">
@@ -17,39 +22,85 @@
          SIDEBAR
     ====================================================== -->
     <aside class="sidebar" id="sidebar">
-      <a href="dashboard.html" class="sidebar__brand">
-        <span class="brand__mark">
+      <div class="sidebar__head">
+        <a href="dashboard.html" class="sidebar__brand">
+          <span class="brand__mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M4 17l8-4 8 4-8 4-8-4z" />
+              <path d="M4 12l8-4 8 4" />
+              <path d="M4 7l8-4 8 4" />
+            </svg>
+          </span>
+          PrintFlow
+        </a>
+        <button type="button" class="btn-icon sidebar__close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
-        </span>
-        PrintFlow
-      </a>
+        </button>
+      </div>
 
       <div class="sidebar__section-label">Controle</div>
       <nav class="sidebar__nav">
         <a href="dashboard.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="3" width="8" height="8" rx="1.5" />
+            <rect x="13" y="3" width="8" height="8" rx="1.5" />
+            <rect x="3" y="13" width="8" height="8" rx="1.5" />
+            <rect x="13" y="13" width="8" height="8" rx="1.5" />
+          </svg>
           Painel
         </a>
         <a href="fila.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="4" y1="6" x2="20" y2="6" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="18" x2="14" y2="18" />
+          </svg>
           Fila de Impressão
         </a>
+        <a href="historico.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Histórico
+        </a>
         <a href="impressoras.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="4" y="9" width="16" height="7" rx="1.5" />
+            <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3" />
+            <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2" />
+          </svg>
           Impressoras
         </a>
         <a href="usuarios.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 00-3-3.87" />
+            <path d="M16 3.13a4 4 0 010 7.75" />
+          </svg>
           Usuários
         </a>
         <a href="configuracoes.html" class="sidebar__link is-active">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+          </svg>
           Configurações
         </a>
         <a href="alerta.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 01-3.46 0" />
           </svg>
@@ -75,33 +126,70 @@
       <header class="topbar">
         <div class="topbar__left">
           <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
           </button>
 
+          <!-- Brand Pill Capsule da Referência Visual -->
+          <div class="brand brand--pill">
+            <div class="brand__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+                <path d="M4 12l8-4 8 4"/>
+                <path d="M4 7l8-4 8 4"/>
+              </svg>
+            </div>
+            <div class="brand__text">
+              <span class="brand__title">PrintFlow</span>
+              <span class="brand__tag">HUB 3D</span>
+            </div>
+          </div>
+
           <div class="topbar__search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
             <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
           </div>
         </div>
 
         <div class="topbar__actions">
-          <div class="dropdown">
-            <div class="dropdown__menu" id="notifMenu">
-              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
+          <!-- Card de Sessão Ativa do Mockup Visual -->
+          <div class="user-session-card" title="Usuário Ativo no Sistema">
+            <div class="user-session-card__avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+              </svg>
             </div>
+            <div class="user-session-card__info">
+              <span class="user-session-card__label">Sessão ativa</span>
+              <span class="user-session-card__name" id="userSessionName">m.santos</span>
+            </div>
+            <span class="user-session-card__badge">ONLINE</span>
           </div>
 
           <div class="dropdown">
             <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
             <div class="dropdown__menu" id="avatarMenu">
-              <button class="dropdown__item" type="button">
+              <a href="perfil.html" class="dropdown__item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
                 Perfil
-              </button>
-              <button class="dropdown__item" type="button">
+              </a>
+              <a href="configuracoes.html" class="dropdown__item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
                 Configurações
-              </button>
+              </a>
+              <a href="espacos.html" class="dropdown__item" id="linkMeusEspacosMenu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Meus espaços
+              </a>
               <div class="dropdown__divider"></div>
               <button class="dropdown__item" type="button" id="logoutButton">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
@@ -118,40 +206,46 @@
           <span class="eyebrow">// CONFIGURAÇÕES</span>
           <h1>
             Configurações do espaço
-            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="title-crown"><path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="title-crown">
+              <path d="M5 18h14l1.5-9-5.5 3-3-6-3 6-5.5-3z" />
+            </svg>
           </h1>
           <p>Como dono, você pode editar o nome, a descrição e a senha de acesso.</p>
         </div>
 
-        <!-- Formulário apenas ilustrativo: nenhum dado é salvo por
-             enquanto (mesmo padrão de "Em desenvolvimento" usado nos
-             demais links/botões ainda não implementados). -->
         <div style="max-width: 620px; margin-inline: auto;">
           <div class="card">
             <form id="spaceForm">
               <div class="form-group">
                 <label class="form-label" for="spaceNome">Nome</label>
-                <input class="form-input" type="text" id="spaceNome" value="Laboratório FabLab">
+                <input class="form-input" id="spaceNome" type="text" placeholder="Digite o nome do espaço" required>
               </div>
 
               <div class="form-group" style="margin-bottom: var(--space-2);">
                 <label class="form-label" for="spaceDescricao">Descrição</label>
-                <textarea class="form-textarea" id="spaceDescricao" rows="3" maxlength="200">Espaço de demonstração com várias impressoras.</textarea>
+
+                <textarea class="form-textarea" id="spaceDescricao" rows="3"
+                  maxlength="200">Espaço de demonstração com várias impressoras.</textarea>
               </div>
-              <div class="form-textarea-counter" id="spaceDescricaoCounter" style="margin-bottom: var(--space-2);">46/200</div>
+              <div class="form-textarea-counter" id="spaceDescricaoCounter" style="margin-bottom: var(--space-2);">
+                46/200</div>
 
               <!-- Acesso ao espaço -->
               <div class="settings-subcard">
                 <div class="settings-subcard__head">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path
+                      d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                  </svg>
                   <h4>Acesso ao espaço</h4>
                 </div>
-                <p class="settings-subcard__desc">O código é gerado automaticamente e não pode ser alterado. Compartilhe a senha apenas com pessoas de confiança.</p>
 
                 <div class="form-group">
                   <label class="form-label" for="spaceCodigo">Código de convite</label>
                   <div class="input-group">
-                    <input class="form-input" type="text" id="spaceCodigo" value="4429AD" readonly style="font-family: var(--font-mono); color: var(--color-text-secondary);">
+                    <input class="form-input" type="text" id="spaceCodigo" value="4429AD" readonly
+                      style="font-family: var(--font-mono); color: var(--color-text-secondary);">
                     <button type="button" class="btn btn-outline" id="copyCodeBtn">Copiar</button>
                   </div>
                 </div>
@@ -159,18 +253,29 @@
                 <div class="form-group" style="margin-bottom: 0;">
                   <label class="form-label" for="spaceSenha">Nova senha do espaço</label>
                   <div class="input-group">
-                    <input class="form-input" type="password" id="spaceSenha" placeholder="Deixe em branco para manter a atual">
+                    <input class="form-input" type="password" id="spaceSenha"
+                      placeholder="Deixe em branco para manter a atual">
                     <button type="button" class="btn-icon" id="toggleSenhaBtn" aria-label="Mostrar senha">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
                     </button>
                   </div>
-                  <span class="form-hint">4-32 caracteres. A senha atual não é exibida por segurança — informe uma nova para trocá-la.</span>
+                  <span class="form-hint">4-32 caracteres. A senha atual não é exibida por segurança — informe uma nova
+                    para trocá-la.</span>
                 </div>
               </div>
 
               <div class="settings-card__foot">
-                <button type="button" class="btn btn-primary" data-feature-toast>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <button type="submit" class="btn btn-primary" id="btnSalvarEspaco">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                  </svg>
                   Salvar alterações
                 </button>
               </div>
@@ -178,9 +283,6 @@
           </div>
         </div>
 
-        <p class="text-muted" style="margin-top: var(--space-5); font-size: .8125rem; max-width: 620px; margin-inline: auto;">
-          Esta tela é apenas ilustrativa. Salvar alterações, copiar o código e gerar uma nova senha ainda não estão conectados ao backend.
-        </p>
       </main>
     </div>
   </div>
@@ -220,12 +322,164 @@
       if (copyBtn && codigoInput && typeof showToast === 'function') {
         copyBtn.addEventListener('click', function () {
           if (navigator.clipboard) {
-            navigator.clipboard.writeText(codigoInput.value).catch(function () {});
+            navigator.clipboard.writeText(codigoInput.value).catch(function () { });
           }
           showToast('Copiado', 'Código de convite copiado para a área de transferência.');
         });
       }
+
+      // Carregar dados do espaço ativo
+      var activeSpace = typeof getJoinedSpace === 'function' ? getJoinedSpace() : null;
+      var currentSpaceId = activeSpace ? activeSpace.id : null;
+      var nomeInput = document.getElementById('spaceNome');
+
+      function preencherDadosEspaco(space) {
+        if (!space) return;
+        if (space.id) currentSpaceId = space.id;
+        if (nomeInput && space.nome) nomeInput.value = space.nome;
+        if (descricao && space.descricao) {
+          descricao.value = space.descricao;
+          if (typeof updateCounter === 'function') updateCounter();
+        }
+        if (codigoInput && space.codigo) codigoInput.value = space.codigo;
+      }
+
+      if (activeSpace) {
+        preencherDadosEspaco(activeSpace);
+      }
+
+      // Tenta sincronizar com dados do backend
+      if (typeof fetchWithAuth === 'function') {
+        var url = currentSpaceId ? ('/espaco/' + currentSpaceId) : '/espaco';
+        fetchWithAuth(url)
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (data) {
+            if (!data) return;
+            if (Array.isArray(data)) {
+              var encontrado = activeSpace && activeSpace.codigo
+                ? data.find(function (e) { return e.codigo && e.codigo.toUpperCase() === activeSpace.codigo.toUpperCase(); })
+                : data[0];
+              if (encontrado) preencherDadosEspaco(encontrado);
+            } else {
+              preencherDadosEspaco(data);
+            }
+          })
+          .catch(function () { });
+      }
+
+      // Salvar alterações do espaço
+      var spaceForm = document.getElementById('spaceForm');
+      if (spaceForm) {
+        spaceForm.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var nome = nomeInput ? nomeInput.value.trim() : '';
+          var desc = descricao ? descricao.value.trim() : '';
+          var novaSenha = senhaInput ? senhaInput.value.trim() : '';
+
+          if (!nome) {
+            showToast('Atenção', 'O nome do espaço não pode ficar em branco.', 'error');
+            return;
+          }
+          if (novaSenha && (novaSenha.length < 4 || novaSenha.length > 32)) {
+            showToast('Atenção', 'A nova senha deve conter entre 4 e 32 caracteres.', 'error');
+            return;
+          }
+
+          var payload = {
+            nome: nome,
+            descricao: desc
+          };
+          if (novaSenha) {
+            payload.senha = novaSenha;
+          }
+          if (codigoInput && codigoInput.value) {
+            payload.codigo = codigoInput.value;
+          }
+
+          var targetId = currentSpaceId || (activeSpace ? activeSpace.id : 1);
+
+          fetchWithAuth('/espaco/' + targetId, {
+            method: 'PUT',
+            body: JSON.stringify(payload)
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error('Não foi possível salvar as configurações do espaço.');
+              return res.json().catch(function () { return {}; });
+            })
+            .then(function (salvo) {
+              var updated = salvo && salvo.id ? salvo : Object.assign({}, activeSpace || {}, payload);
+              if (typeof setJoinedSpace === 'function') {
+                setJoinedSpace(updated);
+              }
+              if (senhaInput) senhaInput.value = '';
+              showToast('Sucesso', 'Configurações do espaço salvas com sucesso!', 'success');
+            })
+            .catch(function () {
+              var updated = Object.assign({}, activeSpace || {}, payload);
+              if (typeof setJoinedSpace === 'function') {
+                setJoinedSpace(updated);
+              }
+              if (senhaInput) senhaInput.value = '';
+              showToast('Sucesso', 'Configurações salvas localmente!', 'success');
+            });
+        });
+      }
     });
   </script>
+  <!-- =====================================================
+       BARRA DE NAVEGAÇÃO INFERIOR MOBILE
+  ====================================================== -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação mobile">
+    <a href="dashboard.html" class="mobile-nav-item" data-nav="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+      <span>Painel</span>
+    </a>
+    <a href="fila.html" class="mobile-nav-item" data-nav="fila">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="14" y2="18"/>
+      </svg>
+      <span>Fila</span>
+    </a>
+    <a href="historico.html" class="mobile-nav-item" data-nav="historico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span>Histórico</span>
+    </a>
+    <a href="impressoras.html" class="mobile-nav-item" data-nav="impressoras">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="9" width="16" height="7" rx="1.5"/>
+        <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/>
+        <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+      </svg>
+      <span>Frota</span>
+    </a>
+    <a href="espacos.html" class="mobile-nav-item" data-nav="espacos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+        <path d="M4 12l8-4 8 4"/>
+        <path d="M4 7l8-4 8 4"/>
+      </svg>
+      <span>Espaços</span>
+    </a>
+    <button type="button" class="mobile-nav-item is-active" id="mobileMenuBtn" aria-label="Mais opções">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <span>Menu</span>
+    </button>
+  </nav>
+
 </body>
+
 </html>

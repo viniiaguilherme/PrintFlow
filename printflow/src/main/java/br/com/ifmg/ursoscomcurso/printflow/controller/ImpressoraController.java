@@ -35,6 +35,12 @@ public class ImpressoraController {
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ImpressoraResponseDTO> atualizar(@PathVariable Long id, @RequestBody ImpressoraRequestDTO dto) {
+        ImpressoraResponseDTO atualizado = impressoraService.atualizar(id, dto);
+        return ResponseEntity.ok(atualizado);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         impressoraService.deletarPorId(id);

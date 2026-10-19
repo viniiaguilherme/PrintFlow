@@ -2,7 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Meu Perfil — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:,">
@@ -14,16 +17,37 @@
   ====================================================== -->
   <header class="navbar">
     <div class="container navbar__inner">
-      <a href="espacos.html" class="brand">
-        <span class="brand__mark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+      <!-- Brand Pill Capsule da Referência Visual -->
+      <a href="espacos.html" class="brand brand--pill">
+        <div class="brand__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+            <path d="M4 12l8-4 8 4"/>
+            <path d="M4 7l8-4 8 4"/>
           </svg>
-        </span>
-        PrintFlow
+        </div>
+        <div class="brand__text">
+          <span class="brand__title">PrintFlow</span>
+          <span class="brand__tag">HUB 3D</span>
+        </div>
       </a>
 
       <div class="navbar__actions">
+        <!-- Card de Sessão Ativa do Mockup Visual -->
+        <div class="user-session-card" title="Usuário Ativo no Sistema">
+          <div class="user-session-card__avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+            </svg>
+          </div>
+          <div class="user-session-card__info">
+            <span class="user-session-card__label">Sessão ativa</span>
+            <span class="user-session-card__name" id="userSessionName">m.santos</span>
+          </div>
+          <span class="user-session-card__badge">ONLINE</span>
+        </div>
+
         <div class="dropdown">
           <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
           <div class="dropdown__menu" id="avatarMenu">
@@ -31,7 +55,11 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
               Perfil
             </a>
-            <a href="espacos.html" class="dropdown__item">
+            <a href="configuracoes.html" class="dropdown__item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              Configurações
+            </a>
+            <a href="espacos.html" class="dropdown__item" id="linkMeusEspacosMenu">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
               Meus espaços
             </a>
@@ -178,15 +206,35 @@
             return;
           }
 
-          var user = getStoredUser() || {};
-          user.nome = novoNome;
-          setAuthSession(getToken(), user);
+          fetchWithAuth('/printflow/auth/me', {
+            method: 'PUT',
+            body: JSON.stringify({ nome: novoNome })
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error('Não foi possível salvar as alterações.');
+              return res.json().catch(function() { return {}; });
+            })
+            .then(function (userSalvo) {
+              var user = getStoredUser() || {};
+              user.nome = novoNome;
+              setAuthSession(getToken(), user);
 
-          nomeExibido.textContent = novoNome;
-          if (avatarGrande) avatarGrande.textContent = getInitials(novoNome);
-          updateUserUI(user);
+              nomeExibido.textContent = novoNome;
+              if (avatarGrande) avatarGrande.textContent = getInitials(novoNome);
+              updateUserUI(user);
 
-          showToast('Sucesso', 'Perfil atualizado com sucesso!', 'success');
+              showToast('Sucesso', 'Perfil atualizado com sucesso!', 'success');
+            })
+            .catch(function (err) {
+              // Fallback local se backend offline
+              var user = getStoredUser() || {};
+              user.nome = novoNome;
+              setAuthSession(getToken(), user);
+              nomeExibido.textContent = novoNome;
+              if (avatarGrande) avatarGrande.textContent = getInitials(novoNome);
+              updateUserUI(user);
+              showToast('Sucesso', 'Perfil salvo localmente.', 'success');
+            });
         });
       }
 
@@ -211,11 +259,67 @@
             return;
           }
 
-          showToast('Sucesso', 'Senha atualizada com sucesso!', 'success');
-          senhaForm.reset();
+          fetchWithAuth('/printflow/auth/me', {
+            method: 'PUT',
+            body: JSON.stringify({ senha: novaSenha })
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error('Não foi possível alterar a senha no servidor.');
+              showToast('Sucesso', 'Senha atualizada com sucesso!', 'success');
+              senhaForm.reset();
+            })
+            .catch(function (err) {
+              showToast('Erro', err.message || 'Erro ao atualizar senha.', 'error');
+            });
         });
       }
     });
   </script>
+  <!-- =====================================================
+       BARRA DE NAVEGAÇÃO INFERIOR MOBILE
+  ====================================================== -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação mobile">
+    <a href="dashboard.html" class="mobile-nav-item" data-nav="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+      <span>Painel</span>
+    </a>
+    <a href="fila.html" class="mobile-nav-item" data-nav="fila">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="14" y2="18"/>
+      </svg>
+      <span>Fila</span>
+    </a>
+    <a href="impressoras.html" class="mobile-nav-item" data-nav="impressoras">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="9" width="16" height="7" rx="1.5"/>
+        <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/>
+        <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+      </svg>
+      <span>Frota</span>
+    </a>
+    <a href="espacos.html" class="mobile-nav-item" data-nav="espacos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+        <path d="M4 12l8-4 8 4"/>
+        <path d="M4 7l8-4 8 4"/>
+      </svg>
+      <span>Espaços</span>
+    </a>
+    <a href="perfil.html" class="mobile-nav-item is-active" data-nav="perfil" aria-label="Perfil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+      </svg>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
 </body>
 </html>

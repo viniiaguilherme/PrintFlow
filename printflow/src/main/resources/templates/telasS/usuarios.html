@@ -3,7 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Usuários — PrintFlow</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -19,17 +22,25 @@
          SIDEBAR
     ====================================================== -->
     <aside class="sidebar" id="sidebar">
-      <a href="dashboard.html" class="sidebar__brand">
-        <span class="brand__mark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M4 17l8-4 8 4-8 4-8-4z" />
-            <path d="M4 12l8-4 8 4" />
-            <path d="M4 7l8-4 8 4" />
+      <div class="sidebar__head">
+        <a href="dashboard.html" class="sidebar__brand">
+          <span class="brand__mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M4 17l8-4 8 4-8 4-8-4z" />
+              <path d="M4 12l8-4 8 4" />
+              <path d="M4 7l8-4 8 4" />
+            </svg>
+          </span>
+          PrintFlow
+        </a>
+        <button type="button" class="btn-icon sidebar__close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
-        </span>
-        PrintFlow
-      </a>
+        </button>
+      </div>
 
       <div class="sidebar__section-label">Controle</div>
       <nav class="sidebar__nav">
@@ -51,6 +62,13 @@
             <line x1="4" y1="18" x2="14" y2="18" />
           </svg>
           Fila de Impressão
+        </a>
+        <a href="historico.html" class="sidebar__link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Histórico
         </a>
         <a href="impressoras.html" class="sidebar__link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -115,6 +133,21 @@
             </svg>
           </button>
 
+          <!-- Brand Pill Capsule da Referência Visual -->
+          <div class="brand brand--pill">
+            <div class="brand__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+                <path d="M4 12l8-4 8 4"/>
+                <path d="M4 7l8-4 8 4"/>
+              </svg>
+            </div>
+            <div class="brand__text">
+              <span class="brand__title">PrintFlow</span>
+              <span class="brand__tag">HUB 3D</span>
+            </div>
+          </div>
+
           <div class="topbar__search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
@@ -126,40 +159,39 @@
         </div>
 
         <div class="topbar__actions">
-          <div class="dropdown">
-            <div class="dropdown__menu" id="notifMenu">
-              <div class="dropdown__item" style="cursor:default;">Nenhuma notificação nova</div>
+          <!-- Card de Sessão Ativa do Mockup Visual -->
+          <div class="user-session-card" title="Usuário Ativo no Sistema">
+            <div class="user-session-card__avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+              </svg>
             </div>
+            <div class="user-session-card__info">
+              <span class="user-session-card__label">Sessão ativa</span>
+              <span class="user-session-card__name" id="userSessionName">m.santos</span>
+            </div>
+            <span class="user-session-card__badge">ONLINE</span>
           </div>
 
           <div class="dropdown">
             <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
             <div class="dropdown__menu" id="avatarMenu">
-              <button class="dropdown__item" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-                </svg>
+              <a href="perfil.html" class="dropdown__item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
                 Perfil
-              </button>
-              <button class="dropdown__item" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="3" />
-                  <path
-                    d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-                </svg>
+              </a>
+              <a href="configuracoes.html" class="dropdown__item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
                 Configurações
-              </button>
+              </a>
+              <a href="espacos.html" class="dropdown__item" id="linkMeusEspacosMenu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Meus espaços
+              </a>
               <div class="dropdown__divider"></div>
               <button class="dropdown__item" type="button" id="logoutButton">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                  <path d="M16 17l5-5-5-5" />
-                  <path d="M21 12H9" />
-                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
                 Sair
               </button>
             </div>
@@ -176,9 +208,7 @@
             <p>Gerencie cargos e acessos.</p>
           </div>
           <div class="dashboard-head__actions">
-            <!-- Funcionalidade ainda não implementada: por enquanto apenas
-                 exibe um aviso (mesmo padrão usado nos links da sidebar). -->
-            <button type="button" class="btn btn-primary" data-feature-toast>
+            <button type="button" class="btn btn-primary" id="btnAbrirModalUsuario">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
@@ -269,7 +299,7 @@
                 <td>3.1 kg</td>
                 <td><span class="status-inline"><span class="status-dot"></span>Ativo</span></td>
                 <td>
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm btn-editar-usuario" data-user-name="Vinícius Guilherme" data-user-email="vinii@exemplo.com" data-user-role="ADMINISTRADOR" aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round">
                       <path d="M12 20h9" />
@@ -293,7 +323,7 @@
                 <td>2.0 kg</td>
                 <td><span class="status-inline"><span class="status-dot"></span>Ativo</span></td>
                 <td>
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm btn-editar-usuario" data-user-name="Emmily Carvalho" data-user-email="emy.cr@exemplo.com" data-user-role="OPERADOR" aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round">
                       <path d="M12 20h9" />
@@ -317,7 +347,7 @@
                 <td>1.3 kg</td>
                 <td><span class="status-inline"><span class="status-dot status-dot--idle"></span>Ocioso</span></td>
                 <td>
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm btn-editar-usuario" data-user-name="Ederson Júnior" data-user-email="ederson.j@exemplo.com" data-user-role="MAKER" aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round">
                       <path d="M12 20h9" />
@@ -342,7 +372,7 @@
                 <td><span class="status-inline"><span class="status-dot status-dot--warning"></span>Convite
                     pendente</span></td>
                 <td>
-                  <button type="button" class="btn-icon btn-icon--sm" data-feature-toast aria-label="Editar usuário">
+                  <button type="button" class="btn-icon btn-icon--sm btn-editar-usuario" data-user-name="Kdú Paulino" data-user-email="kdu.paulino@exemplo.com" data-user-role="OPERADOR" aria-label="Editar usuário">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round">
                       <path d="M12 20h9" />
@@ -354,11 +384,89 @@
             </tbody>
           </table>
         </div>
-
-        <p class="text-muted" style="margin-top: var(--space-4); font-size: .8125rem;">
-
-        </p>
       </main>
+    </div>
+  </div>
+
+  <!-- Modal Convidar Usuário -->
+  <div class="modal-overlay" id="modalConvidarUsuario">
+    <div class="modal">
+      <div class="modal__head">
+        <h2 class="modal__title">Convidar Novo Usuário</h2>
+        <button class="modal__close" type="button" id="btnFecharModalUsuario" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="formConvidarUsuario">
+        <div class="modal__body">
+          <div class="form-group">
+            <label class="form-label" for="novoUsuarioNome">Nome Completo</label>
+            <input class="form-input" type="text" id="novoUsuarioNome" name="nome" placeholder="Ex: Maria Silva" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoUsuarioEmail">E-mail</label>
+            <input class="form-input" type="email" id="novoUsuarioEmail" name="email" placeholder="maria@ifmg.edu.br" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoUsuarioRole">Cargo / Perfil</label>
+            <select class="form-select" id="novoUsuarioRole" name="role" required>
+              <option value="MAKER">Maker</option>
+              <option value="OPERADOR">Operador</option>
+              <option value="ADMINISTRADOR">Administrador</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoUsuarioSenha">Senha Inicial</label>
+            <input class="form-input" type="password" id="novoUsuarioSenha" name="senha" placeholder="Mínimo 6 caracteres" required minlength="6">
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" id="btnCancelarModalUsuario">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Cadastrar Membro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Editar Usuário -->
+  <div class="modal-overlay" id="modalEditarUsuario">
+    <div class="modal">
+      <div class="modal__head">
+        <h2 class="modal__title">Editar Membro</h2>
+        <button class="modal__close" type="button" id="btnFecharModalEditarUsuario" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="formEditarUsuario">
+        <input type="hidden" id="editarUsuarioId">
+        <div class="modal__body">
+          <div class="form-group">
+            <label class="form-label" for="editarUsuarioNome">Nome Completo</label>
+            <input class="form-input" type="text" id="editarUsuarioNome" name="nome" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editarUsuarioEmail">E-mail</label>
+            <input class="form-input" type="email" id="editarUsuarioEmail" name="email" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editarUsuarioRole">Cargo / Perfil</label>
+            <select class="form-select" id="editarUsuarioRole" name="role" required>
+              <option value="MAKER">Maker</option>
+              <option value="OPERADOR">Operador</option>
+              <option value="ADMINISTRADOR">Administrador</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editarUsuarioSenha">Nova Senha (opcional)</label>
+            <input class="form-input" type="password" id="editarUsuarioSenha" name="senha" placeholder="Deixe em branco para manter a atual">
+            <span class="form-hint">Mínimo 6 caracteres se preenchido.</span>
+          </div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" id="btnCancelarModalEditarUsuario">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -370,19 +478,72 @@
     // Busca por nome/@usuário — apenas front-end, isolado nesta página.
     document.addEventListener('DOMContentLoaded', function () {
       var searchInput = document.getElementById('userSearch');
-      var rows = document.querySelectorAll('#userTable tbody tr');
-
       if (!searchInput) return;
 
       searchInput.addEventListener('input', function () {
         var term = searchInput.value.trim().toLowerCase();
+        var rows = document.querySelectorAll('#userTable tbody tr');
         rows.forEach(function (row) {
-          var visible = !term || row.dataset.name.indexOf(term) !== -1;
+          var visible = !term || (row.dataset.name && row.dataset.name.indexOf(term) !== -1);
           row.style.display = visible ? '' : 'none';
         });
       });
     });
   </script>
+  <!-- =====================================================
+       BARRA DE NAVEGAÇÃO INFERIOR MOBILE
+  ====================================================== -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação mobile">
+    <a href="dashboard.html" class="mobile-nav-item" data-nav="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+      <span>Painel</span>
+    </a>
+    <a href="fila.html" class="mobile-nav-item" data-nav="fila">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="14" y2="18"/>
+      </svg>
+      <span>Fila</span>
+    </a>
+    <a href="historico.html" class="mobile-nav-item" data-nav="historico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span>Histórico</span>
+    </a>
+    <a href="impressoras.html" class="mobile-nav-item" data-nav="impressoras">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="9" width="16" height="7" rx="1.5"/>
+        <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/>
+        <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+      </svg>
+      <span>Frota</span>
+    </a>
+    <a href="espacos.html" class="mobile-nav-item" data-nav="espacos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+        <path d="M4 12l8-4 8 4"/>
+        <path d="M4 7l8-4 8 4"/>
+      </svg>
+      <span>Espaços</span>
+    </a>
+    <button type="button" class="mobile-nav-item is-active" id="mobileMenuBtn" aria-label="Mais opções">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <span>Menu</span>
+    </button>
+  </nav>
+
 </body>
 
 </html>

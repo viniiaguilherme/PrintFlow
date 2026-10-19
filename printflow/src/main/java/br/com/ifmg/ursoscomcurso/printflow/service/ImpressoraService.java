@@ -45,6 +45,26 @@ public class ImpressoraService {
         return ImpressoraResponseDTO.fromEntity(salvo);
     }
 
+    public ImpressoraResponseDTO atualizar(Long id, ImpressoraRequestDTO dto) {
+        Impressora impressora = impressoraRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Impressora não encontrada com o ID: " + id));
+
+        java.util.Optional<Impressora> outraComNome = impressoraRepository.findByNome(dto.nome());
+        if (outraComNome.isPresent() && !outraComNome.get().getId().equals(id)) {
+            throw new RegraNegocioException("Impressora com este nome já cadastrada!");
+        }
+
+        impressora.setNome(dto.nome());
+        impressora.setModelo(dto.modelo());
+        impressora.setMaterial_padrao(dto.material_padrao());
+        if (dto.status() != null && !dto.status().isBlank()) {
+            impressora.setStatus(dto.status());
+        }
+
+        Impressora atualizado = impressoraRepository.save(impressora);
+        return ImpressoraResponseDTO.fromEntity(atualizado);
+    }
+
     public void deletarPorId(Long id) {
         if (!impressoraRepository.existsById(id)) {
             throw new RecursoNaoEncontradoException("Impressora não encontrada com o ID: " + id);

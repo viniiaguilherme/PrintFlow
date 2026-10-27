@@ -1409,7 +1409,10 @@ p {
 }
 
 .topbar__menu-btn {
-  display: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .topbar__search {
@@ -2965,6 +2968,472 @@ p {
     text-align: left;
   }
 }
+
+/* =========================================================================
+   30. SIDEBAR DESKTOP TOGGLE (ABRIR / FECHAR RECOLHIDO)
+   ========================================================================= */
+.sidebar {
+  transition: width var(--transition-normal), padding var(--transition-normal), transform var(--transition-normal);
+}
+
+.dashboard-layout {
+  transition: grid-template-columns var(--transition-normal);
+}
+
+.dashboard-layout.sidebar-collapsed {
+  grid-template-columns: 72px 1fr !important;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar {
+  width: 72px !important;
+  padding: var(--space-5) var(--space-2) !important;
+  align-items: center;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar__head {
+  justify-content: center;
+  width: 100%;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar__brand {
+  padding: 0;
+  justify-content: center;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar__brand span:not(.brand__mark),
+.dashboard-layout.sidebar-collapsed .sidebar__section-label,
+.dashboard-layout.sidebar-collapsed .sidebar__version,
+.dashboard-layout.sidebar-collapsed .sidebar__status span:not(.status-dot),
+.dashboard-layout.sidebar-collapsed #sidebarActiveSpace,
+.dashboard-layout.sidebar-collapsed .sidebar__link-text {
+  display: none !important;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar__link {
+  justify-content: center;
+  padding: .75rem 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  margin-inline: auto;
+  position: relative;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar__link svg {
+  margin: 0;
+}
+
+.sidebar__collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.sidebar__collapse-btn:hover {
+  color: var(--color-text-primary);
+}
+
+/* =========================================================================
+   31. CORES DE STATUS ESPECÍFICAS (IMPRIMINDO = VERDE, ACABOU = ROXO)
+   ========================================================================= */
+
+/* 1. IMPRIMINDO (Em andamento) -> Verde Neon Esmeralda */
+.badge-printing,
+.badge-success {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.18);
+}
+
+.status-dot--printing {
+  background: #10b981 !important;
+  box-shadow: 0 0 8px #10b981 !important;
+  animation: pulseGreen 1.8s infinite ease-in-out !important;
+}
+
+@keyframes pulseGreen {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 6px #10b981;
+  }
+  50% {
+    transform: scale(1.25);
+    box-shadow: 0 0 14px #34d399, 0 0 4px #10b981;
+  }
+}
+
+.progress-bar__fill--printing {
+  background: linear-gradient(90deg, #059669, #10b981, #34d399) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar__fill--printing::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: progressBarStripes 2s linear infinite;
+}
+
+@keyframes progressBarStripes {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 2. ACABOU / CONCLUÍDO -> Roxo Elétrico / Safira Vibrante */
+.badge-completed {
+  background: rgba(139, 92, 246, 0.16) !important;
+  color: #c4b5fd !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.18);
+}
+
+.status-dot--completed {
+  background: #8b5cf6 !important;
+  box-shadow: 0 0 8px #8b5cf6 !important;
+  animation: none !important;
+}
+
+.progress-bar__fill--completed {
+  background: linear-gradient(90deg, #6d28d9, #8b5cf6, #a78bfa) !important;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+  width: 100% !important;
+}
+
+/* 3. NA FILA -> Âmbar / Laranja Suave */
+.badge-queued {
+  background: rgba(245, 158, 11, 0.16) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =========================================================================
+   32. DESTAQUE DA IMPRESSÃO DO USUÁRIO LOGADO E QUAL A IMPRESSORA
+   ========================================================================= */
+.job-row--user-highlight {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(20, 24, 30, 0.95) 100%) !important;
+  border: 1.5px solid rgba(16, 185, 129, 0.55) !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.16), inset 0 0 12px rgba(16, 185, 129, 0.05) !important;
+  position: relative;
+}
+
+.job-row--user-highlight::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #10b981;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  box-shadow: 0 0 12px #10b981;
+}
+
+.badge-user-highlight {
+  background: rgba(16, 185, 129, 0.22) !important;
+  color: #a7f3d0 !important;
+  border: 1px solid rgba(16, 185, 129, 0.5) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+}
+
+.badge-user-highlight svg {
+  width: 13px;
+  height: 13px;
+  color: #34d399;
+}
+
+/* Indicador claro da impressora atribuída */
+.job-printer-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.job-printer-tag strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.job-printer-tag svg {
+  width: 13px;
+  height: 13px;
+  color: var(--color-accent);
+}
+
+/* =========================================================================
+   33. WIDGET DE ACOMPANHAMENTO RÁPIDO DO USUÁRIO
+   ========================================================================= */
+.user-tracking-widget {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background-image: radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 55%);
+}
+
+.user-tracking-widget__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.user-tracking-widget__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.user-tracking-widget__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+.user-tracking-widget__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.user-tracking-widget__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.user-tracking-widget__subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-text-tertiary);
+}
+
+/* Alternância Fila Geral vs Minhas Impressões */
+.view-switch-tabs {
+  display: inline-flex;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 3px;
+}
+
+.view-switch-btn {
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.view-switch-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.view-switch-btn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+}
+
+.view-switch-btn.is-active {
+  background: var(--color-accent);
+  color: #050607;
+  box-shadow: 0 0 10px rgba(47, 232, 143, 0.35);
+}
+
+.view-switch-btn.is-active svg {
+  color: #050607;
+}
+
+.view-switch-count {
+  font-size: 0.6875rem;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.25);
+  font-weight: 700;
+}
+
+.view-switch-btn:not(.is-active) .view-switch-count {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-secondary);
+}
+
+/* Grid de acompanhamento rápido */
+.user-tracking-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .user-tracking-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tracking-active-card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-3);
+  position: relative;
+  overflow: hidden;
+}
+
+.tracking-active-card--printing {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.09) 0%, rgba(16, 19, 23, 0.95) 100%);
+}
+
+.tracking-active-card--completed {
+  border-color: rgba(139, 92, 246, 0.45);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.09) 0%, rgba(16, 19, 23, 0.95) 100%);
+}
+
+.tracking-active-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.tracking-active-card__printer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tracking-active-card__printer-badge strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.tracking-active-card__printer-badge svg {
+  width: 14px;
+  height: 14px;
+  color: var(--color-accent);
+}
+
+.tracking-active-card__model {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-block: 2px;
+}
+
+.tracking-active-card__meta {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.tracking-stats-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.tracking-stat-box {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tracking-stat-box__label {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.tracking-stat-box__val {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: #ffffff;
+}
+
+.tracking-stat-box__val--green {
+  color: #34d399;
+}
+
+.tracking-stat-box__val--purple {
+  color: #c4b5fd;
+}
+
 
 
  

@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Entrar — PrintFlow</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -29,13 +30,13 @@
       </a>
 
       <h1 class="auth-card__title">Entrar</h1>
-      <p class="auth-card__subtitle">Acesse seu painel PrintFlow.</p>
+      <p class="auth-card__subtitle">Acesse seu painel PrintFlow e acompanhe suas impressões.</p>
 
       <!-- Formulário de login -->
       <form id="loginForm">
         <div class="form-group">
           <label class="form-label" for="loginEmail">E-mail</label>
-          <input class="form-input" type="email" id="loginEmail" name="email" placeholder="voce@oficina.com" required>
+          <input class="form-input" type="email" id="loginEmail" name="email" placeholder="seu.email@exemplo.com" required>
         </div>
 
         <div class="form-group">
@@ -43,17 +44,19 @@
           <input class="form-input" type="password" id="loginSenha" name="senha" placeholder="••••••••" required>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
-        
+        <button type="submit" class="btn btn-primary btn-block" id="btnLoginSubmit">Entrar</button>
       </form>
 
       <div id="toastStack" class="toast-stack"></div>
-
-      <p class="auth-footer-text">Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
     </div>
 
   </main>
 
+  <!-- Supabase JS v2 & Cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/client-supabase.js"></script>
+  <script src="js/client-supabase.js"></script>
   <script src="/js/script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

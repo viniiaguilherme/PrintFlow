@@ -7,17 +7,18 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Fila de Impressão — PrintFlow</title>
+  <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <div class="dashboard-layout">
+  <div class="dashboard-layout" id="dashboardLayout">
 
     <!-- Fundo escuro exibido atrás da sidebar quando aberta no mobile -->
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <!-- =====================================================
-         SIDEBAR
+         SIDEBAR (COM SUPORTE A ABRIR/FECHAR RECOLHIDO NO DESKTOP E MOBILE)
     ====================================================== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar__head">
@@ -27,58 +28,53 @@
               <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
             </svg>
           </span>
-          PrintFlow
+          <span class="sidebar__brand-name">PrintFlow</span>
         </a>
-        <button type="button" class="btn-icon sidebar__close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <!-- Botão para alternar / recolher sidebar no Desktop -->
+          <button type="button" class="btn-icon sidebar__collapse-btn" id="sidebarCollapseBtn" aria-label="Recolher menu" title="Recolher / Expandir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="9" y1="3" x2="9" y2="21"/>
+            </svg>
+          </button>
+          <!-- Botão fechar no Mobile -->
+          <button type="button" class="btn-icon sidebar__close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="sidebar__section-label">Controle</div>
       <nav class="sidebar__nav">
-        <a href="dashboard.html" class="sidebar__link">
+        <a href="dashboard.html" class="sidebar__link" data-tooltip="Painel">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
-          Painel
+          <span class="sidebar__link-text">Painel</span>
         </a>
-        <a href="fila.html" class="sidebar__link is-active">
+        <a href="fila.html" class="sidebar__link is-active" data-tooltip="Fila de Impressão">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
-          Fila de Impressão
+          <span class="sidebar__link-text">Fila de Impressão</span>
         </a>
-        <a href="historico.html" class="sidebar__link">
+        <a href="historico.html" class="sidebar__link" data-tooltip="Histórico">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="9"/>
             <polyline points="12 7 12 12 15 15"/>
           </svg>
-          Histórico
+          <span class="sidebar__link-text">Histórico</span>
         </a>
-        <a href="impressoras.html" class="sidebar__link">
+        <a href="impressoras.html" class="sidebar__link" data-tooltip="Impressoras">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>
-          Impressoras
-        </a>
-        <a href="usuarios.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-          Usuários
-        </a>
-        <a href="configuracoes.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          Configurações
-        </a>
-        <a href="alerta.html" class="sidebar__link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 01-3.46 0" />
-          </svg>
-          Alertas
+          <span class="sidebar__link-text">Impressoras</span>
         </a>
       </nav>
 
       <div class="sidebar__footer">
         <div class="sidebar__status">
           <span class="status-dot"></span>
-          Sistema online
+          <span>Sistema online</span>
         </div>
         <div class="sidebar__version">v0.1.0 · PrintFlow</div>
       </div>
@@ -89,10 +85,10 @@
     ====================================================== -->
     <div class="dashboard-content">
 
-      <!-- TOPBAR -->
+      <!-- TOPBAR COM BOTÃO TOGGLE DA SIDEBAR (DESKTOP & MOBILE) -->
       <header class="topbar">
         <div class="topbar__left">
-          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir menu">
+          <button class="btn-icon topbar__menu-btn" id="menuToggle" aria-label="Abrir ou fechar menu lateral" title="Abrir / Fechar menu lateral">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
 
@@ -109,7 +105,7 @@
 
           <div class="topbar__search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input class="form-input" type="text" placeholder="Buscar impressoras, filas, usuários...">
+            <input class="form-input" type="text" id="globalQueueSearch" placeholder="Buscar modelo, impressora ou usuário...">
           </div>
         </div>
 
@@ -120,10 +116,6 @@
               <a href="perfil.html" class="dropdown__item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
                 Perfil
-              </a>
-              <a href="configuracoes.html" class="dropdown__item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 112.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06-.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-                Configurações
               </a>
               <a href="espacos.html" class="dropdown__item" id="linkMeusEspacosMenu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -141,11 +133,13 @@
 
       <!-- CONTEÚDO PRINCIPAL -->
       <main class="dashboard-main">
+
+        <!-- CABEÇALHO DA PÁGINA -->
         <div class="dashboard-head">
           <div>
-            <span class="eyebrow">// FILA DE IMPRESSÃO</span>
-            <h1>A Playlist</h1>
-            <p id="queueSummary">5 trabalhos · cada impressora tem sua própria fila</p>
+            <span class="eyebrow">// FILA DE IMPRESSÃO & CONTROLE</span>
+            <h1>Fila de Impressão</h1>
+            <p id="queueSummary">5 trabalhos na fila · 4 impressoras monitoradas em tempo real</p>
           </div>
           <div class="dashboard-head__actions">
             <button type="button" class="btn btn-primary" id="btnAbrirModalImpressao">
@@ -155,21 +149,139 @@
           </div>
         </div>
 
+        <!-- =====================================================
+             1. ACOMPANHAMENTO RÁPIDO DO USUÁRIO COM AS IMPRESSÕES
+        ====================================================== -->
+        <section class="user-tracking-widget" id="userTrackingWidget">
+          <div class="user-tracking-widget__head">
+            <div class="user-tracking-widget__title-group">
+              <div class="user-tracking-widget__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
+                </svg>
+              </div>
+              <div>
+                <h2 class="user-tracking-widget__title">
+                  Acompanhamento Rápido
+                  <span class="badge badge-user-highlight" id="trackingUserBadge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                    <span id="trackingUserName">Mariana Santos</span>
+                  </span>
+                </h2>
+                <p class="user-tracking-widget__subtitle">
+                  Status em tempo real das suas peças e acompanhamento da fila geral
+                </p>
+              </div>
+            </div>
+
+            <!-- Alternância rápida: VER FILA GERAL vs MINHAS IMPRESSÕES -->
+            <div class="view-switch-tabs" id="viewSwitchTabs">
+              <button type="button" class="view-switch-btn is-active" id="btnVerFilaGeral" title="Visualizar todos os trabalhos de todas as impressoras">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Ver Fila Geral
+                <span class="view-switch-count" id="badgeTotalJobs">5</span>
+              </button>
+              <button type="button" class="view-switch-btn" id="btnVerMinhasImpressoes" title="Filtrar para ver somente as suas impressões">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                Minhas Impressões
+                <span class="view-switch-count" id="badgeMyJobs">1</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Grid com Card da Impressão Ativa do Usuário e Mini Métricas -->
+          <div class="user-tracking-grid">
+            <div class="tracking-active-card tracking-active-card--printing" id="trackingActiveCard">
+              <div class="tracking-active-card__top">
+                <div>
+                  <span class="badge badge-printing" id="trackingStatusBadge">
+                    <span class="status-dot status-dot--printing"></span>
+                    Imprimindo Agora
+                  </span>
+                  <h3 class="tracking-active-card__model" id="trackingModelTitle">Suporte de câmera articulado</h3>
+                  <div class="tracking-active-card__meta">
+                    <!-- DESTAQUE CLARO DA IMPRESSORA -->
+                    <span class="job-printer-tag" id="trackingPrinterTag">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/></svg>
+                      Impressora: <strong id="trackingPrinterHighlight">Bambu-X1</strong>
+                    </span>
+                    <span style="display:inline-flex; align-items:center; gap:4px; font-size:0.75rem;">
+                      <span class="job-material-chip" style="width:28px; height:22px; font-size:0.6875rem;">PLA</span>
+                      Branco · 38g
+                    </span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: var(--space-2); align-items: center;">
+                  <button type="button" class="btn btn-outline btn-sm btn-job-pause" id="btnQuickPause" aria-label="Pausar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    Pausar
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm btn-job-details" id="btnQuickDetails">
+                    Detalhes
+                  </button>
+                </div>
+              </div>
+
+              <!-- BARRA DE PROGRESSO COM COR DE IMPRIMINDO (VERDE NEON) -->
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
+                  <span style="color:var(--color-text-secondary); font-weight:500;">Progresso da Impressão: <strong id="trackingPercentText" style="color:#34d399;">42%</strong></span>
+                  <span style="color:var(--color-text-tertiary); font-family:var(--font-mono);" id="trackingTimeRemaining">2h 10m restantes</span>
+                </div>
+                <div class="progress-bar" style="height: 10px;">
+                  <div class="progress-bar__fill progress-bar__fill--printing" id="trackingProgressBar" style="width: 42%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini estatísticas rápidas do usuário e da frota -->
+            <div class="tracking-stats-mini-grid">
+              <div class="tracking-stat-box">
+                <span class="tracking-stat-box__label">Em Andamento</span>
+                <span class="tracking-stat-box__val tracking-stat-box__val--green" id="statMyActiveCount">1</span>
+                <span style="font-size:0.6875rem; color:var(--color-text-tertiary);">sua impressão ativa</span>
+              </div>
+              <div class="tracking-stat-box">
+                <span class="tracking-stat-box__label">Concluídas</span>
+                <span class="tracking-stat-box__val tracking-stat-box__val--purple" id="statMyCompletedCount">2</span>
+                <span style="font-size:0.6875rem; color:var(--color-text-tertiary);">peças finalizadas</span>
+              </div>
+              <div class="tracking-stat-box">
+                <span class="tracking-stat-box__label">Fila Geral</span>
+                <span class="tracking-stat-box__val" id="statGeneralQueueCount">5</span>
+                <span style="font-size:0.6875rem; color:var(--color-text-tertiary);">trabalhos no total</span>
+              </div>
+              <div class="tracking-stat-box">
+                <span class="tracking-stat-box__label">Frota Ativa</span>
+                <span class="tracking-stat-box__val" style="color:var(--color-accent);" id="statActivePrintersCount">3/5</span>
+                <span style="font-size:0.6875rem; color:var(--color-text-tertiary);">impressoras operando</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Barra de ferramentas: abas de filtro por status + busca -->
         <div class="queue-toolbar">
           <div class="filter-tabs" id="queueTabs">
             <button type="button" class="filter-tabs__btn is-active" data-filter="todos">Todos</button>
-            <button type="button" class="filter-tabs__btn" data-filter="imprimindo">Imprimindo</button>
+            <button type="button" class="filter-tabs__btn" data-filter="imprimindo">
+              <span class="status-dot status-dot--printing" style="width:6px; height:6px;"></span>
+              Imprimindo
+            </button>
             <button type="button" class="filter-tabs__btn" data-filter="na-fila">Na fila</button>
             <button type="button" class="filter-tabs__btn" data-filter="pausado">Pausado</button>
             <button type="button" class="filter-tabs__btn" data-filter="erro">Erro</button>
-            <button type="button" class="filter-tabs__btn" data-filter="concluido">Concluído</button>
+            <button type="button" class="filter-tabs__btn" data-filter="concluido">
+              <span class="status-dot status-dot--completed" style="width:6px; height:6px;"></span>
+              Concluído
+            </button>
           </div>
 
           <div class="queue-toolbar__search">
             <div class="search-field">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-              <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo ou maker...">
+              <input class="form-input" type="text" id="queueSearch" placeholder="Buscar modelo, impressora ou maker...">
             </div>
             <button type="button" class="btn-icon" id="btnMaisFiltros" aria-label="Mais filtros">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
@@ -199,37 +311,56 @@
           </div>
         </div>
 
-        <!-- Grupos por impressora: cada impressora tem sua própria fila.
-             Dados de exemplo apenas para ilustrar o layout — a listagem
-             real virá do backend em uma próxima entrega. -->
+        <!-- =====================================================
+             GRUPOS POR IMPRESSORA (FILA GERAL)
+        ====================================================== -->
 
+        <!-- 1. BAMBU-X1 (Impressora com a impressão do usuário logado) -->
         <div class="printer-group" data-printer="bambu-x1">
           <div class="printer-group__header">
-            <span class="status-dot"></span>
+            <span class="status-dot status-dot--printing"></span>
             <span class="printer-group__name">Bambu-X1</span>
-            <span class="printer-group__meta">1 na fila · ocupada (printing)</span>
+            <span class="printer-group__meta">1 na fila · ocupada (imprimindo)</span>
           </div>
           <div class="printer-group__rows">
-            <div class="job-row" data-status="imprimindo" data-title="suporte de câmera">
+            <!-- TRABALHO DO USUÁRIO LOGADO EM DESTAQUE COM BADGE E IMPRESSORA -->
+            <div class="job-row job-row--user-highlight" data-status="imprimindo" data-title="suporte de câmera articulado" data-is-user="true" data-printer-name="Bambu-X1">
               <span class="job-row__handle" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
               </span>
               <span class="job-row__index">01</span>
               <span class="job-material-chip">PLA</span>
               <div class="job-row__info">
-                <div class="job-row__title">Suporte de câmera</div>
-                <div class="job-row__subtitle">Conta de Exemplo · 38g · 0.2mm</div>
+                <div style="display:flex; align-items:center; gap:var(--space-2); flex-wrap:wrap;">
+                  <span class="job-row__title">Suporte de câmera articulado</span>
+                  <!-- Destaque "Sua Impressão" -->
+                  <span class="badge badge-user-highlight">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                    Sua Impressão
+                  </span>
+                  <!-- Identificação Clara da Impressora -->
+                  <span class="job-printer-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/></svg>
+                    Impressora: <strong>Bambu-X1</strong>
+                  </span>
+                </div>
+                <div class="job-row__subtitle">Você (Mariana S.) · 38g · 0.2mm</div>
               </div>
               <span class="job-row__color">Branco</span>
               <div class="job-progress">
                 <div class="job-progress__row">
-                  <div class="progress-bar"><div class="progress-bar__fill" style="width:42%;"></div></div>
-                  <span class="job-progress__pct">42%</span>
+                  <!-- Barra com gradiente verde neon (cor de imprimindo) -->
+                  <div class="progress-bar"><div class="progress-bar__fill progress-bar__fill--printing" style="width:42%;"></div></div>
+                  <span class="job-progress__pct" style="color:#34d399; font-weight:700;">42%</span>
                 </div>
               </div>
               <span class="job-row__time">2h 10m</span>
               <div style="display:flex; align-items:center; gap: var(--space-3);">
-                <span class="badge badge-success">Imprimindo</span>
+                <!-- Badge com cor de imprimindo (Verde Neon) -->
+                <span class="badge badge-printing">
+                  <span class="status-dot status-dot--printing" style="width:6px; height:6px;"></span>
+                  Imprimindo
+                </span>
                 <div class="job-row__actions">
                   <button type="button" class="btn-icon btn-icon--sm btn-job-pause" aria-label="Pausar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
@@ -243,31 +374,39 @@
           </div>
         </div>
 
+        <!-- 2. ENDER-V3 -->
         <div class="printer-group" data-printer="ender-v3">
           <div class="printer-group__header">
             <span class="status-dot status-dot--idle"></span>
             <span class="printer-group__name">Ender-V3</span>
-            <span class="printer-group__meta">0 na fila · livre</span>
+            <span class="printer-group__meta">0 na fila · livre para impressão</span>
           </div>
-          <div class="printer-group__empty">Fila vazia</div>
+          <div class="printer-group__empty">Fila vazia · Pronta para receber novos trabalhos</div>
         </div>
 
+        <!-- 3. PRUSA-MK4 -->
         <div class="printer-group" data-printer="prusa-mk4">
           <div class="printer-group__header">
             <span class="status-dot status-dot--idle"></span>
             <span class="printer-group__name">Prusa-MK4</span>
-            <span class="printer-group__meta">1 na fila · livre</span>
+            <span class="printer-group__meta">1 na fila · aguardando início</span>
           </div>
           <div class="printer-group__rows">
-            <div class="job-row" data-status="na-fila" data-title="case eletrônico">
+            <div class="job-row" data-status="na-fila" data-title="case eletrônico raspberry pi" data-is-user="false" data-printer-name="Prusa-MK4">
               <span class="job-row__handle" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
               </span>
               <span class="job-row__index">01</span>
               <span class="job-material-chip">PLA</span>
               <div class="job-row__info">
-                <div class="job-row__title">Case eletrônico</div>
-                <div class="job-row__subtitle">Conta de Exemplo · 52g · 0.2mm</div>
+                <div style="display:flex; align-items:center; gap:var(--space-2); flex-wrap:wrap;">
+                  <span class="job-row__title">Case eletrônico Raspberry Pi</span>
+                  <span class="job-printer-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/></svg>
+                    Impressora: <strong>Prusa-MK4</strong>
+                  </span>
+                </div>
+                <div class="job-row__subtitle">Lucas T. · 52g · 0.2mm</div>
               </div>
               <span class="job-row__color">Stone</span>
               <div class="job-progress">
@@ -278,7 +417,8 @@
               </div>
               <span class="job-row__time">1h 45m</span>
               <div style="display:flex; align-items:center; gap: var(--space-3);">
-                <span class="badge badge-info">Na fila</span>
+                <!-- Badge de Na Fila (Âmbar) -->
+                <span class="badge badge-queued">Na fila</span>
                 <div class="job-row__actions">
                   <button type="button" class="btn-icon btn-icon--sm btn-job-start" aria-label="Iniciar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -292,6 +432,7 @@
           </div>
         </div>
 
+        <!-- 4. PRUSA MK3 -->
         <div class="printer-group" data-printer="prusa-mk3">
           <div class="printer-group__header">
             <span class="status-dot status-dot--warning"></span>
@@ -299,14 +440,20 @@
             <span class="printer-group__meta">1 na fila · pausada</span>
           </div>
           <div class="printer-group__rows">
-            <div class="job-row" data-status="pausado" data-title="engrenagem — protótipo v2">
+            <div class="job-row" data-status="pausado" data-title="engrenagem helicoidal v2" data-is-user="false" data-printer-name="Prusa MK3">
               <span class="job-row__handle" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
               </span>
               <span class="job-row__index">01</span>
               <span class="job-material-chip">PETG</span>
               <div class="job-row__info">
-                <div class="job-row__title">Engrenagem — protótipo v2</div>
+                <div style="display:flex; align-items:center; gap:var(--space-2); flex-wrap:wrap;">
+                  <span class="job-row__title">Engrenagem helicoidal v2</span>
+                  <span class="job-printer-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/></svg>
+                    Impressora: <strong>Prusa MK3</strong>
+                  </span>
+                </div>
                 <div class="job-row__subtitle">Camila R. · 61g · 0.16mm</div>
               </div>
               <span class="job-row__color">Preto</span>
@@ -332,28 +479,36 @@
           </div>
         </div>
 
+        <!-- 5. ENDER 3 (Com erro e peça concluída) -->
         <div class="printer-group" data-printer="ender-3">
           <div class="printer-group__header">
             <span class="status-dot status-dot--danger"></span>
             <span class="printer-group__name">Ender 3</span>
-            <span class="printer-group__meta">2 na fila · erro reportado</span>
+            <span class="printer-group__meta">2 na fila · atenção requerida</span>
           </div>
           <div class="printer-group__rows">
-            <div class="job-row" data-status="erro" data-title="suporte de fone — lote 3">
+            <!-- Trabalho com Erro -->
+            <div class="job-row" data-status="erro" data-title="suporte de fone gamer" data-is-user="false" data-printer-name="Ender 3">
               <span class="job-row__handle" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
               </span>
               <span class="job-row__index">01</span>
               <span class="job-material-chip">PLA</span>
               <div class="job-row__info">
-                <div class="job-row__title">Suporte de fone — lote 3</div>
+                <div style="display:flex; align-items:center; gap:var(--space-2); flex-wrap:wrap;">
+                  <span class="job-row__title">Suporte de fone gamer</span>
+                  <span class="job-printer-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/></svg>
+                    Impressora: <strong>Ender 3</strong>
+                  </span>
+                </div>
                 <div class="job-row__subtitle">Camila R. · 29g · 0.2mm</div>
               </div>
               <span class="job-row__color">Azul</span>
               <div class="job-progress">
                 <div class="job-progress__row">
                   <div class="progress-bar"><div class="progress-bar__fill" style="width:12%; background:linear-gradient(90deg, var(--color-danger), #ff8a94);"></div></div>
-                  <span class="job-progress__pct">12%</span>
+                  <span class="job-progress__pct" style="color:var(--color-danger); font-weight:700;">12%</span>
                 </div>
               </div>
               <span class="job-row__time">—</span>
@@ -369,26 +524,45 @@
                 </div>
               </div>
             </div>
-            <div class="job-row" data-status="concluido" data-title="peça de teste — calibração">
+
+            <!-- TRABALHO CONCLUÍDO (COR ROXO ELÉTRICO PARA QUANDO ACABAR) -->
+            <div class="job-row" data-status="concluido" data-title="peça de teste calibração cubo 20mm" data-is-user="true" data-printer-name="Ender 3">
               <span class="job-row__handle" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
               </span>
               <span class="job-row__index">02</span>
               <span class="job-material-chip">PLA</span>
               <div class="job-row__info">
-                <div class="job-row__title">Peça de teste — calibração</div>
-                <div class="job-row__subtitle">Rafael M. · 8g · 0.2mm</div>
+                <div style="display:flex; align-items:center; gap:var(--space-2); flex-wrap:wrap;">
+                  <span class="job-row__title">Cubo de calibração 20mm</span>
+                  <!-- Destaque "Sua Impressão Concluída" -->
+                  <span class="badge badge-user-highlight">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                    Sua Peça
+                  </span>
+                  <!-- Identificação da Impressora -->
+                  <span class="job-printer-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/></svg>
+                    Impressora: <strong>Ender 3</strong>
+                  </span>
+                </div>
+                <div class="job-row__subtitle">Você (Mariana S.) · 8g · 0.2mm</div>
               </div>
               <span class="job-row__color">Cinza</span>
               <div class="job-progress">
                 <div class="job-progress__row">
-                  <div class="progress-bar"><div class="progress-bar__fill" style="width:100%;"></div></div>
-                  <span class="job-progress__pct">100%</span>
+                  <!-- Barra preenchida 100% com cor de concluído (Roxo Elétrico) -->
+                  <div class="progress-bar"><div class="progress-bar__fill progress-bar__fill--completed" style="width:100%;"></div></div>
+                  <span class="job-progress__pct" style="color:#c4b5fd; font-weight:700;">100%</span>
                 </div>
               </div>
-              <span class="job-row__time">Concluído</span>
+              <span class="job-row__time" style="color:#c4b5fd; font-weight:500;">Finalizado</span>
               <div style="display:flex; align-items:center; gap: var(--space-3);">
-                <span class="badge badge-success">Concluído</span>
+                <!-- Badge com cor de quando acabar (Roxo Elétrico) -->
+                <span class="badge badge-completed">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                  Concluído
+                </span>
                 <div class="job-row__actions">
                   <button type="button" class="btn-icon btn-icon--sm btn-job-details" aria-label="Ver detalhes">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -425,16 +599,16 @@
             <div class="form-group">
               <label class="form-label" for="jobImpressora">Impressora de Destino</label>
               <select class="form-select" id="jobImpressora" required>
-                <option value="bambu-x1">Bambu-X1</option>
-                <option value="ender-v3">Ender-V3</option>
-                <option value="prusa-mk4">Prusa-MK4</option>
+                <option value="bambu-x1">Bambu-X1 (Bancada A)</option>
+                <option value="ender-v3">Ender-V3 (Livre)</option>
+                <option value="prusa-mk4">Prusa-MK4 (Bancada B)</option>
                 <option value="prusa-mk3">Prusa MK3</option>
                 <option value="ender-3">Ender 3</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label" for="jobMaker">Maker / Solicitante</label>
-              <input class="form-input" type="text" id="jobMaker" placeholder="Ex: Prof. Silva" value="Conta Atual">
+              <input class="form-input" type="text" id="jobMaker" placeholder="Ex: Mariana Santos" value="Mariana Santos">
             </div>
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
@@ -488,10 +662,10 @@
           </div>
           <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
             <span class="text-muted">Impressora</span>
-            <span id="detalhesImpressora">—</span>
+            <span id="detalhesImpressora" style="color:var(--color-accent); font-weight:600;">—</span>
           </div>
           <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
-            <span class="text-muted">Maker</span>
+            <span class="text-muted">Maker / Solicitante</span>
             <span id="detalhesMaker">—</span>
           </div>
           <div style="display:flex; justify-content:space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);">
@@ -513,26 +687,40 @@
       </div>
     </div>
   </div>
-      </main>
-    </div>
-  </div>
 
   <!-- Pilha de notificações toast -->
   <div class="toast-stack" id="toastStack"></div>
 
+  <!-- Supabase JS v2 & Configuração do Cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/client-supabase.js"></script>
+  <script src="js/client-supabase.js"></script>
+  <script src="/js/script.js"></script>
   <script src="js/script.js"></script>
+
+  <!-- Script específico de filtros e alternância de visualização -->
   <script>
-    // Filtro por status (abas) + busca por texto — apenas front-end,
-    // não altera dados reais. Isolado nesta página.
     document.addEventListener('DOMContentLoaded', function () {
       var tabs = document.querySelectorAll('#queueTabs .filter-tabs__btn');
       var searchInput = document.getElementById('queueSearch');
+      var globalSearchInput = document.getElementById('globalQueueSearch');
       var groups = document.querySelectorAll('.printer-group');
       var emptyState = document.getElementById('queueEmptyState');
       var activeFilter = 'todos';
+      var activeViewMode = 'geral'; // 'geral' ou 'minhas'
+
+      var btnVerFilaGeral = document.getElementById('btnVerFilaGeral');
+      var btnVerMinhasImpressoes = document.getElementById('btnVerMinhasImpressoes');
+
+      // Atualiza nome do usuário logado no badge de tracking
+      var storedUser = (typeof getStoredUser === 'function') ? getStoredUser() : null;
+      if (storedUser && storedUser.nome) {
+        var trackingUserName = document.getElementById('trackingUserName');
+        if (trackingUserName) trackingUserName.textContent = storedUser.nome;
+      }
 
       function applyFilters() {
-        var term = (searchInput.value || '').trim().toLowerCase();
+        var term = ((searchInput ? searchInput.value : '') || (globalSearchInput ? globalSearchInput.value : '')).trim().toLowerCase();
         var anyVisible = false;
 
         groups.forEach(function (group) {
@@ -540,30 +728,63 @@
           var groupHasVisible = false;
 
           rows.forEach(function (row) {
-            var matchesStatus = activeFilter === 'todos' || row.dataset.status === activeFilter;
-            var matchesSearch = !term || row.dataset.title.indexOf(term) !== -1;
-            var visible = matchesStatus && matchesSearch;
+            var status = row.dataset.status;
+            var title = (row.dataset.title || '').toLowerCase();
+            var printerName = (row.dataset.printerName || '').toLowerCase();
+            var isUserJob = row.dataset.isUser === 'true' || row.classList.contains('job-row--user-highlight');
+
+            var matchesStatus = activeFilter === 'todos' || status === activeFilter;
+            var matchesSearch = !term || title.indexOf(term) !== -1 || printerName.indexOf(term) !== -1;
+            var matchesViewMode = (activeViewMode === 'geral') || (activeViewMode === 'minhas' && isUserJob);
+
+            var visible = matchesStatus && matchesSearch && matchesViewMode;
             row.style.display = visible ? '' : 'none';
             if (visible) groupHasVisible = true;
           });
 
-          var emptyMsg = group.querySelector('.printer-group__empty');
           var hasRows = rows.length > 0;
-
           if (hasRows) {
             group.style.display = groupHasVisible ? '' : 'none';
             if (groupHasVisible) anyVisible = true;
           } else {
-            // Impressora sem nenhum trabalho cadastrado (fila vazia de verdade)
-            var showEmptyGroup = activeFilter === 'todos' && !term;
+            var showEmptyGroup = activeFilter === 'todos' && !term && activeViewMode === 'geral';
             group.style.display = showEmptyGroup ? '' : 'none';
             if (showEmptyGroup) anyVisible = true;
           }
         });
 
-        emptyState.style.display = anyVisible ? 'none' : '';
+        if (emptyState) {
+          emptyState.style.display = anyVisible ? 'none' : '';
+        }
       }
 
+      // Alternar visualização: Fila Geral
+      if (btnVerFilaGeral) {
+        btnVerFilaGeral.addEventListener('click', function () {
+          btnVerFilaGeral.classList.add('is-active');
+          if (btnVerMinhasImpressoes) btnVerMinhasImpressoes.classList.remove('is-active');
+          activeViewMode = 'geral';
+          applyFilters();
+          if (typeof showToast === 'function') {
+            showToast('Fila Geral', 'Exibindo todos os trabalhos de todas as impressoras.');
+          }
+        });
+      }
+
+      // Alternar visualização: Minhas Impressões
+      if (btnVerMinhasImpressoes) {
+        btnVerMinhasImpressoes.addEventListener('click', function () {
+          btnVerMinhasImpressoes.classList.add('is-active');
+          if (btnVerFilaGeral) btnVerFilaGeral.classList.remove('is-active');
+          activeViewMode = 'minhas';
+          applyFilters();
+          if (typeof showToast === 'function') {
+            showToast('Minhas Impressões', 'Filtrando apenas os trabalhos do seu usuário.');
+          }
+        });
+      }
+
+      // Abas de filtro por status
       tabs.forEach(function (tab) {
         tab.addEventListener('click', function () {
           tabs.forEach(function (t) { t.classList.remove('is-active'); });
@@ -573,60 +794,58 @@
         });
       });
 
+      // Busca por texto
       if (searchInput) {
-        searchInput.addEventListener('input', applyFilters);
+        searchInput.addEventListener('input', function () {
+          if (globalSearchInput) globalSearchInput.value = searchInput.value;
+          applyFilters();
+        });
+      }
+
+      if (globalSearchInput) {
+        globalSearchInput.addEventListener('input', function () {
+          if (searchInput) searchInput.value = globalSearchInput.value;
+          applyFilters();
+        });
       }
     });
   </script>
-  <!-- =====================================================
-       BARRA DE NAVEGAÇÃO INFERIOR MOBILE
-  ====================================================== -->
+
+  <!-- BARRA DE NAVEGAÇÃO INFERIOR MOBILE -->
   <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação mobile">
     <a href="dashboard.html" class="mobile-nav-item" data-nav="dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
       </svg>
       <span>Painel</span>
     </a>
     <a href="fila.html" class="mobile-nav-item is-active" data-nav="fila">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="4" y1="6" x2="20" y2="6"/>
-        <line x1="4" y1="12" x2="20" y2="12"/>
-        <line x1="4" y1="18" x2="14" y2="18"/>
+        <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/>
       </svg>
       <span>Fila</span>
     </a>
     <a href="historico.html" class="mobile-nav-item" data-nav="historico">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="9"/>
-        <polyline points="12 7 12 12 15 15"/>
+        <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/>
       </svg>
       <span>Histórico</span>
     </a>
     <a href="impressoras.html" class="mobile-nav-item" data-nav="impressoras">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="4" y="9" width="16" height="7" rx="1.5"/>
-        <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/>
-        <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+        <rect x="4" y="9" width="16" height="7" rx="1.5"/><path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/><path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
       </svg>
       <span>Frota</span>
     </a>
     <a href="espacos.html" class="mobile-nav-item" data-nav="espacos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 17l8-4 8 4-8 4-8-4z"/>
-        <path d="M4 12l8-4 8 4"/>
-        <path d="M4 7l8-4 8 4"/>
+        <path d="M4 17l8-4 8 4-8 4-8-4z"/><path d="M4 12l8-4 8 4"/><path d="M4 7l8-4 8 4"/>
       </svg>
       <span>Espaços</span>
     </a>
     <button type="button" class="mobile-nav-item" id="mobileMenuBtn" aria-label="Mais opções">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <line x1="3" y1="12" x2="21" y2="12"/>
-        <line x1="3" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
       </svg>
       <span>Menu</span>
     </button>

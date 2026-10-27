@@ -1,7 +1,6 @@
 package br.com.ifmg.ursoscomcurso.printflow.dto;
 
 public enum UsuarioRole {
-    ADMINISTRADOR("administrador"),
     OPERADOR("operador"),
     MAKER("maker");
 

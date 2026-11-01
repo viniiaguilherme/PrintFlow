@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Meu Perfil — PrintFlow</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:,">
+</head>
+<body>
+
+  <!-- =====================================================
+       NAVBAR
+  ====================================================== -->
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <!-- Brand Pill Capsule da Referência Visual -->
+      <a href="espacos.html" class="brand brand--pill">
+        <div class="brand__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+            <path d="M4 12l8-4 8 4"/>
+            <path d="M4 7l8-4 8 4"/>
+          </svg>
+        </div>
+        <div class="brand__text">
+          <span class="brand__title">PrintFlow</span>
+          <span class="brand__tag">HUB 3D</span>
+        </div>
+      </a>
+
+      <div class="navbar__actions">
+        <!-- Card de Sessão Ativa do Mockup Visual -->
+        <div class="user-session-card" title="Usuário Ativo no Sistema">
+          <div class="user-session-card__avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+            </svg>
+          </div>
+          <div class="user-session-card__info">
+            <span class="user-session-card__label">Sessão ativa</span>
+            <span class="user-session-card__name" id="userSessionName">m.santos</span>
+          </div>
+          <span class="user-session-card__badge">ONLINE</span>
+        </div>
+
+        <div class="dropdown">
+          <button class="avatar" id="avatarButton" aria-label="Menu do usuário">--</button>
+          <div class="dropdown__menu" id="avatarMenu">
+            <a href="perfil.html" class="dropdown__item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+              Perfil
+            </a>
+            <a href="espacos.html" class="dropdown__item" id="linkMeusEspacosMenu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Meus espaços
+            </a>
+            <div class="dropdown__divider"></div>
+            <button class="dropdown__item" type="button" id="logoutButton">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+              Sair
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="spaces-main">
+    <div class="container">
+      <div class="dashboard-head" style="max-width: 620px; margin-inline: auto; display:block; margin-bottom: var(--space-6);">
+        <span class="eyebrow">// PERFIL</span>
+        <h1>Meu perfil</h1>
+        <p>Suas informações pessoais e a senha de acesso a esta conta.</p>
+      </div>
+
+      <div style="max-width: 620px; margin-inline: auto; display:flex; flex-direction:column; gap: var(--space-5);">
+
+        <!-- Editar Perfil / Dados pessoais -->
+        <div class="card">
+          <div style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-4);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="color:var(--color-accent);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <h3 style="font-size:1.125rem;">Editar Perfil</h3>
+          </div>
+
+          <div style="display:flex; align-items:center; gap: var(--space-4); margin-bottom: var(--space-6);">
+            <span class="avatar" id="perfilAvatar" style="width:64px; height:64px; font-size:1.25rem;">--</span>
+            <div>
+              <div style="color: var(--color-text-primary); font-weight: 600; font-size: 1.0625rem;" id="perfilNomeExibido">Carregando...</div>
+              <div class="status-inline" style="margin-top: 4px; display:flex; align-items:center; gap:6px; font-size:.875rem; color:var(--color-text-secondary);">
+                <span class="badge badge-success" id="perfilStatus">Ativo</span>
+                <span id="perfilCargoBadge" style="font-size:.8125rem; color:var(--color-text-tertiary);"></span>
+              </div>
+            </div>
+          </div>
+
+          <form id="perfilForm">
+            <div class="form-group">
+              <label class="form-label" for="perfilNome">Nome Completo</label>
+              <input class="form-input" type="text" id="perfilNome" required placeholder="Seu nome completo">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="perfilRole">Função / Perfil</label>
+              <select class="form-select" id="perfilRole">
+                <option value="MAKER">Maker (Criação e acompanhamento)</option>
+                <option value="OPERADOR">Operador (Gerenciamento de impressoras e fila)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="perfilEmail">E-mail</label>
+              <input class="form-input" type="text" id="perfilEmail" value="—" readonly style="color: var(--color-text-secondary);">
+              <span class="form-hint">O e-mail é o identificador único da conta e não pode ser alterado por aqui.</span>
+            </div>
+
+            <div style="margin-top: var(--space-5);">
+              <button type="submit" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar alterações
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Segurança / senha -->
+        <div class="card">
+          <div style="display:flex; align-items:center; gap:var(--space-3); margin-bottom: var(--space-4);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="color:var(--color-accent);"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            <h3 style="font-size:1.125rem;">Alterar senha</h3>
+          </div>
+          <p style="font-size: .875rem; color: var(--color-text-tertiary); margin-bottom: var(--space-5);">Escolha uma nova senha para entrar na sua conta. Você continuará usando o mesmo e-mail.</p>
+
+          <form id="senhaForm">
+            <div class="form-group">
+              <label class="form-label" for="perfilNovaSenha">Nova senha</label>
+              <input class="form-input" type="password" id="perfilNovaSenha" placeholder="••••••••" minlength="6" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="perfilConfirmarSenha">Confirmar nova senha</label>
+              <input class="form-input" type="password" id="perfilConfirmarSenha" placeholder="••••••••" minlength="6" required>
+              <span class="form-hint">Mínimo de 6 caracteres.</span>
+            </div>
+
+            <div style="margin-top: var(--space-5);">
+              <button type="submit" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar nova senha
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Zona de Perigo: Excluir Perfil -->
+        <div class="card card--danger">
+          <div style="display:flex; align-items:center; gap:var(--space-3); margin-bottom: var(--space-4);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="color:var(--color-danger);"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <h3 style="font-size:1.125rem; color:var(--color-danger);">Excluir perfil</h3>
+          </div>
+          <p style="font-size: .875rem; color: var(--color-text-secondary); margin-bottom: var(--space-5);">
+            Esta ação é permanente e irreversível. Todos os seus dados de usuário, preferências e histórico serão desvinculados desta conta.
+          </p>
+          <div>
+            <button type="button" class="btn btn-outline-danger" id="btnAbrirModalExcluir">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              Excluir meu perfil
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Pilha de notificações toast -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <!-- Modal Excluir Perfil -->
+  <div class="modal-overlay" id="modalExcluirPerfil">
+    <div class="modal" style="max-width: 440px;">
+      <div class="modal__head">
+        <h2 class="modal__title" style="color: var(--color-danger); display:flex; align-items:center; gap:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Excluir Perfil
+        </h2>
+        <button class="modal__close" type="button" id="btnFecharModalExcluir" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <p style="margin-bottom: var(--space-4); color: var(--color-text-primary); font-size: 0.9375rem;">
+          Tem certeza de que deseja excluir permanentemente o seu perfil e sua conta?
+        </p>
+        <p style="font-size: 0.8125rem; color: var(--color-danger); background: var(--color-danger-dim); padding: var(--space-3); border-radius: var(--radius-md); border-left: 3px solid var(--color-danger); line-height: 1.4;">
+          <strong>Atenção:</strong> Esta ação não pode ser desfeita. Todos os dados associados a este usuário serão excluídos do sistema.
+        </p>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn-ghost" id="btnCancelarModalExcluir">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarExcluirPerfil">Sim, excluir meu perfil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase JS v2 & Cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/client-supabase.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      var perfilForm = document.getElementById('perfilForm');
+      var avatarGrande = document.getElementById('perfilAvatar');
+      var nomeExibido = document.getElementById('perfilNomeExibido');
+      var nomeInput = document.getElementById('perfilNome');
+      var roleSelect = document.getElementById('perfilRole');
+      var emailInput = document.getElementById('perfilEmail');
+      var cargoBadge = document.getElementById('perfilCargoBadge');
+
+      async function carregarDadosUsuario() {
+        var user = getStoredUser();
+
+        if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+          try {
+            var { data } = await supabaseClient.auth.getUser();
+            if (data && data.user) {
+              user = {
+                id: data.user.id,
+                nome: data.user.user_metadata?.full_name || (user?.nome || data.user.email.split('@')[0]),
+                email: data.user.email,
+                role: data.user.user_metadata?.role || (user?.role || 'MAKER'),
+                token: getToken()
+              };
+              setAuthSession(user.token, user);
+            }
+          } catch (err) {
+            console.warn('Aviso ao carregar dados do usuário no Supabase:', err);
+          }
+        }
+
+        if (!user) {
+          user = { nome: 'Usuário', email: 'usuario@printflow.com', role: 'MAKER' };
+        }
+
+        var nome = user.nome || user.email || 'Usuário';
+        if (nomeInput) nomeInput.value = nome;
+        if (nomeExibido) nomeExibido.textContent = nome;
+        if (emailInput) emailInput.value = user.email || '—';
+
+        var role = (user.perfil || user.cargo || user.role || 'MAKER').toUpperCase();
+        if (roleSelect) roleSelect.value = (role === 'OPERADOR') ? 'OPERADOR' : 'MAKER';
+        if (cargoBadge) cargoBadge.textContent = '· Perfil: ' + role;
+
+        var initials = typeof getInitials === 'function' ? getInitials(nome) : (nome.charAt(0) || 'U');
+        if (avatarGrande) avatarGrande.textContent = initials;
+      }
+
+      await carregarDadosUsuario();
+
+      // Salvar Edição do Perfil (Nome e Função)
+      if (perfilForm) {
+        perfilForm.addEventListener('submit', async function (event) {
+          event.preventDefault();
+          var novoNome = nomeInput.value.trim();
+          var novoRole = roleSelect ? roleSelect.value : 'MAKER';
+
+          if (!novoNome) {
+            showToast('Atenção', 'O nome não pode ficar em branco.', 'error');
+            return;
+          }
+
+          var user = getStoredUser() || {};
+          user.nome = novoNome;
+          user.role = novoRole;
+          user.perfil = novoRole;
+          setAuthSession(getToken(), user);
+
+          if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+            try {
+              await supabaseClient.auth.updateUser({
+                data: { full_name: novoNome, role: novoRole }
+              });
+            } catch (supaErr) {
+              console.warn('Aviso ao atualizar perfil no Supabase:', supaErr);
+            }
+          }
+
+          nomeExibido.textContent = novoNome;
+          if (cargoBadge) cargoBadge.textContent = '· Perfil: ' + novoRole;
+          if (avatarGrande) avatarGrande.textContent = typeof getInitials === 'function' ? getInitials(novoNome) : novoNome.charAt(0);
+          if (typeof updateUserUI === 'function') updateUserUI(user);
+
+          showToast('Sucesso', 'Perfil editado com sucesso!', 'success');
+        });
+      }
+
+      // Alterar Senha
+      var senhaForm = document.getElementById('senhaForm');
+      if (senhaForm) {
+        senhaForm.addEventListener('submit', async function (event) {
+          event.preventDefault();
+
+          var novaSenha = document.getElementById('perfilNovaSenha').value;
+          var confirmarSenha = document.getElementById('perfilConfirmarSenha').value;
+
+          if (!novaSenha || !confirmarSenha) {
+            showToast('Atenção', 'Preencha os dois campos de senha.', 'error');
+            return;
+          }
+          if (novaSenha.length < 6) {
+            showToast('Atenção', 'A senha precisa ter pelo menos 6 caracteres.', 'error');
+            return;
+          }
+          if (novaSenha !== confirmarSenha) {
+            showToast('Erro', 'As senhas não coincidem!', 'error');
+            return;
+          }
+
+          if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+            try {
+              var { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
+              if (error) throw error;
+              showToast('Sucesso', 'Senha atualizada com sucesso no Supabase!', 'success');
+              senhaForm.reset();
+              return;
+            } catch (err) {
+              showToast('Erro', err.message || 'Erro ao atualizar senha.', 'error');
+              return;
+            }
+          }
+
+          showToast('Sucesso', 'Senha atualizada localmente com sucesso!', 'success');
+          senhaForm.reset();
+        });
+      }
+
+      // Exclusão de Perfil
+      var modalExcluir = document.getElementById('modalExcluirPerfil');
+      var btnAbrirModalExcluir = document.getElementById('btnAbrirModalExcluir');
+      var btnFecharModalExcluir = document.getElementById('btnFecharModalExcluir');
+      var btnCancelarModalExcluir = document.getElementById('btnCancelarModalExcluir');
+      var btnConfirmarExcluirPerfil = document.getElementById('btnConfirmarExcluirPerfil');
+
+      if (btnAbrirModalExcluir && modalExcluir) {
+        btnAbrirModalExcluir.addEventListener('click', function () {
+          modalExcluir.classList.add('is-open');
+        });
+      }
+
+      function fecharModalExclusao() {
+        if (modalExcluir) modalExcluir.classList.remove('is-open');
+      }
+
+      if (btnFecharModalExcluir) btnFecharModalExcluir.addEventListener('click', fecharModalExclusao);
+      if (btnCancelarModalExcluir) btnCancelarModalExcluir.addEventListener('click', fecharModalExclusao);
+
+      if (btnConfirmarExcluirPerfil) {
+        btnConfirmarExcluirPerfil.addEventListener('click', async function () {
+          btnConfirmarExcluirPerfil.disabled = true;
+          btnConfirmarExcluirPerfil.textContent = 'Excluindo perfil...';
+
+          try {
+            if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+              try {
+                await supabaseClient.auth.signOut();
+              } catch (e) {
+                console.warn('Aviso logout ao excluir:', e);
+              }
+            }
+
+            clearAuthSession();
+            localStorage.clear();
+
+            showToast('Perfil Excluído', 'Seu perfil foi excluído com sucesso.', 'success');
+            fecharModalExclusao();
+
+            setTimeout(function () {
+              window.location.href = 'login.html';
+            }, 1000);
+          } catch (err) {
+            showToast('Erro', 'Não foi possível excluir o perfil: ' + (err.message || 'Erro desconhecido'), 'error');
+            btnConfirmarExcluirPerfil.disabled = false;
+            btnConfirmarExcluirPerfil.textContent = 'Sim, excluir meu perfil';
+          }
+        });
+      }
+    });
+  </script>
+  <!-- =====================================================
+       BARRA DE NAVEGAÇÃO INFERIOR MOBILE
+  ====================================================== -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação mobile">
+    <a href="dashboard.html" class="mobile-nav-item" data-nav="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+      <span>Painel</span>
+    </a>
+    <a href="fila.html" class="mobile-nav-item" data-nav="fila">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="14" y2="18"/>
+      </svg>
+      <span>Fila</span>
+    </a>
+    <a href="impressoras.html" class="mobile-nav-item" data-nav="impressoras">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="9" width="16" height="7" rx="1.5"/>
+        <path d="M7 9V6a2 2 0 012-2h6a2 2 0 012 2v3"/>
+        <path d="M7 16v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+      </svg>
+      <span>Frota</span>
+    </a>
+    <a href="espacos.html" class="mobile-nav-item" data-nav="espacos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 17l8-4 8 4-8 4-8-4z"/>
+        <path d="M4 12l8-4 8 4"/>
+        <path d="M4 7l8-4 8 4"/>
+      </svg>
+      <span>Espaços</span>
+    </a>
+    <a href="perfil.html" class="mobile-nav-item is-active" data-nav="perfil" aria-label="Perfil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+      </svg>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+</body>
+</html>

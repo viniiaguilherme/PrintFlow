@@ -243,19 +243,6 @@ function updateUserUI(user) {
     el.title = (user.nome || user.email) + (user.cargo || user.perfil ? ' (' + (user.cargo || user.perfil) + ')' : '');
   });
 
-  const sessionName = document.getElementById('userSessionName');
-  if (sessionName) {
-    if (user.username) {
-      sessionName.textContent = user.username;
-    } else if (user.nome) {
-      sessionName.textContent = user.nome.toLowerCase().replace(/\s+/g, '.');
-    } else if (user.email) {
-      sessionName.textContent = user.email.split('@')[0];
-    } else {
-      sessionName.textContent = 'm.santos';
-    }
-  }
-
   const avatarMenu = document.getElementById('avatarMenu');
   if (avatarMenu && !document.getElementById('linkMeusEspacosMenu')) {
     const linkEspacos = document.createElement('a');

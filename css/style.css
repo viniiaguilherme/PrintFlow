@@ -3468,3 +3468,36 @@ p {
   border-color: rgba(255, 93, 108, 0.3) !important;
   background: linear-gradient(180deg, rgba(255, 93, 108, 0.04) 0%, var(--color-surface) 100%) !important;
 }
+
+/* =========================================================================
+   HERO CENTRALIZADO (LANDING PAGE MINIMALISTA)
+   ========================================================================= */
+.hero--centered {
+  min-height: calc(82vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+
+.hero__content--centered {
+  max-width: 760px;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero__content--centered .hero__subtitle {
+  margin-inline: auto;
+  max-width: 58ch;
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+
+.hero__content--centered .hero__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-2);
+}

@@ -781,10 +781,7 @@ document.addEventListener('DOMContentLoaded', function () {
      ======================================================================= */
   var sidebar = document.getElementById('sidebar');
   var sidebarBackdrop = document.getElementById('sidebarBackdrop');
-  var menuToggle = document.getElementById('menuToggle');
   var mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  var sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
-  var sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
   var dashboardLayout = document.getElementById('dashboardLayout') || document.querySelector('.dashboard-layout');
 
   // Restaura preferência salva do menu no desktop
@@ -827,10 +824,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
-  if (sidebarCollapseBtn) sidebarCollapseBtn.addEventListener('click', toggleSidebar);
+  // O botão que tem a logo e está escrito PrintFlow abre e fecha a sidebar
+  var brandToggleSelectors = [
+    '#sidebarBrandToggle',
+    '.sidebar__brand',
+    '#topbarBrandToggle',
+    '.topbar .brand',
+    '.topbar .brand--pill'
+  ];
+  document.querySelectorAll(brandToggleSelectors.join(',')).forEach(function (btn) {
+    btn.addEventListener('click', toggleSidebar);
+  });
+
   if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleSidebar);
-  if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
   if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
 
   document.querySelectorAll('.sidebar__link').forEach(function (link) {

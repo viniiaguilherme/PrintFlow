@@ -3501,3 +3501,305 @@ p {
   justify-content: center;
   margin-top: var(--space-2);
 }
+
+/* =========================================================================
+   REMOÇÃO COMPLETA DOS BOTÕES DE ABRIR/FECHAR SIDEBAR
+   ========================================================================= */
+.sidebar__collapse-btn,
+.sidebar__close-btn,
+.topbar__menu-btn {
+  display: none !important;
+}
+
+/* =========================================================================
+   TOGGLE DO SIDEBAR PELO BOTÃO DA LOGO + PRINTFLOW
+   ========================================================================= */
+.sidebar__brand--toggle,
+.sidebar__brand {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  padding: 6px 10px;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  transition: all var(--transition-fast);
+  text-align: left;
+  user-select: none;
+  -webkit-appearance: none;
+}
+
+.sidebar__brand--toggle:hover,
+.sidebar__brand:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(47, 232, 143, 0.35);
+}
+
+.sidebar__brand--toggle:active,
+.sidebar__brand:active {
+  transform: scale(0.97);
+}
+
+.brand--toggle,
+.topbar .brand {
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  transition: all var(--transition-fast);
+}
+
+.brand--toggle:hover,
+.topbar .brand:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(47, 232, 143, 0.45);
+  box-shadow: 0 0 14px rgba(47, 232, 143, 0.25);
+  transform: translateY(-1px);
+}
+
+.brand--toggle:active,
+.topbar .brand:active {
+  transform: scale(0.97);
+}
+
+/* =========================================================================
+   NOVO VISUAL INDEX (INSPIRADO NA REFERÊNCIA DO MOCKUP)
+   ========================================================================= */
+.page-landing-mockup {
+  background-color: #000000 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
+.landing-screen {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  padding: clamp(2.5rem, 5vh, 4rem) 2rem clamp(2.5rem, 6vh, 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Header com o Pill Capsule */
+.landing-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
+}
+
+.brand-pill-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: #111418;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 10px 24px 10px 14px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.brand-pill-capsule:hover {
+  border-color: rgba(47, 232, 143, 0.5);
+  transform: translateY(-2px);
+}
+
+.brand-pill-capsule__icon {
+  width: 40px;
+  height: 40px;
+  background: #00e676;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(0, 230, 118, 0.35);
+}
+
+.brand-pill-capsule__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.brand-pill-capsule__text {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+/* Saudação "Seja Bem-vindo !" */
+.landing-greeting {
+  font-size: clamp(1.45rem, 4.5vw, 1.85rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+  margin-bottom: clamp(2rem, 5vh, 3.5rem);
+  padding-left: 2px;
+}
+
+/* Corpo principal: Headline + Visual da Impressora */
+.landing-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.landing-headline {
+  position: relative;
+  z-index: 2;
+}
+
+.landing-headline__title {
+  font-size: clamp(1.65rem, 5.2vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 0;
+}
+
+.landing-headline__accent {
+  color: #00e676;
+  display: inline-block;
+  margin-top: 4px;
+  text-shadow: 0 0 24px rgba(0, 230, 118, 0.28);
+}
+
+/* Visual da impressora */
+.landing-visual {
+  position: relative;
+  margin-top: -2.5rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.landing-printer-img {
+  width: 100%;
+  max-width: 290px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.95));
+  transform: translateY(-8px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Rodapé com botão Entrar -> */
+.landing-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: clamp(2rem, 4vh, 3rem);
+  padding-bottom: clamp(1rem, 2vh, 1.5rem);
+}
+
+.landing-enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.landing-enter-btn:hover {
+  transform: translateX(4px);
+}
+
+.landing-enter-btn:active {
+  transform: scale(0.96);
+}
+
+.landing-enter-btn__label {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-family: 'Inter', sans-serif;
+}
+
+.landing-enter-btn__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #00e676;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 18px rgba(0, 230, 118, 0.45);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.landing-enter-btn:hover .landing-enter-btn__icon {
+  background: #2fe88f;
+  box-shadow: 0 0 28px rgba(0, 230, 118, 0.75);
+  transform: scale(1.08);
+}
+
+.landing-enter-btn__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Adaptação fluida para desktop */
+@media (min-width: 900px) {
+  .landing-screen {
+    max-width: 860px;
+    padding-inline: 3.5rem;
+    padding-block: 4rem 3.5rem;
+  }
+
+  .landing-greeting {
+    margin-bottom: 2rem;
+  }
+
+  .landing-body {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    margin-block: 1rem 2rem;
+  }
+
+  .landing-headline__title {
+    font-size: 2.85rem;
+  }
+
+  .landing-visual {
+    margin-top: 0;
+    max-width: 380px;
+  }
+
+  .landing-printer-img {
+    max-width: 380px;
+    transform: none;
+  }
+}

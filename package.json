@@ -1,0 +1,10 @@
+{
+  "name": "printflow",
+  "version": "1.0.0",
+  "description": "PrintFlow — Sistema de Gerenciamento de Impressoras 3D",
+  "scripts": {
+    "start": "npx serve . -p 8080",
+    "dev": "npx serve ."
+  }
+}
+
